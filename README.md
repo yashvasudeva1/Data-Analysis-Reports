@@ -1,6 +1,6 @@
-# 📊 Data Analysis Reports — Analysis Hub
+# 📊 Data Analysis Reports - Analysis Hub
 
-A centralized, beautifully designed web dashboard for publishing, tracking, and comparing data analysis reports. Built with vanilla HTML, CSS, and JavaScript — no build tools required.
+A centralized, beautifully designed web dashboard for publishing, tracking, and comparing data analysis reports. Built with vanilla HTML, CSS, and JavaScript - no build tools required.
 
 ## 🌐 Live Demo
 
@@ -26,12 +26,11 @@ Data Analysis Reports/
 ├── datasets.html         # Dataset management
 ├── settings.html         # User settings & preferences
 ├── help.html             # FAQ & support page
-├── login.html            # Sign-in / guest access
 ├── hub.css               # Shared design system & component styles
-├── hub.js                # Shared JS: nav, search, RBAC, accordion
+├── hub.js                # Shared JS: nav, search, accordion
 │
-├── cpi_report.html       # CPI Inflation Analysis — full report
-├── rainfall_report.html  # Delhi Rainfall Analysis — full report
+├── cpi_report.html       # CPI Inflation Analysis - full report
+├── rainfall_report.html  # Delhi Rainfall Analysis - full report
 │
 ├── CPI/                  # CPI Inflation Analysis project
 │   ├── app.py            # Flask/Dash application
@@ -62,12 +61,12 @@ Data Analysis Reports/
 
 ## 🔑 Features
 
-- **Multi-page dashboard** — Dashboard, Reports, Analytics, Datasets, Settings, Help
-- **Role-Based Access Control (RBAC)** — Admin and Guest (read-only) roles via `localStorage`
-- **Global search** — Filters reports, datasets, and categories in real-time (⌘F / Ctrl+F)
-- **Cross-report analytics** — Chart.js powered comparisons across ML models and macro trends
-- **Responsive design** — Mobile-first layout, sidebar collapses on small screens
-- **No dependencies** — Pure HTML/CSS/JS, no bundler or framework required
+- **Multi-page dashboard** - Dashboard, Reports, Analytics, Datasets, Settings, Help
+- **Role-Based Access Control (RBAC)** - Admin and Guest (read-only) roles via `localStorage`
+- **Global search** - Filters reports, datasets, and categories in real-time (⌘F / Ctrl+F)
+- **Cross-report analytics** - Chart.js powered comparisons across ML models and macro trends
+- **Responsive design** - Mobile-first layout, sidebar collapses on small screens
+- **No dependencies** - Pure HTML/CSS/JS, no bundler or framework required
 
 ---
 
@@ -112,7 +111,7 @@ No build step needed. Simply open `index.html` in a browser or use any static fi
 
 ## 👤 Author
 
-**Yash Vasudeva** — Data Analyst  
+**Yash Vasudeva** - Data Analyst  
 [GitHub](https://github.com/yash-vasudeva) · [Email](mailto:vasudevyash@gmail.com)
 
 ---

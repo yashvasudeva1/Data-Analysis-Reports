@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Settings — Analysis Hub</title>
+  <title>Settings - Analysis Hub</title>
   <meta name="description" content="Configure your Analysis Hub preferences and account settings." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,7 +20,7 @@
       display: block; width: 100%; text-align: left; padding: 10px 14px;
       font-size: 13.5px; font-weight: 600; color: var(--text-500);
       border-radius: 10px; cursor: pointer; transition: background .15s, color .15s;
-      margin-bottom: 4px;
+      margin-bottom: 4px; border: none; background: transparent;
     }
     .settings-tab:hover:not(.active) { background: var(--bg); color: var(--text-900); }
     .settings-tab.active { background: var(--mint-100); color: var(--green-900); }
@@ -45,20 +45,18 @@
     <div class="nav-section">
       <p class="nav-eyebrow">Menu</p>
       <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
-      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">2</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
       <a href="datasets.html"  class="nav-item" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
       <a href="analytics.html" class="nav-item" id="nav-analytics"><span class="nav-label">Analytics</span></a>
-      
     </div>
     <div class="sidebar-divider"></div>
     <div class="nav-section">
       <p class="nav-eyebrow">General</p>
       <a href="settings.html"  class="nav-item active" id="nav-settings"><span class="nav-label">Settings</span></a>
       <a href="help.html"      class="nav-item" id="nav-help">    <span class="nav-label">Help</span></a>
-      <a href="login.html"     class="nav-item">                  <span class="nav-label">Logout</span></a>
     </div>
     <div class="sidebar-spacer"></div>
-    <div class="sidebar-promo admin-only">
+    <div class="sidebar-promo">
       <p class="promo-label">Quick Action</p>
       <p class="promo-title">Publish your next report</p>
       <p class="promo-sub">Upload a dataset and auto-generate charts & KPIs instantly.</p>
@@ -74,8 +72,8 @@
       </div>
       <div class="topbar-spacer"></div>
       <div class="user-chip">
-        <div class="user-text"><span class="user-name">Guest</span><span class="user-email">guest@analysis.hub</span></div>
-        <div class="user-avatar">G</div>
+        <div class="user-text"><span class="user-name">Yash Vasudeva</span><span class="user-email">yash@analysis.hub</span></div>
+        <div class="user-avatar">YV</div>
       </div>
     </header>
 
@@ -87,14 +85,6 @@
     </div>
 
     <div class="content">
-      
-      <!-- Guest Warning Banner -->
-      <div id="guest-settings-alert" style="display:none; background:#FFFBEB; border:1.5px solid #FCD34D; border-radius:12px; padding:14px 18px; margin-bottom:20px; font-size:13px; color:#92400E; align-items:center; gap:12px;">
-        <span style="font-size:18px; flex-shrink:0;">🔒</span>
-        <div>
-          <strong>Guest Mode (Read-Only)</strong> — You are logged in as a Guest. Profile and account settings are locked and cannot be modified.
-        </div>
-      </div>
 
       <div class="settings-layout">
         
@@ -112,9 +102,9 @@
             <h2 class="card-title" style="margin-bottom: 24px;">Profile Information</h2>
             
             <div style="display:flex; gap: 24px; align-items: center; margin-bottom: 32px;">
-              <div class="user-avatar-circle" style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--green-700), var(--green-500)); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #fff;">G</div>
+              <div class="user-avatar-circle" style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--green-700), var(--green-500)); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #fff;">YV</div>
               <div>
-                <button class="btn-outline btn-sm setting-field admin-only">Change Avatar</button>
+                <button class="btn-outline btn-sm">Change Avatar</button>
                 <div class="form-hint" style="margin-top: 8px;">JPG, GIF or PNG. Max size of 800K</div>
               </div>
             </div>
@@ -122,22 +112,22 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Full Name</label>
-                <input type="text" class="form-input setting-field" id="setting-name" value="Guest" />
+                <input type="text" class="form-input" id="setting-name" value="Yash Vasudeva" />
               </div>
               <div class="form-group">
                 <label class="form-label">Role / Title</label>
-                <input type="text" class="form-input setting-field" id="setting-role" value="Guest Viewer" />
+                <input type="text" class="form-input" id="setting-role" value="Data Analyst" />
               </div>
             </div>
             
             <div class="form-group">
               <label class="form-label">Bio</label>
-              <textarea class="form-textarea setting-field" id="setting-bio">Read-only guest view of published analysis reports and datasets.</textarea>
+              <textarea class="form-textarea" id="setting-bio">Analyzing crime, economic, and climate datasets. Building interactive reports and KPIs.</textarea>
               <div class="form-hint">Brief description for your profile. URLs are hyperlinked.</div>
             </div>
 
             <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
-              <button class="btn-primary setting-field admin-only" onclick="alert('Profile saved')">Save Changes</button>
+              <button class="btn-primary" onclick="alert('Profile saved successfully!')">Save Changes</button>
             </div>
           </div>
 
@@ -147,18 +137,18 @@
              
              <div class="form-group">
                 <label class="form-label">Email Address</label>
-                <input type="email" class="form-input setting-field" id="setting-email" value="guest@analysis.hub" />
+                <input type="email" class="form-input" id="setting-email" value="yash@analysis.hub" />
               </div>
               
               <div class="form-group" style="margin-top: 30px;">
                 <label class="form-label">Change Password</label>
-                <input type="password" class="form-input setting-field" placeholder="Current password" style="margin-bottom: 12px;"/>
-                <input type="password" class="form-input setting-field" placeholder="New password" />
+                <input type="password" class="form-input" placeholder="Current password" style="margin-bottom: 12px;"/>
+                <input type="password" class="form-input" placeholder="New password" />
               </div>
 
               <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-                <button class="btn-danger setting-field admin-only" onclick="confirm('Are you sure you want to delete your account? This cannot be undone.')">Delete Account</button>
-                <button class="btn-primary setting-field admin-only" onclick="alert('Account settings saved')">Update Account</button>
+                <button class="btn-danger" onclick="confirm('Are you sure you want to delete your account? This cannot be undone.')">Delete Account</button>
+                <button class="btn-primary" onclick="alert('Account settings updated!')">Update Account</button>
               </div>
           </div>
 

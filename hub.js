@@ -1,19 +1,12 @@
-// hub.js — Shared Navigation & Utilities for Analysis Hub
+// hub.js - Shared Navigation & Utilities for Analysis Hub
 
-// ── User identity config ────────────────────────────────────
-const ADMIN_IDENTITY = {
+// ── Default User Identity ────────────────────────────────────
+const USER_IDENTITY = {
   name:   'Yash Vasudeva',
   email:  'yash@analysis.hub',
   avatar: 'YV',
   role:   'Data Analyst',
   bio:    'Analyzing crime, economic, and climate datasets. Building interactive reports and KPIs.'
-};
-const GUEST_IDENTITY = {
-  name:   'Guest',
-  email:  'guest@analysis.hub',
-  avatar: 'G',
-  role:   'Guest Viewer',
-  bio:    'Read-only view of published analysis reports and datasets.'
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -107,50 +100,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (q) q.addEventListener('click', () => item.classList.toggle('open'));
   });
 
-  // ── Logout: clear role on Logout link click ────────────────
-  document.querySelectorAll('a[href="login.html"]').forEach(link => {
-    link.addEventListener('click', () => localStorage.removeItem('hub-role'));
-  });
+  // ── User Identity Population ───────────────────────────────
+  document.querySelectorAll('.user-name').forEach(el => el.textContent = USER_IDENTITY.name);
+  document.querySelectorAll('.user-email').forEach(el => el.textContent = USER_IDENTITY.email);
+  document.querySelectorAll('.user-avatar').forEach(el => el.textContent = USER_IDENTITY.avatar);
 
-  // ── RBAC & User Identity ───────────────────────────────────
-  const role = localStorage.getItem('hub-role') || 'guest';
-  document.body.classList.add('role-' + role);
-
-  const identity = (role === 'admin') ? ADMIN_IDENTITY : GUEST_IDENTITY;
-  const isGuest  = (role !== 'admin');
-
-  // Topbar chip
-  document.querySelectorAll('.user-name').forEach(el => el.textContent = identity.name);
-  document.querySelectorAll('.user-email').forEach(el => el.textContent = identity.email);
-  document.querySelectorAll('.user-avatar').forEach(el => el.textContent = identity.avatar);
-
-  // Large avatar circle in settings (if present)
   const avatarCircle = document.querySelector('.user-avatar-circle');
-  if (avatarCircle) avatarCircle.textContent = identity.avatar;
+  if (avatarCircle) avatarCircle.textContent = USER_IDENTITY.avatar;
 
-  if (isGuest) {
-    document.body.classList.add('role-viewer');
-
-    // Show guest alert banner on settings page
-    const alertEl = document.getElementById('guest-settings-alert');
-    if (alertEl) alertEl.style.display = 'flex';
-
-    // Disable all setting fields
-    document.querySelectorAll('.setting-field').forEach(el => {
-      el.disabled = true;
-      el.style.opacity = '0.55';
-      el.style.cursor  = 'not-allowed';
-      if (el.tagName === 'BUTTON') el.style.pointerEvents = 'none';
-    });
-  }
-
-  // Populate settings form fields with correct identity values
+  // Populate settings form fields
   const nameInput  = document.getElementById('setting-name');
   const roleInput  = document.getElementById('setting-role');
   const bioInput   = document.getElementById('setting-bio');
   const emailInput = document.getElementById('setting-email');
-  if (nameInput)  nameInput.value          = identity.name;
-  if (roleInput)  roleInput.value          = identity.role;
-  if (bioInput)   bioInput.value           = identity.bio;
-  if (emailInput) emailInput.value         = identity.email;
+  if (nameInput)  nameInput.value          = USER_IDENTITY.name;
+  if (roleInput)  roleInput.value          = USER_IDENTITY.role;
+  if (bioInput)   bioInput.value           = USER_IDENTITY.bio;
+  if (emailInput) emailInput.value         = USER_IDENTITY.email;
 });

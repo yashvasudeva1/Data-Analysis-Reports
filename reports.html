@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reports — Analysis Hub</title>
+  <title>Reports - Analysis Hub</title>
   <meta name="description" content="Browse, filter, and open all your published data analysis reports from one place." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -62,7 +62,7 @@
     .kpi-label  { font-size: 11px; color: var(--text-400); font-weight: 500; }
     .rc-insights { margin-bottom: 16px; }
     .rc-insight-item { font-size: 12px; color: var(--text-500); padding: 4px 0; display: flex; gap: 6px; }
-    .rc-insight-item::before { content: '—'; color: var(--green-500); font-weight: 700; flex-shrink: 0; }
+    .rc-insight-item::before { content: '-'; color: var(--green-500); font-weight: 700; flex-shrink: 0; }
     .rc-footer  { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); }
     .rc-updated { font-size: 12px; color: var(--text-400); }
     .rc-actions { display: flex; gap: 8px; }
@@ -88,10 +88,9 @@
       <p class="nav-eyebrow">General</p>
       <a href="settings.html"  class="nav-item" id="nav-settings"><span class="nav-label">Settings</span></a>
       <a href="help.html"      class="nav-item" id="nav-help">    <span class="nav-label">Help</span></a>
-      <a href="login.html"     class="nav-item">                  <span class="nav-label">Logout</span></a>
     </div>
     <div class="sidebar-spacer"></div>
-    <div class="sidebar-promo admin-only">
+    <div class="sidebar-promo">
       <p class="promo-label">Quick Action</p>
       <p class="promo-title">Publish your next report</p>
       <p class="promo-sub">Upload a dataset and auto-generate charts & KPIs instantly.</p>
@@ -108,8 +107,8 @@
       </div>
       <div class="topbar-spacer"></div>
       <div class="user-chip">
-        <div class="user-text"><span class="user-name">Guest</span><span class="user-email">guest@analysis.hub</span></div>
-        <div class="user-avatar">G</div>
+        <div class="user-text"><span class="user-name">Yash Vasudeva</span><span class="user-email">yash@analysis.hub</span></div>
+        <div class="user-avatar">YV</div>
       </div>
     </header>
 
@@ -118,9 +117,8 @@
         <h1>Reports</h1>
         <p>All published data analysis reports. Click to open any report.</p>
       </div>
-      <div class="page-header-actions admin-only">
-        <a href="datasets.html" class="btn-outline">Import Data</a>
-        <button class="btn-primary" onclick="alert('New report flow coming soon!')">+ New Report</button>
+      <div class="page-header-actions">
+        <a href="#" class="btn-primary" onclick="alert('New report flow coming soon!')">+ New Report</a>
       </div>
     </div>
 
