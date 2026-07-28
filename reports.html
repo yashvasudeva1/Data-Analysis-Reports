@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports — Analysis Hub</title>
+  <meta name="description" content="Browse, filter, and open all your published data analysis reports from one place." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="hub.css" />
+  <style>
+    /* ── FILTER BAR ──────────────────────────────────────── */
+    .filter-bar {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: var(--surface); border-radius: var(--r-card);
+      box-shadow: var(--shadow); border: 1px solid var(--border);
+      padding: 14px 20px;
+    }
+    .filter-tabs { display: flex; gap: 4px; }
+    .filter-tab {
+      font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 999px;
+      cursor: pointer; transition: background .15s, color .15s;
+      color: var(--text-500); background: transparent; border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .filter-tab:hover   { background: var(--mint-100); color: var(--green-700); }
+    .filter-tab.active  { background: var(--green-900); color: #fff; }
+    .filter-spacer { flex: 1; }
+    .filter-search {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 999px; padding: 7px 16px; font-size: 13px;
+      color: var(--text-900); font-family: 'Plus Jakarta Sans', sans-serif; outline: none;
+      width: 220px; transition: border-color .15s;
+    }
+    .filter-search:focus { border-color: var(--green-500); }
+    .filter-search::placeholder { color: var(--text-400); }
+
+    /* ── REPORTS GRID ────────────────────────────────────── */
+    .reports-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    @media (max-width: 1100px) { .reports-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 700px)  { .reports-grid { grid-template-columns: 1fr; } }
+
+    .report-card { display: flex; flex-direction: column; gap: 0; }
+    .rc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .cat-pill {
+      font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+    }
+    .cat-pill.crime     { background: #FDE8ED; color: #A51E35; }
+    .cat-pill.economics { background: #E8F4FD; color: #1E6FA5; }
+    .cat-pill.markets   { background: #FFF0E0; color: #B35A00; }
+    .cat-pill.health    { background: #FDE8ED; color: #A51E35; }
+    .cat-pill.forecast  { background: #F0E8FD; color: #6A1EA5; }
+    .cat-pill.climate   { background: #E8FDF4; color: #1EA566; }
+    .cat-pill.data      { background: #E8FDF4; color: #1EA566; }
+
+    .rc-title   { font-size: 16px; font-weight: 700; color: var(--text-900); margin-bottom: 6px; }
+    .rc-desc    { font-size: 13px; color: var(--text-500); line-height: 1.5; margin-bottom: 16px; flex: 1; }
+    .rc-kpis    { display: flex; gap: 16px; margin-bottom: 16px; padding: 12px; background: var(--bg); border-radius: 12px; }
+    .kpi        { display: flex; flex-direction: column; gap: 2px; }
+    .kpi-num    { font-size: 18px; font-weight: 800; color: var(--text-900); font-variant-numeric: tabular-nums; }
+    .kpi-label  { font-size: 11px; color: var(--text-400); font-weight: 500; }
+    .rc-insights { margin-bottom: 16px; }
+    .rc-insight-item { font-size: 12px; color: var(--text-500); padding: 4px 0; display: flex; gap: 6px; }
+    .rc-insight-item::before { content: '—'; color: var(--green-500); font-weight: 700; flex-shrink: 0; }
+    .rc-footer  { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); }
+    .rc-updated { font-size: 12px; color: var(--text-400); }
+    .rc-actions { display: flex; gap: 8px; }
+    .no-results { text-align: center; color: var(--text-400); padding: 48px; grid-column: 1/-1; font-size: 14px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-name">Analysis Hub</div><div class="logo-sub">Data Reports</div></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">Menu</p>
+      <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
+      <a href="datasets.html"  class="nav-item" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
+      <a href="analytics.html" class="nav-item" id="nav-analytics"><span class="nav-label">Analytics</span></a>
+      
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">General</p>
+      <a href="settings.html"  class="nav-item" id="nav-settings"><span class="nav-label">Settings</span></a>
+      <a href="help.html"      class="nav-item" id="nav-help">    <span class="nav-label">Help</span></a>
+      <a href="login.html"     class="nav-item">                  <span class="nav-label">Logout</span></a>
+    </div>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-promo admin-only">
+      <p class="promo-label">Quick Action</p>
+      <p class="promo-title">Publish your next report</p>
+      <p class="promo-sub">Upload a dataset and auto-generate charts & KPIs instantly.</p>
+      <a href="#" class="promo-btn" onclick="alert('New report flow coming soon!')">New Report</a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <div class="search-wrap">
+        <input type="text" id="search-input" placeholder="Search reports, datasets, tags…" />
+        <span class="search-kbd">⌘F</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="user-chip">
+        <div class="user-text"><span class="user-name">Guest</span><span class="user-email">guest@analysis.hub</span></div>
+        <div class="user-avatar">G</div>
+      </div>
+    </header>
+
+    <div class="page-header">
+      <div class="page-header-text">
+        <h1>Reports</h1>
+        <p>All published data analysis reports. Click to open any report.</p>
+      </div>
+      <div class="page-header-actions admin-only">
+        <a href="datasets.html" class="btn-outline">Import Data</a>
+        <button class="btn-primary" onclick="alert('New report flow coming soon!')">+ New Report</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all"         data-target="reports-grid">All (3)</button>
+          <button class="filter-tab"        data-filter="completed"   data-target="reports-grid">Completed (3)</button>
+          <button class="filter-tab"        data-filter="in_progress" data-target="reports-grid">In Progress (0)</button>
+          <button class="filter-tab"        data-filter="pending"     data-target="reports-grid">Pending (0)</button>
+        </div>
+        <div class="filter-spacer"></div>
+        <input class="filter-search" id="report-search" placeholder="Filter by title…" />
+      </div>
+
+      <!-- Reports grid -->
+      <div class="reports-grid" id="reports-grid"></div>
+    </div>
+  </div>
+</div>
+
+<script src="hub.js"></script>
+<script>
+const REPORTS = [
+  {
+    id:'crime-analysis-india', title:'India Crime Analysis (2001–2013)', category:'crime',
+    desc:'Comprehensive analysis of NCRB crime datasets across 36 states/UTs covering 5.3M+ IPC crimes, crimes against women, auto theft & custodial deaths.',
+    status:'completed', updated:'Jul 28, 2026',
+    kpis:[{label:'IPC Crimes',value:'5.3M'},{label:'Datasets',value:'19'},{label:'Years',value:'13'}],
+    insights:['Total IPC crimes grew 49.6% from 2001 to 2013','UP, AP & West Bengal report highest crimes against women'],
+    url:'./crime_report.html',
+  },
+  {
+    id:'cpi-inflation-2025', title:'CPI Inflation Analysis', category:'economics',
+    desc:'Time-series analysis of India\'s Consumer Price Index from 2013 to 2025, with sector-level decomposition and ML forecasting.',
+    status:'completed', updated:'Nov 26, 2025',
+    kpis:[{label:'R² Score',value:'0.88'},{label:'MAE',value:'1.35'},{label:'Sectors',value:'11'}],
+    insights:['General CPI rose ~90% cumulatively, 2013–2025','Vegetables/spices show >35% coefficient of variation'],
+    url:'./cpi_report.html',
+  },
+  {
+    id:'rainfall-delhi-2025', title:'Rainfall Analysis in Delhi', category:'climate',
+    desc:'8-year spatial-temporal study of precipitation across 9 Delhi districts, monsoon anomaly heatmaps, and XGBoost Tweedie regression model.',
+    status:'completed', updated:'Dec 1, 2025',
+    kpis:[{label:'R² (Test)',value:'0.82'},{label:'MAE',value:'1.83 mm'},{label:'Years',value:'8'}],
+    insights:['South Delhi leads in total rainfall (7,842 mm)','XGBoost Tweedie model achieves 0.82 Test R²'],
+    url:'./rainfall_report.html',
+  }
+];
+
+function bClass(s){ return s==='in_progress'?'in-progress':s; }
+function bText(s) { return s==='in_progress'?'In Progress':s.charAt(0).toUpperCase()+s.slice(1); }
+
+function renderGrid(data) {
+  const grid = document.getElementById('reports-grid');
+  if (!data.length) {
+    grid.innerHTML = '<p class="no-results">No reports match your filter.</p>'; return;
+  }
+  grid.innerHTML = data.map(r => `
+    <div class="card report-card" data-status="${r.status}" data-search="${r.title} ${r.category}">
+      <div class="rc-header">
+        <span class="cat-pill ${r.category}">${r.category.charAt(0).toUpperCase()+r.category.slice(1)}</span>
+        <span class="badge ${bClass(r.status)}">${bText(r.status)}</span>
+      </div>
+      <div class="rc-title">${r.title}</div>
+      <div class="rc-desc">${r.desc}</div>
+      <div class="rc-kpis">
+        ${r.kpis.map(k=>`<div class="kpi"><span class="kpi-num">${k.value}</span><span class="kpi-label">${k.label}</span></div>`).join('')}
+      </div>
+      <div class="rc-insights">
+        ${r.insights.map(i=>`<div class="rc-insight-item">${i}</div>`).join('')}
+      </div>
+      <div class="rc-footer">
+        <span class="rc-updated">Updated ${r.updated}</span>
+        <div class="rc-actions">
+          ${r.url
+            ? `<a href="${r.url}" class="btn-primary btn-sm">Open Report</a>`
+            : `<button class="btn-outline btn-sm" onclick="alert('Report viewer coming soon!')">View Details</button>`
+          }
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+renderGrid(REPORTS);
+
+// Local search for report titles
+document.getElementById('report-search').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('#reports-grid .report-card').forEach(c => {
+    c.style.display = c.dataset.search.toLowerCase().includes(q) || q==='' ? '' : 'none';
+  });
+});
+</script>
+</body>
+</html>

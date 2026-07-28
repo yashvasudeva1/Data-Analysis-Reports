@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Analysis Hub</title>
+  <meta name="description" content="Sign in to your Analysis Hub account to manage and view your data analysis reports." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green-900: #0E3B2E; --green-700: #155C46; --green-500: #2E9370; --green-300: #8FD6B4;
+      --text-900: #14181B; --text-500: #6B7280; --text-400: #9AA1A9;
+      --border: #ECEEED; --bg: #F4F6F5; --surface: #FFFFFF;
+      --mint-100: #E3F5EA;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    /* ── SHELL ────────────────────────────────────────────── */
+    .shell { display: flex; min-height: 100vh; }
+
+    /* ── LEFT BRAND PANEL ─────────────────────────────────── */
+    .brand-panel {
+      width: 44%; background: var(--green-900);
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 52px 48px; position: relative; overflow: hidden;
+    }
+    .brand-panel::before {
+      content: ''; position: absolute; top: -140px; right: -140px;
+      width: 420px; height: 420px; border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,.06);
+    }
+    .brand-panel::after {
+      content: ''; position: absolute; bottom: -100px; left: -100px;
+      width: 340px; height: 340px; border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,.05);
+    }
+    .deco-a {
+      position: absolute; top: 140px; right: -70px;
+      width: 240px; height: 240px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.04);
+    }
+    .deco-b {
+      position: absolute; bottom: 120px; left: -50px;
+      width: 180px; height: 180px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.04);
+    }
+    .deco-glow {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(46,147,112,.16) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .brand-top { position: relative; z-index: 1; }
+    .brand-logo { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -.4px; }
+    .brand-logo em { font-style: normal; color: var(--green-300); }
+
+    .brand-mid { position: relative; z-index: 1; }
+    .brand-headline {
+      font-size: 40px; font-weight: 800; color: #fff;
+      line-height: 1.14; letter-spacing: -.5px; margin-bottom: 18px;
+    }
+    .brand-headline span { color: var(--green-300); }
+    .brand-tag  { font-size: 15px; color: rgba(255,255,255,.6); line-height: 1.65; max-width: 310px; }
+
+    .brand-stats { display: flex; gap: 36px; position: relative; z-index: 1; }
+    .bstat-num   { font-size: 26px; font-weight: 800; color: #fff; display: block; font-variant-numeric: tabular-nums; }
+    .bstat-label { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 2px; }
+
+    /* ── RIGHT FORM PANEL ─────────────────────────────────── */
+    .form-panel {
+      flex: 1; background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      padding: 48px;
+    }
+    .form-wrap { width: 100%; max-width: 400px; }
+
+    .form-title   { font-size: 30px; font-weight: 800; color: var(--text-900); margin-bottom: 6px; }
+    .form-sub     { font-size: 14px; color: var(--text-500); margin-bottom: 30px; }
+
+    .field { margin-bottom: 16px; }
+    .field-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
+    .field label { display: block; font-size: 13px; font-weight: 600; color: var(--text-900); margin-bottom: 7px; }
+    .field input {
+      width: 100%; background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 12px 16px;
+      font-size: 14px; color: var(--text-900);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: border-color .15s, background .15s; outline: none;
+    }
+    .field input:focus { border-color: var(--green-500); background: #fff; }
+    .field input::placeholder { color: var(--text-400); }
+
+    .forgot-link { font-size: 12.5px; font-weight: 600; color: var(--green-700); cursor: pointer; }
+    .forgot-link:hover { color: var(--green-500); }
+
+    .remember-row { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; cursor: pointer; }
+    .remember-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--green-700); cursor: pointer; flex-shrink: 0; }
+    .remember-row span { font-size: 13px; color: var(--text-500); }
+
+    .btn-signin {
+      width: 100%; padding: 13px; border-radius: 999px;
+      background: var(--green-900); color: #fff;
+      font-size: 15px; font-weight: 700; border: none; cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background .15s, transform .1s; margin-bottom: 14px;
+      letter-spacing: -.1px;
+    }
+    .btn-signin:hover { background: var(--green-700); transform: translateY(-1px); }
+    .btn-signin:disabled { opacity: .7; cursor: not-allowed; transform: none; }
+
+    .divider { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-text { font-size: 12px; color: var(--text-400); font-weight: 500; white-space: nowrap; }
+
+    .btn-google {
+      width: 100%; padding: 12px; border-radius: 999px;
+      background: #fff; border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      font-size: 14px; font-weight: 600; color: var(--text-900);
+      cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background .15s, box-shadow .15s, border-color .15s;
+      margin-bottom: 12px;
+    }
+    .btn-google:hover { background: #f8fafe; border-color: #c5d0e0; box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+    .btn-google:disabled { opacity: .7; cursor: not-allowed; }
+    .google-g {
+      font-size: 17px; font-weight: 800;
+      background: linear-gradient(145deg, #4285F4 0%, #34A853 38%, #FBBC05 70%, #EA4335 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .btn-guest {
+      width: 100%; padding: 12px; border-radius: 999px;
+      background: var(--bg); border: 1.5px solid var(--green-300);
+      font-size: 14px; font-weight: 700; color: var(--green-900);
+      cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background .15s, border-color .15s;
+      margin-bottom: 24px;
+    }
+    .btn-guest:hover { background: var(--mint-100); border-color: var(--green-500); }
+
+    .form-footer { text-align: center; font-size: 13px; color: var(--text-500); }
+    .form-footer a { color: var(--green-700); font-weight: 600; cursor: pointer; }
+    .form-footer a:hover { color: var(--green-500); }
+
+    .error-msg  { font-size: 12.5px; color: #DC2626; margin-top: 5px; display: none; }
+    .auth-alert {
+      background: #FEE2E2; border: 1px solid #FCA5A5; color: #991B1B;
+      padding: 10px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 600;
+      margin-bottom: 16px; display: none; line-height: 1.4;
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────────── */
+    @media (max-width: 820px)  { .brand-panel { display: none; } }
+    @media (max-width: 480px)  { .form-panel  { padding: 32px 24px; } .form-title { font-size: 24px; } }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ═══ LEFT: BRAND ═══ -->
+  <div class="brand-panel">
+    <div class="deco-a"></div>
+    <div class="deco-b"></div>
+    <div class="deco-glow"></div>
+
+    <div class="brand-top">
+      <div class="brand-logo">Analysis<em>Hub</em></div>
+    </div>
+
+    <div class="brand-mid">
+      <h2 class="brand-headline">
+        Your data analysis<br/><span>command center.</span>
+      </h2>
+      <p class="brand-tag">
+        Upload, track, and compare your analysis reports in one beautifully organised hub —
+        from CPI inflation trends to 12-month ML forecasts.
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══ RIGHT: FORM ═══ -->
+  <div class="form-panel">
+    <div class="form-wrap">
+      <h1 class="form-title">Welcome back</h1>
+      <p class="form-sub">Sign in to your account or Browse as Guest</p>
+
+      <div class="auth-alert" id="auth-alert">
+        Invalid credentials. Please check your email and password, or click <strong>Browse as Guest</strong>.
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input type="email" id="email" placeholder="name@company.com" autocomplete="email" />
+          <div class="error-msg" id="email-err">Please enter a valid email address.</div>
+        </div>
+
+        <div class="field">
+          <div class="field-row">
+            <label for="password" style="margin-bottom:0">Password</label>
+            <a class="forgot-link" id="forgot-link">Forgot password?</a>
+          </div>
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+          <div class="error-msg" id="pw-err">Password must be entered.</div>
+        </div>
+
+        <label class="remember-row">
+          <input type="checkbox" id="remember" checked />
+          <span>Keep me signed in for 30 days</span>
+        </label>
+
+        <button type="submit" class="btn-signin" id="signin-btn">Sign In</button>
+      </form>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-text">or continue as</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <button class="btn-guest" id="guest-btn">
+        Browse as Guest (Read-Only Mode)
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const form       = document.getElementById('login-form');
+  const emailEl    = document.getElementById('email');
+  const pwEl       = document.getElementById('password');
+  const emailErr   = document.getElementById('email-err');
+  const pwErr      = document.getElementById('pw-err');
+  const authAlert  = document.getElementById('auth-alert');
+  const signInBtn  = document.getElementById('signin-btn');
+  const guestBtn   = document.getElementById('guest-btn');
+
+  // Admin Credentials (.env matching)
+  const ADMIN_EMAIL = 'vasudevyash@gmail.com';
+  const ADMIN_PASS  = 'Dashboardp@ss$2026';
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    let valid = true;
+    emailErr.style.display  = 'none';
+    pwErr.style.display     = 'none';
+    authAlert.style.display = 'none';
+
+    const inputEmail = emailEl.value.trim();
+    const inputPw    = pwEl.value;
+
+    if (!inputEmail) {
+      emailErr.style.display = 'block'; valid = false;
+    }
+    if (!inputPw) {
+      pwErr.style.display = 'block'; valid = false;
+    }
+    if (!valid) return;
+
+    if (inputEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase() && inputPw === ADMIN_PASS) {
+      signInBtn.textContent = 'Authenticating Admin…';
+      signInBtn.disabled    = true;
+      localStorage.setItem('hub-role', 'admin');
+      setTimeout(() => { window.location.href = 'index.html'; }, 600);
+    } else {
+      authAlert.style.display = 'block';
+    }
+  });
+
+  guestBtn.addEventListener('click', () => {
+    guestBtn.textContent = 'Entering Guest Mode…';
+    guestBtn.disabled   = true;
+    localStorage.setItem('hub-role', 'guest');
+    setTimeout(() => { window.location.href = 'index.html'; }, 500);
+  });
+
+  document.getElementById('forgot-link').addEventListener('click', () => {
+    const e = emailEl.value.trim();
+    if (e) { alert(`Password reset instructions sent to: ${e}`); }
+    else   { alert('Please enter your email address first.'); emailEl.focus(); }
+  });
+})();
+</script>
+</body>
+</html>

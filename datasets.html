@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datasets — Analysis Hub</title>
+  <meta name="description" content="Manage and preview the datasets that power your analysis reports." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="hub.css" />
+  <style>
+    .datasets-wrap { display: flex; flex-direction: column; gap: 20px; }
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 4px; }
+    @media (max-width: 900px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } }
+    
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-card); padding: 18px 20px; box-shadow: var(--shadow);
+    }
+    .stat-label { font-size: 12px; font-weight: 600; color: var(--text-500); margin-bottom: 6px; }
+    .stat-num { font-size: 26px; font-weight: 800; color: var(--text-900); font-variant-numeric: tabular-nums; }
+    .stat-sub { font-size: 11.5px; color: var(--text-400); margin-top: 4px; }
+
+    .cat-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; display: inline-block; }
+    .cat-badge.crime { background: #FDE8ED; color: #A51E35; }
+    .cat-badge.economics { background: #E8F4FD; color: #1E6FA5; }
+    .cat-badge.climate { background: #E8FDF4; color: #1EA566; }
+
+    .source-link {
+      font-size: 12.5px; font-weight: 600; color: #1E6FA5; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 4px; transition: color .15s;
+    }
+    .source-link:hover { color: var(--green-700); text-decoration: underline; }
+
+    .upload-zone {
+      border: 2px dashed var(--border); border-radius: var(--r-card);
+      padding: 32px 20px; text-align: center; background: var(--surface);
+      transition: background .2s, border-color .2s; cursor: pointer;
+    }
+    .upload-zone:hover { background: var(--bg); border-color: var(--green-300); }
+    .upload-title { font-size: 15px; font-weight: 700; color: var(--text-900); margin-bottom: 4px; }
+    .upload-sub { font-size: 13px; color: var(--text-500); margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-name">Analysis Hub</div><div class="logo-sub">Data Reports</div></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">Menu</p>
+      <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
+      <a href="datasets.html"  class="nav-item active" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
+      <a href="analytics.html" class="nav-item" id="nav-analytics"><span class="nav-label">Analytics</span></a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">General</p>
+      <a href="settings.html"  class="nav-item" id="nav-settings"><span class="nav-label">Settings</span></a>
+      <a href="help.html"      class="nav-item" id="nav-help">    <span class="nav-label">Help</span></a>
+      <a href="login.html"     class="nav-item">                  <span class="nav-label">Logout</span></a>
+    </div>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-promo admin-only">
+      <p class="promo-label">Quick Action</p>
+      <p class="promo-title">Publish your next report</p>
+      <p class="promo-sub">Upload a dataset and auto-generate charts & KPIs instantly.</p>
+      <a href="reports.html" class="promo-btn">New Report</a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <div class="search-wrap">
+        <input type="text" id="search-input" placeholder="Search datasets, sources, categories…" />
+        <span class="search-kbd">⌘F</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="user-chip">
+        <div class="user-text"><span class="user-name">Guest</span><span class="user-email">guest@analysis.hub</span></div>
+        <div class="user-avatar">G</div>
+      </div>
+    </header>
+
+    <div class="page-header">
+      <div class="page-header-text">
+        <h1>Datasets</h1>
+        <p>Manage, inspect, and access raw datasets that power your analysis reports.</p>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="datasets-wrap">
+        
+        <!-- Summary Stat Cards -->
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-label">Active Datasets</div>
+            <div class="stat-num">3</div>
+            <div class="stat-sub">Fully ingested & synced</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Data Size</div>
+            <div class="stat-num">151.2 MB</div>
+            <div class="stat-sub">19+ CSV files & archives</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Data Portals</div>
+            <div class="stat-num">2</div>
+            <div class="stat-sub">Kaggle & Data.gov.in</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Linked Reports</div>
+            <div class="stat-num">3</div>
+            <div class="stat-sub">Crime, CPI & Rainfall</div>
+          </div>
+        </div>
+
+        <!-- Upload Zone -->
+        <div class="upload-zone admin-only" onclick="alert('Upload functionality coming soon!')">
+          <p class="upload-title">Drop CSV or Excel files here</p>
+          <p class="upload-sub">or click to browse your local files.</p>
+          <button class="btn-primary">Select Files</button>
+        </div>
+
+        <!-- Data Table Card -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Dataset Name</th>
+                  <th>Category</th>
+                  <th>Format</th>
+                  <th>Size</th>
+                  <th>Source Portal</th>
+                  <th>Associated Report</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="dataset-list">
+                <!-- JS injected -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="hub.js"></script>
+<script>
+const DATASETS = [
+  {
+    id: 'crime-in-india',
+    name: 'Crime in India (NCRB 2001–2014)',
+    category: 'Crime',
+    catClass: 'crime',
+    format: 'CSV / Archive',
+    size: '145.2 MB',
+    date: 'Jul 28, 2026',
+    status: 'completed',
+    sourceLabel: 'Kaggle Dataset ↗',
+    sourceUrl: 'https://www.kaggle.com/datasets/rajanand/crime-in-india',
+    reportTitle: 'India Crime Analysis (2001–2013)',
+    reportUrl: 'crime_report.html'
+  },
+  {
+    id: 'cpi-inflation',
+    name: 'Year-wise CPI Inflation Rate (Combined CPI-C)',
+    category: 'Economics',
+    catClass: 'economics',
+    format: 'CSV',
+    size: '1.2 MB',
+    date: 'Nov 26, 2025',
+    status: 'completed',
+    sourceLabel: 'Data.gov.in Resource ↗',
+    sourceUrl: 'https://www.data.gov.in/resource/year-wise-inflation-rate-based-consumer-price-index-combined-cpi-c-2014-15-2021-22',
+    reportTitle: 'CPI Inflation Analysis',
+    reportUrl: 'cpi_report.html'
+  },
+  {
+    id: 'rainfall-india',
+    name: 'India Rainfall & Precipitation Data (District-wise)',
+    category: 'Climate & Weather',
+    catClass: 'climate',
+    format: 'CSV',
+    size: '4.8 MB',
+    date: 'Dec 1, 2025',
+    status: 'completed',
+    sourceLabel: 'Data.gov.in Search ↗',
+    sourceUrl: 'https://www.data.gov.in/search?title=Rainfall&sortby=_score&type=resources',
+    reportTitle: 'Rainfall Analysis in Delhi',
+    reportUrl: 'rainfall_report.html'
+  }
+];
+
+function renderDatasets(data) {
+  const container = document.getElementById('dataset-list');
+  if (!data.length) {
+    container.innerHTML = `
+      <tr>
+        <td colspan="8" style="text-align: center; color: var(--text-400); padding: 36px;">
+          No datasets match your search query.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  container.innerHTML = data.map(d => `
+    <tr data-search="${d.name} ${d.category} ${d.format} ${d.sourceLabel} ${d.reportTitle}">
+      <td style="font-weight: 700; color: var(--text-900);">
+        ${d.name}
+        <div style="font-size: 11px; color: var(--text-400); font-weight: normal; margin-top: 2px;">Ingested: ${d.date}</div>
+      </td>
+      <td><span class="cat-badge ${d.catClass}">${d.category}</span></td>
+      <td><span class="badge" style="background:var(--bg);color:var(--text-500)">${d.format}</span></td>
+      <td style="color:var(--text-500); font-weight:600;">${d.size}</td>
+      <td>
+        <a href="${d.sourceUrl}" target="_blank" rel="noopener" class="source-link">
+          ${d.sourceLabel}
+        </a>
+      </td>
+      <td>
+        <a href="${d.reportUrl}" style="font-size:12.5px; font-weight:600; color:var(--green-900); text-decoration:none;">
+          ${d.reportTitle} →
+        </a>
+      </td>
+      <td><span class="badge ${d.status}">${d.status.charAt(0).toUpperCase() + d.status.slice(1)}</span></td>
+      <td>
+        <div style="display:flex; gap:6px;">
+          <a href="${d.reportUrl}" class="btn-outline btn-xs" style="text-decoration:none;">View Report</a>
+          <a href="${d.sourceUrl}" target="_blank" rel="noopener" class="btn-primary btn-xs" style="text-decoration:none;">Source Data</a>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+renderDatasets(DATASETS);
+
+// Search listener
+const searchInput = document.getElementById('search-input');
+if (searchInput) {
+  searchInput.addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().trim();
+    const filtered = DATASETS.filter(d => 
+      d.name.toLowerCase().includes(q) ||
+      d.category.toLowerCase().includes(q) ||
+      d.format.toLowerCase().includes(q) ||
+      d.reportTitle.toLowerCase().includes(q) ||
+      d.sourceLabel.toLowerCase().includes(q)
+    );
+    renderDatasets(filtered);
+  });
+}
+</script>
+</body>
+</html>
+

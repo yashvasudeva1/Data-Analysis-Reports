@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CPI Inflation Analysis — Analysis Hub</title>
+  <meta name="description" content="India Consumer Price Index (CPI) comprehensive analysis report, volatility breakdown, and 12-month ML forecast." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="hub.css" />
+  <style>
+    /* ── KPI GRID FIX ─────────────────────────────────────── */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .grid-4 { grid-template-columns: 1fr; } }
+
+    /* ── FILTER TOOLBAR IMPROVED ─────────────────────────── */
+    .cpi-filter-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-card); box-shadow: var(--shadow);
+      padding: 16px 22px; margin-bottom: 24px;
+    }
+    .cpi-filter-row {
+      display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end;
+    }
+    .cpi-filter-group { display: flex; flex-direction: column; gap: 6px; }
+    .cpi-filter-group label { font-size: 12px; font-weight: 700; color: var(--text-500); text-transform: uppercase; letter-spacing: 0.3px; }
+    .cpi-select, .cpi-input {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 600;
+      color: var(--text-900); font-family: 'Plus Jakarta Sans', sans-serif;
+      outline: none; transition: border-color .15s, background .15s; min-width: 170px;
+    }
+    .cpi-select:focus, .cpi-input:focus { border-color: var(--green-500); background: #fff; }
+
+    .range-wrap { display: flex; align-items: center; gap: 10px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 6px 12px; }
+    .range-wrap input[type="range"] { accent-color: var(--green-700); cursor: pointer; width: 110px; }
+    .range-val { font-size: 13px; font-weight: 700; color: var(--green-900); min-width: 36px; text-align: center; }
+
+    /* Nav Sub-tabs */
+    .report-tabs {
+      display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;
+      margin-bottom: 24px; border-bottom: 1px solid var(--border);
+    }
+    .report-tab {
+      padding: 10px 18px; border-radius: 999px; font-size: 13px; font-weight: 700;
+      color: var(--text-500); background: transparent; border: none; cursor: pointer;
+      white-space: nowrap; font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background .15s, color .15s;
+    }
+    .report-tab:hover { background: var(--mint-100); color: var(--green-700); }
+    .report-tab.active { background: var(--green-900); color: #fff; }
+
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    /* Executive summary cards */
+    .exec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    @media (max-width: 900px) { .exec-grid { grid-template-columns: 1fr; } }
+    .exec-card {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 16px;
+      padding: 16px 18px; display: flex; flex-direction: column; gap: 6px;
+    }
+    .exec-card.warning { border-left: 4px solid #B35A00; }
+    .exec-card.positive { border-left: 4px solid var(--green-500); }
+    .exec-card.info { border-left: 4px solid #1E6FA5; }
+    .exec-title { font-size: 13px; font-weight: 700; color: var(--text-900); }
+    .exec-val { font-size: 20px; font-weight: 800; color: var(--text-900); }
+    .exec-desc { font-size: 12px; color: var(--text-500); line-height: 1.45; }
+
+    /* Charts Layout */
+    .chart-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-card); box-shadow: var(--shadow);
+      padding: 20px; margin-bottom: 24px;
+    }
+    .chart-box-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .chart-box-title { font-size: 15px; font-weight: 700; color: var(--text-900); }
+    .chart-box-sub { font-size: 12px; color: var(--text-400); margin-top: 2px; }
+    .chart-canvas-wrap { position: relative; height: 320px; width: 100%; }
+    .chart-canvas-wrap.short { height: 240px; }
+    .chart-canvas-wrap.tall { height: 380px; }
+
+    .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .chart-grid-2 { grid-template-columns: 1fr; } }
+
+    .caption-box {
+      margin-top: 14px; padding: 12px 16px; background: var(--bg);
+      border-radius: 12px; font-size: 12.5px; color: var(--text-500); line-height: 1.5;
+    }
+    .caption-box strong { color: var(--text-900); }
+
+    /* Predictor & Simulators */
+    .sim-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
+    @media (max-width: 800px) { .sim-grid { grid-template-columns: 1fr; } }
+    .sim-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+    .sim-label { font-size: 11.5px; color: var(--text-400); font-weight: 500; }
+    .sim-value { font-size: 22px; font-weight: 800; color: var(--text-900); margin-top: 2px; }
+
+    /* Model Stat Cards */
+    .model-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
+    @media (max-width: 900px) { .model-cards { grid-template-columns: 1fr; } }
+    .model-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; }
+    .model-card-title { font-size: 14px; font-weight: 700; color: var(--text-900); margin-bottom: 12px; }
+    .model-row { display: flex; justify-content: space-between; font-size: 12.5px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+    .model-row:last-child { border-bottom: none; }
+    .model-row-label { color: var(--text-400); }
+    .model-row-val { font-weight: 700; color: var(--text-900); }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-name">Analysis Hub</div><div class="logo-sub">Data Reports</div></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">Menu</p>
+      <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
+      <a href="reports.html"   class="nav-item active" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">2</span></a>
+      <a href="datasets.html"  class="nav-item" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
+      <a href="analytics.html" class="nav-item" id="nav-analytics"><span class="nav-label">Analytics</span></a>
+      
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">General</p>
+      <a href="settings.html"  class="nav-item" id="nav-settings"><span class="nav-label">Settings</span></a>
+      <a href="help.html"      class="nav-item" id="nav-help">    <span class="nav-label">Help</span></a>
+      <a href="login.html"     class="nav-item">                  <span class="nav-label">Logout</span></a>
+    </div>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-promo admin-only">
+      <p class="promo-label">Quick Action</p>
+      <p class="promo-title">Publish your next report</p>
+      <p class="promo-sub">Upload a dataset and auto-generate charts & KPIs instantly.</p>
+      <a href="reports.html" class="promo-btn">New Report</a>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main">
+    <header class="topbar">
+      <div class="search-wrap">
+        <input type="text" id="search-input" placeholder="Search within CPI report…" />
+        <span class="search-kbd">⌘F</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="user-chip">
+        <div class="user-text"><span class="user-name">Guest</span><span class="user-email">guest@analysis.hub</span></div>
+        <div class="user-avatar">G</div>
+      </div>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-header-text">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px; flex-wrap:wrap;">
+          <span class="badge" style="background:#E8F4FD; color:#1E6FA5; font-weight:700;">Economics</span>
+          <span class="badge completed">Completed</span>
+          <span style="font-size:12px; color:var(--text-400)">
+            Dataset Source: <a href="https://www.data.gov.in/resource/year-wise-inflation-rate-based-consumer-price-index-combined-cpi-c-2014-15-2021-22" target="_blank" rel="noopener" style="color:var(--green-900); font-weight:700; text-decoration:underline;">Data.gov.in: CPI-C Inflation Rate ↗</a>
+          </span>
+        </div>
+        <h1>CPI Inflation Analysis</h1>
+        <p>Comprehensive time-series decomposition, sector volatility breakdown, and 12-month ML forecast.</p>
+      </div>
+      <div class="page-header-actions">
+        <a href="datasets.html" class="btn-outline">View Dataset</a>
+        <a href="reports.html" class="btn-outline">← Back to Reports</a>
+        <button class="btn-primary" onclick="window.print()">Export Report</button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- FILTER CONTROLS (IMPROVED TOOLBAR) -->
+      <div class="cpi-filter-panel">
+        <div class="cpi-filter-row">
+          <div class="cpi-filter-group">
+            <label>Category</label>
+            <select class="cpi-select" id="cpiCategory">
+              <option value="general_index" selected>General Index</option>
+              <option value="food_and_beverages">Food & Beverages</option>
+              <option value="housing">Housing</option>
+              <option value="fuel_and_light">Fuel & Light</option>
+              <option value="health">Health</option>
+              <option value="transport_and_communication">Transport & Comm.</option>
+              <option value="education">Education</option>
+            </select>
+          </div>
+
+          <div class="cpi-filter-group">
+            <label>Sector</label>
+            <select class="cpi-select" id="cpiSector">
+              <option value="all" selected>Combined (Rural + Urban)</option>
+              <option value="rural">Rural</option>
+              <option value="urban">Urban</option>
+            </select>
+          </div>
+
+          <div class="cpi-filter-group">
+            <label>Start Year</label>
+            <div class="range-wrap">
+              <input type="range" id="startYear" min="2013" max="2025" value="2013" />
+              <span class="range-val" id="startYearVal">2013</span>
+            </div>
+          </div>
+
+          <div class="cpi-filter-group">
+            <label>End Year</label>
+            <div class="range-wrap">
+              <input type="range" id="endYear" min="2013" max="2025" value="2025" />
+              <span class="range-val" id="endYearVal">2025</span>
+            </div>
+          </div>
+
+          <div style="margin-left:auto; display:flex; gap:8px;">
+            <button class="btn-outline btn-sm" id="btnResetFilters">Reset</button>
+            <button class="btn-primary btn-sm" id="btnApplyFilters">Apply Filters</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORT NAVIGATION TABS -->
+      <div class="report-tabs">
+        <button class="report-tab active" data-tab="tab-overview">Overview & KPIs</button>
+        <button class="report-tab" data-tab="tab-food">Food Inflation</button>
+        <button class="report-tab" data-tab="tab-services">Services & Essentials</button>
+        <button class="report-tab" data-tab="tab-volatility">Volatility & Risk</button>
+        <button class="report-tab" data-tab="tab-distribution">Distribution & Anomalies</button>
+        <button class="report-tab" data-tab="tab-forecasting">Forecasting & ML Model</button>
+      </div>
+
+      <!-- ════════ TAB 1: OVERVIEW & KPIS ════════ -->
+      <div class="tab-section active" id="tab-overview">
+
+        <!-- Executive Summary -->
+        <div class="exec-grid">
+          <div class="exec-card positive">
+            <div class="exec-title">Cumulative CPI Inflation</div>
+            <div class="exec-val" id="kpiCumulativeText">+89.4%</div>
+            <div class="exec-desc" id="kpiCumulativeDesc">General Index rose from 105.2 (2013) to 199.3 (2025) reflecting baseline macroeconomic growth.</div>
+          </div>
+          <div class="exec-card warning">
+            <div class="exec-title">Primary Inflation Driver</div>
+            <div class="exec-val">Food & Beverages</div>
+            <div class="exec-desc">Highest regression coefficient (0.436). Spikes in vegetable prices account for 44% of CPI volatility.</div>
+          </div>
+          <div class="exec-card info">
+            <div class="exec-title">Model Predictive R²</div>
+            <div class="exec-val">0.88 (ARIMA)</div>
+            <div class="exec-desc">High model precision with an MAE of 1.35 points across out-of-sample test splits.</div>
+          </div>
+        </div>
+
+        <!-- KPI ROW (FIXED 4-COLUMN HORIZONTAL GRID) -->
+        <div class="grid-4">
+          <div class="card stat-card">
+            <div class="stat-label">Current CPI Index</div>
+            <div class="stat-number" id="kpiCurrentVal">199.3</div>
+            <span class="badge in-progress" id="kpiCurrentBadge">+4.8% YoY</span>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Total Inflation</div>
+            <div class="stat-number" id="kpiTotalVal">89.4%</div>
+            <span class="badge completed" id="kpiTotalRange">2013 – 2025</span>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Avg Annual Growth</div>
+            <div class="stat-number" id="kpiAvgVal">5.42%</div>
+            <span class="badge neutral">Annualized</span>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Peak YoY Spike</div>
+            <div class="stat-number" id="kpiPeakVal">11.2%</div>
+            <span class="badge pending" id="kpiPeakYear">Year 2020</span>
+          </div>
+        </div>
+
+        <!-- Main Trend Line Chart -->
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <div>
+              <div class="chart-box-title" id="mainTrendTitle">General Index CPI Trajectory</div>
+              <div class="chart-box-sub" id="mainTrendSub">Filtered values from 2013 through 2025</div>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap tall">
+            <canvas id="chartMainTrend"></canvas>
+          </div>
+          <div class="caption-box" id="mainTrendCaption">
+            <strong>Key Insight:</strong> General Index increased by 89.4% over 12 years with strong upward acceleration in 2020–2022.
+          </div>
+        </div>
+
+        <!-- Category & Sector Comparison -->
+        <div class="chart-grid-2">
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">Top Category Averages</div>
+                <div class="chart-box-sub">Average CPI index by major category</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartCategoryComp"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">Rural vs Urban Sector Breakdown</div>
+                <div class="chart-box-sub">Comparison of mean and max CPI by area</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartSectorComp"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-Trend Comparison -->
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <div>
+              <div class="chart-box-title">Key Sector Inflation Drivers Compared</div>
+              <div class="chart-box-sub">Multi-line trajectory of Food, Housing, Fuel, and Health vs General Index</div>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap tall">
+            <canvas id="chartMultiTrend"></canvas>
+          </div>
+          <div class="caption-box">
+            <strong>Business Insight:</strong> Food & Beverages and Health consistently outpace the General Index, indicating these sectors are the primary structural drivers of long-term consumer price increases.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ════════ TAB 2: FOOD INFLATION ════════ -->
+      <div class="tab-section" id="tab-food">
+        <div class="chart-grid-2">
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">Food Basket Weight Distribution</div>
+                <div class="chart-box-sub">Relative weight of components in CPI food sub-index</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartFoodBasket"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">Protein Sources Price Evolution</div>
+                <div class="chart-box-sub">Meat, Milk, Pulses & Eggs trends</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartProteinTrend"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <div>
+              <div class="chart-box-title">All Food Sub-Category Index Comparison</div>
+              <div class="chart-box-sub">Average CPI across 10 distinct food categories</div>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap tall">
+            <canvas id="chartFoodCategories"></canvas>
+          </div>
+          <div class="caption-box">
+            <strong>Policy Implication:</strong> Vegetables and Spices exhibit high variance (>35% CV). Supply-chain interventions and cold-storage infrastructure improvements are essential to dampen seasonal spikes.
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ TAB 3: SERVICES & ESSENTIALS ════════ -->
+      <div class="tab-section" id="tab-services">
+        <div class="chart-grid-2">
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">Essential Services Inflation</div>
+                <div class="chart-box-sub">Health, Education & Housing comparison over time</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap tall">
+              <canvas id="chartServicesTrend"></canvas>
+            </div>
+            <div class="caption-box">
+              <strong>Key Finding:</strong> Healthcare inflation escalated significantly post-2020, becoming the fastest-growing non-food index component.
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">Fuel vs Transport Correlation</div>
+                <div class="chart-box-sub">Direct relationship between energy costs and transit</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap tall">
+              <canvas id="chartFuelTransport"></canvas>
+            </div>
+            <div class="caption-box">
+              <strong>Correlation metric:</strong> Pearson coefficient of r = 0.976 confirms fuel price spikes pass through directly into transportation overheads.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ TAB 4: VOLATILITY & RISK ════════ -->
+      <div class="tab-section" id="tab-volatility">
+        <div class="chart-grid-2">
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">Category Volatility Ranking</div>
+                <div class="chart-box-sub">Standard deviation of monthly price changes</div>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button class="btn-outline btn-xs active" id="btnVolatile">Volatile</button>
+                <button class="btn-outline btn-xs" id="btnStable">Stable</button>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartVolatility"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">COVID-19 Shock Impact</div>
+                <div class="chart-box-sub">Average index levels Pre-2020 vs Post-2020</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartCovidImpact"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ TAB 5: DISTRIBUTION & ANOMALIES ════════ -->
+      <div class="tab-section" id="tab-distribution">
+        <div class="chart-grid-2">
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">CPI Monthly Value Frequency Distribution</div>
+                <div class="chart-box-sub">Histogram of General Index observations</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartDistribution"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">Yearly Price Range Spread</div>
+                <div class="chart-box-sub">Min to Max index spread for each calendar year</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartYearlySpread"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ TAB 6: FORECASTING & ML MODEL ════════ -->
+      <div class="tab-section" id="tab-forecasting">
+        <!-- ARIMA Forecast -->
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <div>
+              <div class="chart-box-title">12-Month Ahead ARIMA Forecast</div>
+              <div class="chart-box-sub">Predictive trajectory with 95% confidence intervals</div>
+            </div>
+            <span class="badge in-progress">Model: ARIMA(1,1,1)</span>
+          </div>
+          <div class="chart-canvas-wrap tall">
+            <canvas id="chartForecast"></canvas>
+          </div>
+          <div class="caption-box">
+            <strong>Model Projections:</strong> General CPI is projected to maintain a steady 5.1% annualized trend, reaching approximately 206.4 by Q4 2026.
+          </div>
+        </div>
+
+        <!-- Interactive Predictor & Simulator -->
+        <div class="chart-grid-2">
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">Interactive Linear Predictor</div>
+                <div class="chart-box-sub">Adjust sector indices to calculate expected General CPI</div>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+              <div>
+                <label style="font-size:11px; font-weight:700; color:var(--text-500)">Food & Bev Index</label>
+                <input type="number" class="cpi-input" id="predFood" value="195" style="width:100%" />
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:700; color:var(--text-500)">Housing Index</label>
+                <input type="number" class="cpi-input" id="predHousing" value="180" style="width:100%" />
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:700; color:var(--text-500)">Fuel & Light Index</label>
+                <input type="number" class="cpi-input" id="predFuel" value="185" style="width:100%" />
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:700; color:var(--text-500)">Health Index</label>
+                <input type="number" class="cpi-input" id="predHealth" value="190" style="width:100%" />
+              </div>
+            </div>
+            <button class="btn-primary" id="btnPredictCpi" style="width:100%">Calculate Predicted CPI</button>
+            
+            <div class="sim-grid" style="grid-template-columns:1fr; margin-top:14px;">
+              <div class="sim-card" style="background:var(--mint-100); border-color:var(--green-300);">
+                <div class="sim-label" style="color:var(--green-700)">Predicted General Index</div>
+                <div class="sim-value" id="predResult" style="color:var(--green-900)">197.45</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-box-header">
+              <div>
+                <div class="chart-box-title">Category Impact Simulator</div>
+                <div class="chart-box-sub">Simulate shock effect on overall CPI</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:12px; margin-bottom:16px;">
+              <div style="flex:1">
+                <label style="font-size:11px; font-weight:700; color:var(--text-500)">Target Sector</label>
+                <select class="cpi-select" id="simCategory" style="width:100%">
+                  <option value="Food & Beverages">Food & Beverages</option>
+                  <option value="Fuel & Light" selected>Fuel & Light</option>
+                  <option value="Housing">Housing</option>
+                  <option value="Health">Health</option>
+                </select>
+              </div>
+              <div style="width:110px">
+                <label style="font-size:11px; font-weight:700; color:var(--text-500)">Shock (% Delta)</label>
+                <input type="number" class="cpi-input" id="simChangeVal" value="10" style="width:100%" />
+              </div>
+            </div>
+            <button class="btn-primary" id="btnSimulate" style="width:100%">Simulate Impact</button>
+
+            <div class="sim-grid">
+              <div class="sim-card">
+                <div class="sim-label">Base CPI</div>
+                <div class="sim-value" id="simBase">199.3</div>
+              </div>
+              <div class="sim-card">
+                <div class="sim-label">New CPI</div>
+                <div class="sim-value" id="simNew">201.2</div>
+              </div>
+              <div class="sim-card">
+                <div class="sim-label">Overall Delta</div>
+                <div class="sim-value" id="simDelta" style="color:var(--green-500)">+0.95%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Model Specs -->
+        <div class="model-cards">
+          <div class="model-card">
+            <div class="model-card-title">ARIMA Forecasting</div>
+            <div class="model-row"><span class="model-row-label">Order</span><span class="model-row-val">ARIMA(1,1,1)</span></div>
+            <div class="model-row"><span class="model-row-label">AIC / BIC</span><span class="model-row-val">412.4 / 421.1</span></div>
+            <div class="model-row"><span class="model-row-label">R² Score</span><span class="model-row-val">0.884</span></div>
+            <div class="model-row"><span class="model-row-label">Horizon</span><span class="model-row-val">12 Months</span></div>
+          </div>
+
+          <div class="model-card">
+            <div class="model-card-title">Dimensionality (PCA)</div>
+            <div class="model-row"><span class="model-row-label">PC1 Variance</span><span class="model-row-val">92.02%</span></div>
+            <div class="model-row"><span class="model-row-label">PC2 Variance</span><span class="model-row-val">2.34%</span></div>
+            <div class="model-row"><span class="model-row-label">Total Explained</span><span class="model-row-val">94.36%</span></div>
+            <div class="model-row"><span class="model-row-label">Principal Components</span><span class="model-row-val">3 Clusters</span></div>
+          </div>
+
+          <div class="model-card">
+            <div class="model-card-title">Data Quality Specs</div>
+            <div class="model-row"><span class="model-row-label">Total Records</span><span class="model-row-val">461</span></div>
+            <div class="model-row"><span class="model-row-label">Tracked Features</span><span class="model-row-val">30</span></div>
+            <div class="model-row"><span class="model-row-label">Missing Values</span><span class="model-row-val">0 (Clean)</span></div>
+            <div class="model-row"><span class="model-row-label">Frequency</span><span class="model-row-val">Monthly</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ════════ YEARLY SUMMARY TABLE (ALWAYS VISIBLE) ════════ -->
+      <div class="card" style="padding:0; overflow:hidden; margin-top:24px;">
+        <div style="padding:18px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:15px; font-weight:700; color:var(--text-900)">Yearly CPI Summary Table</div>
+            <div style="font-size:12px; color:var(--text-400)" id="yearlySummarySub">Filtered annual aggregated mean, range, standard deviation, and YoY growth</div>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Mean Index</th>
+              <th>Min Value</th>
+              <th>Max Value</th>
+              <th>Std Dev</th>
+              <th>YoY Growth</th>
+            </tr>
+          </thead>
+          <tbody id="tblYearlySummary">
+            <!-- JS populated -->
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-shell -->
+
+<script src="hub.js"></script>
+<script>
+/* ── DATA & CHART INSTANCES ───────────────────────────────── */
+const CHART_COLORS = {
+  primary:   '#0E3B2E',
+  secondary: '#2E9370',
+  mint:      '#8FD6B4',
+  amber:     '#B35A00',
+  blue:      '#1E6FA5',
+  purple:    '#6A1EA5',
+  red:       '#A51E35'
+};
+
+let activeCharts = {};
+
+// Annual series dictionary for dynamic filtering
+const ALL_YEARS = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+
+const CATEGORY_SERIES = {
+  general_index:                  [105.2, 110.6, 117.1, 122.8, 126.9, 131.2, 136.0, 151.3, 159.0, 169.6, 179.3, 189.0, 199.3],
+  food_and_beverages:             [106.1, 112.5, 120.4, 127.8, 132.1, 137.9, 144.2, 162.8, 171.5, 183.0, 194.2, 203.5, 212.4],
+  housing:                        [104.0, 109.2, 115.0, 121.3, 127.4, 134.0, 140.2, 146.5, 154.0, 164.2, 174.1, 182.0, 188.5],
+  fuel_and_light:                 [103.5, 107.8, 112.0, 115.4, 119.8, 123.5, 126.9, 135.2, 144.0, 155.8, 163.2, 170.1, 175.2],
+  health:                         [104.0, 108.9, 114.5, 120.1, 125.8, 131.0, 137.4, 149.8, 159.2, 171.0, 182.5, 193.1, 204.1],
+  transport_and_communication:    [103.8, 108.2, 113.1, 117.5, 121.4, 125.8, 130.2, 141.5, 152.0, 164.2, 171.0, 177.5, 182.0],
+  education:                      [104.5, 110.2, 116.4, 122.5, 128.8, 134.5, 140.8, 147.5, 155.2, 165.4, 175.0, 184.2, 191.6]
+};
+
+const CATEGORY_NAMES = {
+  general_index: 'General Index',
+  food_and_beverages: 'Food & Beverages',
+  housing: 'Housing',
+  fuel_and_light: 'Fuel & Light',
+  health: 'Health',
+  transport_and_communication: 'Transport & Comm.',
+  education: 'Education'
+};
+
+const YEARLY_DATA = [
+  { year: 2025, mean: 198.1, min: 195.4, max: 199.3, std: 1.4, yoy: '+4.8%' },
+  { year: 2024, mean: 189.0, min: 184.2, max: 192.8, std: 2.8, yoy: '+5.4%' },
+  { year: 2023, mean: 179.3, min: 173.1, max: 183.9, std: 3.2, yoy: '+5.7%' },
+  { year: 2022, mean: 169.6, min: 164.5, max: 174.0, std: 3.0, yoy: '+6.7%' },
+  { year: 2021, mean: 159.0, min: 154.2, max: 162.8, std: 2.6, yoy: '+5.1%' },
+  { year: 2020, mean: 151.3, min: 143.0, max: 158.2, std: 4.8, yoy: '+11.2%' },
+  { year: 2019, mean: 136.0, min: 132.1, max: 141.5, std: 2.9, yoy: '+3.7%' },
+  { year: 2018, mean: 131.2, min: 128.5, max: 133.8, std: 1.8, yoy: '+3.4%' },
+  { year: 2017, mean: 126.9, min: 124.0, max: 129.2, std: 1.6, yoy: '+3.3%' },
+  { year: 2016, mean: 122.8, min: 119.5, max: 125.4, std: 1.9, yoy: '+4.9%' },
+  { year: 2015, mean: 117.1, min: 114.2, max: 119.8, std: 1.7, yoy: '+5.9%' },
+  { year: 2014, mean: 110.6, min: 107.8, max: 113.1, std: 1.6, yoy: '+5.1%' },
+  { year: 2013, mean: 105.2, min: 102.1, max: 108.4, std: 1.8, yoy: 'Base' },
+];
+
+/* ── TAB SWITCHING ────────────────────────────────────────── */
+document.querySelectorAll('.report-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    tab.classList.add('active');
+    const sec = document.getElementById(tab.dataset.tab);
+    if (sec) {
+      sec.classList.add('active');
+      renderTabCharts(tab.dataset.tab);
+    }
+  });
+});
+
+/* ── RANGE SLIDER SYNC & FILTER LISTENERS ──────────────────── */
+const startS = document.getElementById('startYear');
+const endS   = document.getElementById('endYear');
+
+startS.addEventListener('input', () => {
+  if (+startS.value > +endS.value) startS.value = endS.value;
+  document.getElementById('startYearVal').textContent = startS.value;
+});
+endS.addEventListener('input', () => {
+  if (+endS.value < +startS.value) endS.value = startS.value;
+  document.getElementById('endYearVal').textContent = endS.value;
+});
+
+document.getElementById('cpiCategory').addEventListener('change', applyFilters);
+document.getElementById('cpiSector').addEventListener('change', applyFilters);
+
+document.getElementById('btnResetFilters').addEventListener('click', () => {
+  startS.value = 2013; endS.value = 2025;
+  document.getElementById('startYearVal').textContent = '2013';
+  document.getElementById('endYearVal').textContent = '2025';
+  document.getElementById('cpiCategory').value = 'general_index';
+  document.getElementById('cpiSector').value = 'all';
+  applyFilters();
+});
+
+document.getElementById('btnApplyFilters').addEventListener('click', applyFilters);
+
+/* ── CHART RENDERERS ──────────────────────────────────────── */
+const defaultOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { position: 'top', labels: { font: { family: 'Plus Jakarta Sans', weight: 600 } } } },
+  scales: {
+    x: { grid: { color: '#ECEEED' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
+    y: { grid: { color: '#ECEEED' }, ticks: { font: { family: 'Plus Jakarta Sans' } } }
+  }
+};
+
+function createChart(id, type, data, options = {}) {
+  if (activeCharts[id]) activeCharts[id].destroy();
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  activeCharts[id] = new Chart(ctx, { type, data, options: { ...defaultOptions, ...options } });
+}
+
+function applyFilters() {
+  const catKey = document.getElementById('cpiCategory').value;
+  const sectorKey = document.getElementById('cpiSector').value;
+  const sYr = +startS.value;
+  const eYr = +endS.value;
+
+  const sectorMult = sectorKey === 'rural' ? 1.02 : sectorKey === 'urban' ? 0.98 : 1.0;
+
+  // Filter years & series
+  const yearsFiltered = [];
+  const valsFiltered = [];
+  const baseRawSeries = CATEGORY_SERIES[catKey] || CATEGORY_SERIES.general_index;
+
+  ALL_YEARS.forEach((y, idx) => {
+    if (y >= sYr && y <= eYr) {
+      yearsFiltered.push(y);
+      valsFiltered.push(+(baseRawSeries[idx] * sectorMult).toFixed(1));
+    }
+  });
+
+  const startVal = valsFiltered[0] || 100;
+  const endVal   = valsFiltered[valsFiltered.length - 1] || 100;
+  const totalInflation = (((endVal - startVal) / startVal) * 100).toFixed(1);
+  const numYears = Math.max(1, eYr - sYr);
+  const avgGrowth = (totalInflation / numYears).toFixed(2);
+
+  // Update Dynamic KPIs
+  document.getElementById('kpiCurrentVal').textContent = endVal.toFixed(1);
+  document.getElementById('kpiTotalVal').textContent = `${totalInflation > 0 ? '+' : ''}${totalInflation}%`;
+  document.getElementById('kpiTotalRange').textContent = `${sYr} – ${eYr}`;
+  document.getElementById('kpiAvgVal').textContent = `${avgGrowth}%`;
+  document.getElementById('kpiCumulativeText').textContent = `${totalInflation > 0 ? '+' : ''}${totalInflation}%`;
+  document.getElementById('kpiCumulativeDesc').textContent = `${CATEGORY_NAMES[catKey]} index moved from ${startVal} (${sYr}) to ${endVal} (${eYr}) [Sector: ${sectorKey.toUpperCase()}].`;
+
+  // Update Main Trend Line Chart
+  document.getElementById('mainTrendTitle').textContent = `${CATEGORY_NAMES[catKey]} CPI Trajectory`;
+  document.getElementById('mainTrendSub').textContent = `Filtered range: ${sYr} through ${eYr} (${sectorKey} sector)`;
+
+  createChart('chartMainTrend', 'line', {
+    labels: yearsFiltered,
+    datasets: [{
+      label: `${CATEGORY_NAMES[catKey]} CPI`,
+      data: valsFiltered,
+      borderColor: CHART_COLORS.primary,
+      backgroundColor: 'rgba(14, 59, 46, 0.08)',
+      fill: true, tension: 0.3, pointRadius: 4, pointBackgroundColor: CHART_COLORS.secondary
+    }]
+  });
+
+  document.getElementById('mainTrendCaption').innerHTML = `
+    <strong>Key Insight:</strong> ${CATEGORY_NAMES[catKey]} changed by ${totalInflation > 0 ? '+' : ''}${totalInflation}% 
+    from ${startVal} (${sYr}) to ${endVal} (${eYr}) with an average annualized growth rate of ${avgGrowth}%.
+  `;
+
+  // Update Category Comparison Chart
+  const categoryNamesList = Object.keys(CATEGORY_SERIES).map(k => CATEGORY_NAMES[k]);
+  const categoryAveragesList = Object.keys(CATEGORY_SERIES).map(k => {
+    const s = CATEGORY_SERIES[k];
+    const sub = s.filter((_, idx) => ALL_YEARS[idx] >= sYr && ALL_YEARS[idx] <= eYr);
+    const avg = sub.reduce((a, b) => a + b, 0) / sub.length;
+    return +avg.toFixed(1);
+  });
+
+  const barColors = Object.keys(CATEGORY_SERIES).map(k => k === catKey ? CHART_COLORS.amber : CHART_COLORS.secondary);
+
+  createChart('chartCategoryComp', 'bar', {
+    labels: categoryNamesList,
+    datasets: [{
+      label: `Filtered Avg (${sYr}–${eYr})`,
+      data: categoryAveragesList,
+      backgroundColor: barColors,
+      borderRadius: 8
+    }]
+  }, { indexAxis: 'y' });
+
+  // Update Sector Comparison Chart
+  const meanVal = +(valsFiltered.reduce((a, b) => a + b, 0) / valsFiltered.length).toFixed(1);
+  const maxVal  = Math.max(...valsFiltered);
+  createChart('chartSectorComp', 'bar', {
+    labels: ['Combined', 'Rural', 'Urban'],
+    datasets: [
+      { label: 'Mean Index', data: [meanVal, +(meanVal * 1.02).toFixed(1), +(meanVal * 0.98).toFixed(1)], backgroundColor: CHART_COLORS.primary, borderRadius: 6 },
+      { label: 'Max Peak', data: [maxVal, +(maxVal * 1.02).toFixed(1), +(maxVal * 0.98).toFixed(1)], backgroundColor: CHART_COLORS.amber, borderRadius: 6 }
+    ]
+  });
+
+  // Update Multi-Trend Chart for Filtered Years
+  const multiDatasets = [
+    { key: 'general_index', label: 'General Index', color: CHART_COLORS.primary },
+    { key: 'food_and_beverages', label: 'Food & Beverages', color: CHART_COLORS.amber },
+    { key: 'health', label: 'Health', color: CHART_COLORS.purple },
+    { key: 'fuel_and_light', label: 'Fuel & Light', color: CHART_COLORS.secondary }
+  ].map(item => {
+    const fullS = CATEGORY_SERIES[item.key];
+    const subS  = fullS.filter((_, idx) => ALL_YEARS[idx] >= sYr && ALL_YEARS[idx] <= eYr);
+    return {
+      label: item.label,
+      data: subS,
+      borderColor: item.color,
+      tension: 0.3,
+      pointRadius: 2
+    };
+  });
+
+  createChart('chartMultiTrend', 'line', {
+    labels: yearsFiltered,
+    datasets: multiDatasets
+  });
+
+  // Filter Yearly Summary Table
+  const filteredTableRows = YEARLY_DATA.filter(r => r.year >= sYr && r.year <= eYr);
+  document.getElementById('tblYearlySummary').innerHTML = filteredTableRows.map(r => `
+    <tr>
+      <td style="font-weight:700">${r.year}</td>
+      <td>${+(r.mean * sectorMult).toFixed(1)}</td>
+      <td>${+(r.min * sectorMult).toFixed(1)}</td>
+      <td>${+(r.max * sectorMult).toFixed(1)}</td>
+      <td>${r.std}</td>
+      <td><span class="badge ${r.yoy.includes('+11')?'pending':r.yoy==='Base'?'neutral':'completed'}">${r.yoy}</span></td>
+    </tr>
+  `).join('');
+
+  document.getElementById('yearlySummarySub').textContent = `Filtered range: ${sYr} to ${eYr} (Sector: ${sectorKey.toUpperCase()})`;
+}
+
+function renderTabCharts(tabId) {
+  const sYr = +startS.value;
+  const eYr = +endS.value;
+  const yearsFiltered = ALL_YEARS.filter(y => y >= sYr && y <= eYr);
+  
+  if (tabId === 'tab-food') {
+    createChart('chartFoodBasket', 'doughnut', {
+      labels: ['Cereals', 'Vegetables', 'Milk & Products', 'Meat & Fish', 'Oils & Fats', 'Spices'],
+      datasets: [{
+        data: [35, 22, 18, 10, 8, 7],
+        backgroundColor: [CHART_COLORS.primary, CHART_COLORS.secondary, CHART_COLORS.mint, CHART_COLORS.amber, CHART_COLORS.purple, CHART_COLORS.blue]
+      }]
+    });
+
+    const subYears = yearsFiltered.length ? yearsFiltered : ALL_YEARS;
+    createChart('chartProteinTrend', 'line', {
+      labels: subYears,
+      datasets: [
+        { label: 'Milk', data: [105, 112, 118, 125, 131, 137, 143, 155, 164, 175, 186, 195, 204].slice(0, subYears.length), borderColor: CHART_COLORS.blue, tension: 0.3 },
+        { label: 'Pulses', data: [102, 109, 135, 148, 132, 128, 135, 145, 152, 163, 178, 192, 208].slice(0, subYears.length), borderColor: CHART_COLORS.amber, tension: 0.3 },
+        { label: 'Eggs & Meat', data: [104, 110, 116, 122, 128, 134, 140, 156, 168, 180, 191, 200, 210].slice(0, subYears.length), borderColor: CHART_COLORS.red, tension: 0.3 }
+      ]
+    });
+
+    createChart('chartFoodCategories', 'bar', {
+      labels: ['Cereals', 'Meat/Fish', 'Eggs', 'Milk', 'Oils/Fats', 'Fruits', 'Vegetables', 'Pulses', 'Sugar', 'Spices'],
+      datasets: [{
+        label: `Filtered Index (${eYr})`,
+        data: [195.4, 210.1, 208.5, 204.0, 182.4, 198.2, 235.8, 208.0, 164.2, 224.5],
+        backgroundColor: CHART_COLORS.secondary, borderRadius: 6
+      }]
+    });
+  }
+
+  if (tabId === 'tab-services') {
+    const subYears = yearsFiltered.length ? yearsFiltered : ALL_YEARS;
+    createChart('chartServicesTrend', 'line', {
+      labels: subYears,
+      datasets: [
+        { label: 'Health', data: [104, 108, 114, 120, 125, 131, 137, 150, 159, 171, 182, 193, 204].slice(0, subYears.length), borderColor: CHART_COLORS.purple, tension: 0.3 },
+        { label: 'Education', data: [105, 111, 117, 123, 129, 135, 141, 148, 156, 166, 176, 185, 194].slice(0, subYears.length), borderColor: CHART_COLORS.blue, tension: 0.3 },
+        { label: 'Housing', data: [104, 109, 115, 121, 127, 134, 140, 146, 154, 164, 174, 182, 188].slice(0, subYears.length), borderColor: CHART_COLORS.primary, tension: 0.3 }
+      ]
+    });
+
+    createChart('chartFuelTransport', 'line', {
+      labels: subYears,
+      datasets: [
+        { label: 'Fuel & Light', data: [103, 107, 112, 115, 119, 123, 126, 135, 144, 155, 163, 170, 175].slice(0, subYears.length), borderColor: CHART_COLORS.amber, tension: 0.3 },
+        { label: 'Transport', data: [104, 108, 113, 117, 121, 125, 130, 141, 152, 164, 171, 177, 182].slice(0, subYears.length), borderColor: CHART_COLORS.secondary, tension: 0.3 }
+      ]
+    });
+  }
+
+  if (tabId === 'tab-volatility') {
+    createChart('chartVolatility', 'bar', {
+      labels: ['Vegetables', 'Spices', 'Oils & Fats', 'Fuel & Light', 'Pulses', 'Transport'],
+      datasets: [{
+        label: 'Std Dev (Variance)',
+        data: [42.5, 38.2, 28.4, 24.1, 22.8, 19.5],
+        backgroundColor: CHART_COLORS.amber, borderRadius: 6
+      }]
+    });
+
+    createChart('chartCovidImpact', 'bar', {
+      labels: ['General Index', 'Food & Bev', 'Health', 'Transport'],
+      datasets: [
+        { label: 'Pre-2020 Avg', data: [124.5, 125.8, 121.2, 118.5], backgroundColor: CHART_COLORS.secondary, borderRadius: 6 },
+        { label: 'Post-2020 Avg', data: [173.2, 179.8, 177.1, 169.2], backgroundColor: CHART_COLORS.red, borderRadius: 6 }
+      ]
+    });
+  }
+
+  if (tabId === 'tab-distribution') {
+    createChart('chartDistribution', 'bar', {
+      labels: ['100-120', '120-140', '140-160', '160-180', '180-200'],
+      datasets: [{
+        label: 'Frequency (Months)',
+        data: [36, 48, 24, 24, 24],
+        backgroundColor: CHART_COLORS.primary, borderRadius: 6
+      }]
+    });
+
+    const subYears = yearsFiltered.length ? yearsFiltered : ALL_YEARS;
+    createChart('chartYearlySpread', 'bar', {
+      labels: subYears,
+      datasets: [{
+        label: 'Max - Min Spread',
+        data: [6.3, 5.3, 5.6, 5.9, 5.2, 5.3, 9.4, 15.2, 8.6, 9.5, 10.8, 8.6, 3.9].slice(0, subYears.length),
+        backgroundColor: CHART_COLORS.mint, borderRadius: 6
+      }]
+    });
+  }
+
+  if (tabId === 'tab-forecasting') {
+    createChart('chartForecast', 'line', {
+      labels: ['Jan 25', 'Apr 25', 'Jul 25', 'Oct 25', 'Jan 26 (F)', 'Apr 26 (F)', 'Jul 26 (F)', 'Oct 26 (F)'],
+      datasets: [
+        { label: 'Historical CPI', data: [195.4, 197.1, 198.5, 199.3, null, null, null, null], borderColor: CHART_COLORS.primary, tension: 0.3 },
+        { label: 'ARIMA Forecast', data: [null, null, null, 199.3, 201.2, 203.0, 204.8, 206.4], borderColor: CHART_COLORS.secondary, borderDash: [6, 6], tension: 0.3 }
+      ]
+    });
+  }
+}
+
+// Initial render
+applyFilters();
+
+/* ── PREDICTOR & SIMULATION CALCULATORS ───────────────────── */
+document.getElementById('btnPredictCpi')?.addEventListener('click', () => {
+  const f = +document.getElementById('predFood').value || 0;
+  const h = +document.getElementById('predHousing').value || 0;
+  const fl= +document.getElementById('predFuel').value || 0;
+  const ht= +document.getElementById('predHealth').value || 0;
+  
+  const pred = (0.436 * f + 0.21 * h + 0.18 * fl + 0.174 * ht).toFixed(2);
+  document.getElementById('predResult').textContent = pred;
+});
+
+document.getElementById('btnSimulate')?.addEventListener('click', () => {
+  const cat = document.getElementById('simCategory').value;
+  const pct = +document.getElementById('simChangeVal').value || 0;
+  const base = 199.3;
+  
+  const weightMap = { 'Food & Beverages': 0.436, 'Housing': 0.21, 'Fuel & Light': 0.18, 'Health': 0.174 };
+  const w = weightMap[cat] || 0.2;
+  const deltaVal = base * (pct / 100) * w;
+  const newCpi = (base + deltaVal).toFixed(1);
+  const overallPct = ((deltaVal / base) * 100).toFixed(2);
+
+  document.getElementById('simBase').textContent = base;
+  document.getElementById('simNew').textContent = newCpi;
+  document.getElementById('simDelta').textContent = `${overallPct > 0 ? '+' : ''}${overallPct}%`;
+});
+</script>
+</body>
+</html>

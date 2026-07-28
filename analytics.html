@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytics — Analysis Hub</title>
+  <meta name="description" content="Cross-report analytics comparing machine learning models, statistical volatility, and macro trends across published reports." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="hub.css" />
+  <style>
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .grid-4 { grid-template-columns: 1fr; } }
+
+    .analytics-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; }
+    @media (max-width: 900px) { .analytics-grid-2 { grid-template-columns: 1fr; } }
+
+    .chart-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-card); box-shadow: var(--shadow);
+      padding: 20px; margin-bottom: 24px;
+    }
+    .chart-box-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .chart-box-title  { font-size: 15px; font-weight: 700; color: var(--text-900); }
+    .chart-box-sub    { font-size: 12px; color: var(--text-400); margin-top: 2px; }
+    .chart-canvas-wrap { position: relative; height: 280px; width: 100%; }
+    .chart-canvas-wrap.tall { height: 340px; }
+
+    .insight-card {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+      padding: 16px 18px; margin-bottom: 14px;
+    }
+    .insight-card-title { font-size: 13.5px; font-weight: 700; color: var(--text-900); margin-bottom: 4px; }
+    .insight-card-desc  { font-size: 12.5px; color: var(--text-500); line-height: 1.45; }
+
+    .comparison-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .comparison-table th { text-align: left; padding: 12px 16px; background: var(--bg); color: var(--text-500); font-weight: 700; border-bottom: 1px solid var(--border); }
+    .comparison-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text-900); }
+    .comparison-table tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-name">Analysis Hub</div><div class="logo-sub">Data Reports</div></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">Menu</p>
+      <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
+      <a href="datasets.html"  class="nav-item" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
+      <a href="analytics.html" class="nav-item active" id="nav-analytics"><span class="nav-label">Analytics</span></a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">General</p>
+      <a href="settings.html"  class="nav-item" id="nav-settings"><span class="nav-label">Settings</span></a>
+      <a href="help.html"      class="nav-item" id="nav-help">    <span class="nav-label">Help</span></a>
+      <a href="login.html"     class="nav-item">                  <span class="nav-label">Logout</span></a>
+    </div>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-promo admin-only">
+      <p class="promo-label">Quick Action</p>
+      <p class="promo-title">Publish your next report</p>
+      <p class="promo-sub">Upload a dataset and auto-generate charts & KPIs instantly.</p>
+      <a href="reports.html" class="promo-btn">New Report</a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <div class="search-wrap">
+        <input type="text" id="search-input" placeholder="Search analytics metrics & insights…" />
+        <span class="search-kbd">⌘F</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="user-chip">
+        <div class="user-text"><span class="user-name">Guest</span><span class="user-email">guest@analysis.hub</span></div>
+        <div class="user-avatar">G</div>
+      </div>
+    </header>
+
+    <div class="page-header">
+      <div class="page-header-text">
+        <h1>Cross-Report Analytics Hub</h1>
+        <p>Comparative model performance, statistical variance, and trend correlations across published reports.</p>
+      </div>
+      <div class="page-header-actions">
+        <button class="btn-outline" onclick="window.print()">Export Analytics</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- KPI METRIC CARDS -->
+      <div class="grid-4">
+        <div class="card stat-card">
+          <div class="stat-label">Published Reports</div>
+          <div class="stat-number">3</div>
+          <span class="badge completed">100% Validated</span>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">ML Models Trained</div>
+          <div class="stat-number">2 Models</div>
+          <span class="badge in-progress">Avg R² = 0.852 (CPI & Rainfall)</span>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Data Points Analyzed</div>
+          <div class="stat-number">5.3M+</div>
+          <span class="badge pending">Observed Records</span>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Historical Horizon</div>
+          <div class="stat-number">13 Years</div>
+          <span class="badge neutral">2001 – 2025</span>
+        </div>
+      </div>
+
+      <!-- ANALYTICS ROW 1 -->
+      <div class="analytics-grid-2">
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <div>
+              <div class="chart-box-title">Machine Learning Model Performance Comparison</div>
+              <div class="chart-box-sub">Goodness of fit (R² Score) & Test Error across trained models</div>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="chartModelComparison"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <div>
+              <div class="chart-box-title">Category Focus & Report Distribution</div>
+              <div class="chart-box-sub">Proportion of published analytical domains</div>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="chartCategoryDist"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANALYTICS ROW 2 -->
+      <div class="chart-box">
+        <div class="chart-box-header">
+          <div>
+            <div class="chart-box-title">Macro Trends Overlay: Annual Inflation vs Delhi Rainfall (2018–2025)</div>
+            <div class="chart-box-sub">Comparing annual CPI YoY growth (%) against annual cumulative rainfall (mm)</div>
+          </div>
+        </div>
+        <div class="chart-canvas-wrap tall">
+          <canvas id="chartMacroOverlay"></canvas>
+        </div>
+      </div>
+
+      <!-- COMPARATIVE MODEL BENCHMARK TABLE -->
+      <div class="card" style="padding:0; overflow:hidden; margin-bottom:24px;">
+        <div style="padding:18px 24px; border-bottom:1px solid var(--border);">
+          <div style="font-size:15px; font-weight:700; color:var(--text-900)">Cross-Report Methodology & Benchmark Matrix</div>
+          <div style="font-size:12px; color:var(--text-400)">Performance metrics for ML trained models and domain statistics for exploratory studies</div>
+        </div>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Report Title</th>
+              <th>Domain</th>
+              <th>Methodology / Algorithm</th>
+              <th>Sample Size</th>
+              <th>Model Metrics (R² / MAE)</th>
+              <th>Primary Report Metric</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:700">India Crime Analysis (2001–2013)</td>
+              <td><span class="badge" style="background:#FDE8ED; color:#A51E35; font-weight:700;">Crime</span></td>
+              <td>Spatial Leaflet + Exploratory EDA</td>
+              <td>19 Datasets (36 States)</td>
+              <td style="color:var(--text-400); font-style:italic;">N/A (Exploratory Study)</td>
+              <td style="font-weight:700; color:var(--green-900);">85.1% Judicial Backlog (94.6M)</td>
+              <td><span class="badge completed">Completed</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700">CPI Inflation Analysis</td>
+              <td><span class="badge" style="background:#E8F4FD; color:#1E6FA5;">Economics</span></td>
+              <td>ARIMA(1,1,1) + Linear Reg</td>
+              <td>156 Months (2013-2025)</td>
+              <td style="font-weight:700; color:var(--green-700)">R² = 0.8840 | MAE = 1.35</td>
+              <td style="font-weight:700; color:var(--green-900);">90% Cumulative CPI Rise</td>
+              <td><span class="badge completed">Completed</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700">Rainfall Analysis in Delhi</td>
+              <td><span class="badge" style="background:#E8FDF4; color:#1EA566;">Climate & Weather</span></td>
+              <td>XGBoost Regressor (tweedie)</td>
+              <td>20,000+ Days (2018-2025)</td>
+              <td style="font-weight:700; color:var(--green-700)">R² = 0.8200 | MAE = 1.83 mm</td>
+              <td style="font-weight:700; color:var(--green-900);">7,842 mm Max Rainfall</td>
+              <td><span class="badge completed">Completed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- KEY ANALYTICAL INSIGHTS -->
+      <div class="analytics-grid-2">
+        <div class="insight-card">
+          <div class="insight-card-title">Judicial & Social Dynamics</div>
+          <div class="insight-card-desc">
+            Public crime data reveals a 49.6% cumulative expansion in IPC crimes alongside an 85.1% trial backlog in courts, emphasizing systemic delays in justice delivery.
+          </div>
+        </div>
+
+        <div class="insight-card">
+          <div class="insight-card-title">Seasonality & Economic Synchronization</div>
+          <div class="insight-card-desc">
+            Food inflation spikes in the CPI report closely track monsoon fluctuations, while spatial crime concentration highlights regional enforcement priorities.
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-shell -->
+
+<script src="hub.js"></script>
+<script>
+const CHART_COLORS = {
+  primary:   '#0E3B2E',
+  secondary: '#2E9370',
+  mint:      '#8FD6B4',
+  amber:     '#B35A00',
+  blue:      '#1E6FA5',
+  purple:    '#6A1EA5'
+};
+
+const defaultOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { position: 'top', labels: { font: { family: 'Plus Jakarta Sans', weight: 600 } } } },
+  scales: {
+    x: { grid: { color: '#ECEEED' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
+    y: { grid: { color: '#ECEEED' }, ticks: { font: { family: 'Plus Jakarta Sans' } } }
+  }
+};
+
+// 1. Model Comparison Chart
+new Chart(document.getElementById('chartModelComparison'), {
+  type: 'bar',
+  data: {
+    labels: ['CPI Inflation (ARIMA)', 'Delhi Rainfall (XGBoost)'],
+    datasets: [
+      { label: 'R² Score (Accuracy)', data: [0.884, 0.820], backgroundColor: CHART_COLORS.primary, borderRadius: 6 },
+      { label: 'Normalized MAE Error', data: [0.135, 0.183], backgroundColor: CHART_COLORS.amber, borderRadius: 6 }
+    ]
+  },
+  options: defaultOpts
+});
+
+// 2. Category Distribution Chart
+new Chart(document.getElementById('chartCategoryDist'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Economics & CPI', 'Climate & Weather'],
+    datasets: [{
+      data: [50, 50],
+      backgroundColor: [CHART_COLORS.blue, CHART_COLORS.secondary],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { font: { family: 'Plus Jakarta Sans', weight: 600 } } } }
+  }
+});
+
+// 3. Macro Overlay Chart
+new Chart(document.getElementById('chartMacroOverlay'), {
+  type: 'line',
+  data: {
+    labels: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
+    datasets: [
+      {
+        label: 'Annual Delhi Rainfall (mm)',
+        data: [760, 820, 785, 1248, 915, 1210, 980, 840],
+        borderColor: CHART_COLORS.primary,
+        backgroundColor: 'rgba(14, 59, 46, 0.08)',
+        fill: true,
+        yAxisID: 'yRain',
+        tension: 0.3
+      },
+      {
+        label: 'Annual Inflation Rate (%)',
+        data: [3.9, 4.8, 6.2, 5.1, 6.7, 5.7, 4.9, 4.2],
+        borderColor: CHART_COLORS.amber,
+        borderDash: [5, 5],
+        yAxisID: 'yInflation',
+        tension: 0.3
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { font: { family: 'Plus Jakarta Sans', weight: 600 } } } },
+    scales: {
+      x: { grid: { color: '#ECEEED' } },
+      yRain: { type: 'linear', position: 'left', title: { display: true, text: 'Rainfall (mm)' }, grid: { color: '#ECEEED' } },
+      yInflation: { type: 'linear', position: 'right', title: { display: true, text: 'Inflation (%)' }, grid: { drawOnChartArea: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>

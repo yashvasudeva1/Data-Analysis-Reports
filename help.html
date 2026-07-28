@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help Center — Analysis Hub</title>
+  <meta name="description" content="Find answers to common questions about Analysis Hub datasets, reports, and features." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="hub.css" />
+  <style>
+    .help-wrap { max-width: 840px; }
+    
+    .faq-item {
+      border: 1px solid var(--border); border-radius: 12px;
+      margin-bottom: 12px; overflow: hidden; background: var(--surface);
+      transition: border-color .2s;
+    }
+    .faq-item:hover { border-color: var(--green-300); }
+    
+    .faq-question {
+      padding: 16px 20px; font-size: 14.5px; font-weight: 700; color: var(--text-900);
+      cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+      background: var(--surface);
+    }
+    .faq-question::after {
+      content: '+'; font-size: 18px; color: var(--green-700); font-weight: 400;
+      transition: transform .2s;
+    }
+    .faq-item.open .faq-question::after { content: '−'; transform: rotate(180deg); }
+    
+    .faq-answer {
+      padding: 0 20px; max-height: 0; overflow: hidden;
+      font-size: 13.5px; color: var(--text-500); line-height: 1.6;
+      transition: max-height .3s ease, padding .3s ease;
+    }
+    .faq-item.open .faq-answer { max-height: 200px; padding: 0 20px 20px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-name">Analysis Hub</div><div class="logo-sub">Data Reports</div></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">Menu</p>
+      <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
+      <a href="datasets.html"  class="nav-item" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
+      <a href="analytics.html" class="nav-item" id="nav-analytics"><span class="nav-label">Analytics</span></a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">General</p>
+      <a href="settings.html"  class="nav-item" id="nav-settings"><span class="nav-label">Settings</span></a>
+      <a href="help.html"      class="nav-item active" id="nav-help">    <span class="nav-label">Help</span></a>
+      <a href="login.html"     class="nav-item">                  <span class="nav-label">Logout</span></a>
+    </div>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-promo admin-only">
+      <p class="promo-label">Quick Action</p>
+      <p class="promo-title">Publish your next report</p>
+      <p class="promo-sub">Upload a dataset and auto-generate charts & KPIs instantly.</p>
+      <a href="reports.html" class="promo-btn">New Report</a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <div class="search-wrap">
+        <input type="text" id="search-input" placeholder="Search help topics…" />
+        <span class="search-kbd">⌘F</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="user-chip">
+        <div class="user-text"><span class="user-name">Guest</span><span class="user-email">guest@analysis.hub</span></div>
+        <div class="user-avatar">G</div>
+      </div>
+    </header>
+
+    <div class="page-header">
+      <div class="page-header-text">
+        <h1>Help Center</h1>
+        <p>Find answers to common questions about reports, datasets, and platform capabilities.</p>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="help-wrap">
+        
+        <!-- FAQs -->
+        <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 20px;">Frequently Asked Questions</h2>
+        
+        <div class="faq-item">
+          <div class="faq-question">How do I upload a new dataset?</div>
+          <div class="faq-answer">
+            Navigate to the <strong>Datasets</strong> page from the sidebar menu. You can drag and drop your CSV, JSON, or Excel files into the upload zone, or click it to browse your computer.
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">What file formats are supported?</div>
+          <div class="faq-answer">
+            Analysis Hub supports parsing for .csv, .json, .xlsx, and .xls files. Raw dataset sources from portals like Kaggle and Data.gov.in are supported.
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">How long does report processing take?</div>
+          <div class="faq-answer">
+            Standard datasets (under 10MB) typically process within 30 seconds. Larger datasets or complex predictive models (like the Crime Analysis and CPI Forecasts) may take a few minutes. You can monitor progress on the Dashboard.
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">Can I export my charts and reports?</div>
+          <div class="faq-answer">
+            Yes, when viewing any generated report, click the "Export Report" button in the top right corner to print or save the document as a PDF.
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="hub.js"></script>
+</body>
+</html>

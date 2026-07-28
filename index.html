@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Analysis Hub</title>
+  <meta name="description" content="Analysis Hub dashboard — overview of your data analysis reports, team activity, and upload statistics." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="hub.css" />
+  <style>
+    /* ── STAT ROW ─────────────────────────────────────────── */
+    .stat-row       { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .stat-label     { font-size: 12.5px; font-weight: 600; color: var(--text-500); margin-bottom: 12px; }
+    .stat-number    { font-size: 32px; font-weight: 800; color: var(--text-900); font-variant-numeric: tabular-nums; line-height: 1.05; margin-bottom: 10px; }
+    .stat-pill      { display: inline-flex; align-items: center; gap: 5px; background: var(--mint-100); color: var(--green-text); font-size: 11.5px; font-weight: 500; padding: 4px 10px; border-radius: 999px; }
+    .stat-pill.neutral { background: var(--gray-bg); color: var(--gray-text); }
+    .stat-card.hero { background: linear-gradient(140deg, var(--green-900) 0%, #1A6647 100%); border-color: transparent; position: relative; overflow: hidden; }
+    .stat-card.hero::before { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,.05); }
+    .stat-card.hero::after  { content: ''; position: absolute; bottom: -20px; right: 20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,.04); }
+    .stat-card.hero .stat-label  { color: rgba(255,255,255,.7); }
+    .stat-card.hero .stat-number { color: #fff; }
+    .stat-card.hero .stat-pill   { background: rgba(255,255,255,.15); color: rgba(255,255,255,.9); }
+
+    /* ── ROW 2 ────────────────────────────────────────────── */
+    .cards-row-2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+    /* GitHub-style Heatmap */
+    .heatmap-wrap   { margin-top: 14px; width: 100%; }
+    .hm-months-row  { display: flex; margin-bottom: 4px; }
+    .hm-month-lbl   { font-size: 10px; color: var(--text-400); font-weight: 600; overflow: hidden; white-space: nowrap; }
+    .hm-grid        { display: flex; align-items: flex-start; width: 100%; }
+    .hm-day-labels  { display: flex; flex-direction: column; flex-shrink: 0; margin-right: 5px; }
+    .hm-day-lbl     { font-size: 9px; color: var(--text-400); font-weight: 600; display: flex; align-items: center; }
+    .hm-cols-wrap   { display: flex; flex: 1; min-width: 0; }
+    .hm-col         { display: flex; flex-direction: column; flex-shrink: 0; }
+    .hm-cell        { flex-shrink: 0; border-radius: 2px; cursor: pointer; transition: opacity .12s, transform .12s; animation: cellIn .2s ease both; }
+    .hm-cell:hover  { opacity: .75; transform: scale(1.3); z-index: 5; position: relative; }
+    @keyframes cellIn { from { opacity:0; transform:scale(.3); } to { opacity:1; transform:scale(1); } }
+    .hm-cell[data-level="0"] { background: var(--border); }
+    .hm-cell[data-level="1"] { background: #9BE9A8; }
+    .hm-cell[data-level="2"] { background: #40C463; }
+    .hm-cell[data-level="3"] { background: #30A14E; }
+    .hm-cell[data-level="4"] { background: #216E39; }
+    .hm-footer      { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; flex-wrap: wrap; gap: 8px; }
+    .hm-stats       { display: flex; gap: 20px; flex-wrap: wrap; }
+    .hm-stat        { font-size: 11.5px; color: var(--text-500); }
+    .hm-stat strong { color: var(--text-900); font-weight: 700; }
+    .hm-legend      { display: flex; align-items: center; gap: 4px; }
+    .hm-legend-lbl  { font-size: 10px; color: var(--text-400); font-weight: 600; }
+    .hm-legend-cell { border-radius: 2px; }
+    .hm-tooltip     { position: fixed; background: var(--green-900); color: #fff; font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 7px; pointer-events: none; z-index: 9999; opacity: 0; transition: opacity .12s; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.22); }
+
+    /* Reminder card */
+    .event-name { font-size: 16px; font-weight: 700; color: var(--text-900); margin: 10px 0 4px; }
+    .event-meta { font-size: 12px; color: var(--text-400); margin-bottom: 20px; }
+    .cta-btn {
+      display: flex; align-items: center; justify-content: center; width: 100%;
+      background: var(--green-900); color: #fff; font-size: 13.5px; font-weight: 600;
+      padding: 12px; border-radius: 14px; cursor: pointer; border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif; transition: background .15s, transform .1s;
+    }
+    .cta-btn:hover { background: var(--green-700); transform: translateY(-1px); }
+
+    /* Report list */
+    .report-row {
+      display: flex; align-items: center; gap: 12px; padding: 10px 0;
+      border-radius: 10px; transition: background .15s; cursor: pointer;
+      text-decoration: none; color: inherit;
+    }
+    .report-row:hover { background: var(--bg); margin: 0 -6px; padding: 10px 6px; }
+    .report-row + .report-row { border-top: 1px solid var(--border); }
+    .report-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .report-info { flex: 1; min-width: 0; }
+    .report-title-text { font-size: 13.5px; font-weight: 600; color: var(--text-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .report-date       { font-size: 11.5px; color: var(--text-400); margin-top: 1px; }
+
+    /* ── ROW 3 ────────────────────────────────────────────── */
+    .cards-row-3 { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 20px; }
+
+    /* Category breakdown list */
+    .cat-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .cat-row:last-child { border-bottom: none; }
+    .cat-info { display: flex; align-items: center; gap: 10px; }
+    .cat-badge-sm { font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+
+    /* Donut */
+    .donut-wrap { position: relative; width: 130px; height: 130px; margin: 0 auto 16px; }
+    .donut-wrap svg { transform: rotate(-90deg); }
+    .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .donut-pct     { font-size: 24px; font-weight: 800; color: var(--text-900); font-variant-numeric: tabular-nums; }
+    .donut-caption { font-size: 10px; color: var(--text-400); font-weight: 500; }
+    .donut-legend  { display: flex; flex-direction: column; gap: 7px; }
+    .donut-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-500); }
+    .legend-dot    { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Live card */
+    .live-card { background: var(--green-900); border-color: transparent; position: relative; overflow: hidden; }
+    .live-card::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,.025) 28px, rgba(255,255,255,.025) 29px),
+                        repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(255,255,255,.025) 28px, rgba(255,255,255,.025) 29px);
+    }
+    .live-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.12); color: rgba(255,255,255,.7); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; margin-bottom: 12px; }
+    .live-dot   { width: 6px; height: 6px; border-radius: 50%; background: #4ADE80; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:.3; } }
+    .live-title { font-size: 14px; font-weight: 700; color: rgba(255,255,255,.9); margin-bottom: 4px; }
+    .live-file  { font-size: 11.5px; color: rgba(255,255,255,.45); margin-bottom: 18px; font-style: italic; }
+    .live-prog-label { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,.5); margin-bottom: 6px; }
+    .live-prog-bar   { height: 6px; background: rgba(255,255,255,.12); border-radius: 999px; overflow: hidden; margin-bottom: 16px; }
+    .live-prog-fill  { height: 100%; width: 100%; background: linear-gradient(90deg, var(--green-500), var(--green-300)); border-radius: 999px; }
+    .live-pct   { font-size: 38px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 16px; }
+    .live-controls { display: flex; gap: 10px; }
+    .live-btn { padding: 8px 18px; border-radius: 999px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; font-family: 'Plus Jakarta Sans', sans-serif; transition: opacity .15s; }
+    .live-btn:hover { opacity: .85; }
+    .live-btn.pause { background: #fff; color: var(--green-900); }
+    .live-btn.stop  { background: rgba(239,68,68,.9); color: #fff; }
+
+    /* ── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 1300px) { .stat-row { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 1100px) { .cards-row-2 { grid-template-columns: 1fr; } }
+    @media (max-width: 900px)  { .stat-row { grid-template-columns: repeat(2, 1fr); } .cards-row-3 { grid-template-columns: 1fr; } }
+    @media (max-width: 550px)  { .stat-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-name">Analysis Hub</div>
+      <div class="logo-sub">Data Reports</div>
+    </div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">Menu</p>
+      <a href="index.html"     class="nav-item active" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
+      <a href="datasets.html"  class="nav-item" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
+      <a href="analytics.html" class="nav-item" id="nav-analytics"><span class="nav-label">Analytics</span></a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">General</p>
+      <a href="settings.html"  class="nav-item" id="nav-settings"><span class="nav-label">Settings</span></a>
+      <a href="help.html"      class="nav-item" id="nav-help">    <span class="nav-label">Help</span></a>
+      <a href="login.html"     class="nav-item">                  <span class="nav-label">Logout</span></a>
+    </div>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-promo admin-only">
+      <p class="promo-label">Quick Action</p>
+      <p class="promo-title">Publish your next report</p>
+      <p class="promo-sub">Upload a dataset and auto-generate charts & KPIs instantly.</p>
+      <a href="reports.html" class="promo-btn">New Report</a>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="search-wrap">
+        <input type="text" id="search-input" placeholder="Search reports, datasets, tags…" />
+        <span class="search-kbd">⌘F</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="user-chip">
+        <div class="user-text">
+          <span class="user-name">Guest</span>
+          <span class="user-email">guest@analysis.hub</span>
+        </div>
+        <div class="user-avatar">G</div>
+      </div>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-header-text">
+        <h1>Dashboard</h1>
+        <p>View, track, and compare your published data analysis reports.</p>
+      </div>
+      <div class="page-header-actions admin-only">
+        <a href="datasets.html" class="btn-outline">Import Data</a>
+        <a href="reports.html"  class="btn-primary">+ New Report</a>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- STAT ROW (REAL METRICS: Reports, Datasets, Data Size, Data Sources) -->
+      <div class="stat-row">
+        <div class="card stat-card hero">
+          <div class="stat-label">Total Reports</div>
+          <div class="stat-number">3</div>
+          <div class="stat-pill">Active published reports</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Completed Analyses</div>
+          <div class="stat-number">3</div>
+          <div class="stat-pill">All reports completed</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Active Datasets</div>
+          <div class="stat-number">3</div>
+          <div class="stat-pill">Crime, CPI & Rainfall</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Total Data Size</div>
+          <div class="stat-number">151.2 MB</div>
+          <div class="stat-pill">19+ CSV archives</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Data Portals</div>
+          <div class="stat-number">2</div>
+          <div class="stat-pill">Kaggle & Data.gov.in</div>
+        </div>
+      </div>
+
+      <!-- Heatmap — full width standalone row -->
+      <div class="card" style="margin-bottom: 20px;" id="heatmap-card">
+        <div class="card-header" style="margin-bottom: 2px;">
+          <div>
+            <div class="card-title">Activity Timeline</div>
+            <div class="card-sub" id="hm-summary">Loading...</div>
+          </div>
+          <button class="btn-outline btn-xs" onclick="generateHeatmap()">Refresh</button>
+        </div>
+        <div class="heatmap-wrap" id="heatmap-wrap">
+          <div class="hm-months-row" id="hm-months"></div>
+          <div class="hm-grid" id="hm-grid">
+            <div class="hm-day-labels" id="hm-day-labels"></div>
+            <div class="hm-cols-wrap" id="hm-cols"></div>
+          </div>
+        </div>
+        <div class="hm-footer">
+          <div class="hm-stats" id="hm-stats"></div>
+          <div class="hm-legend">
+            <span class="hm-legend-lbl">Less</span>
+            <div class="hm-legend-cell" id="hm-lc0"></div>
+            <div class="hm-legend-cell" id="hm-lc1" style="background:#9BE9A8"></div>
+            <div class="hm-legend-cell" id="hm-lc2" style="background:#40C463"></div>
+            <div class="hm-legend-cell" id="hm-lc3" style="background:#30A14E"></div>
+            <div class="hm-legend-cell" id="hm-lc4" style="background:#216E39"></div>
+            <span class="hm-legend-lbl">More</span>
+          </div>
+        </div>
+      </div>
+      <div class="hm-tooltip" id="hm-tooltip"></div>
+
+      <!-- ROW 2 -->
+      <div class="cards-row-2" style="margin-bottom: 20px;">
+
+        <!-- Featured Report Card -->
+        <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div class="card-title" style="margin-bottom:6px">Featured Analysis</div>
+            <div class="event-name" style="margin-top:4px">India Crime Analysis (2001&ndash;2013)</div>
+            <div class="event-meta">13-Year NCRB Dataset, Spatial Map &amp; Judicial Trial Analysis (5.3M Crimes)</div>
+          </div>
+          <a href="crime_report.html" class="cta-btn" style="text-decoration:none;">Explore Report &rarr;</a>
+        </div>
+
+        <!-- Report list (REAL PUBLISHED REPORTS) -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Published Reports</span>
+            <a href="reports.html" class="btn-outline btn-sm">View All</a>
+          </div>
+          <div id="report-list"></div>
+        </div>
+
+        <!-- Primary Datasets Overview -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Primary Datasets</span>
+            <a href="datasets.html" class="btn-outline btn-sm">Manage</a>
+          </div>
+          <div>
+            <div class="cat-row" data-search="Crime NCRB Kaggle">
+              <div class="cat-info">
+                <span class="cat-badge-sm" style="background:#FDE8ED; color:#A51E35;">145.2 MB</span>
+                <span style="font-size:13px; font-weight:600; color:var(--text-900)">NCRB Crime Data</span>
+              </div>
+              <a href="https://www.kaggle.com/datasets/rajanand/crime-in-india" target="_blank" class="source-link" style="font-size:11.5px;">Kaggle &nearr;</a>
+            </div>
+            <div class="cat-row" data-search="CPI Inflation Economics">
+              <div class="cat-info">
+                <span class="cat-badge-sm" style="background:#E8F4FD; color:#1E6FA5;">1.2 MB</span>
+                <span style="font-size:13px; font-weight:600; color:var(--text-900)">CPI Inflation Index</span>
+              </div>
+              <a href="https://www.data.gov.in/resource/year-wise-inflation-rate-based-consumer-price-index-combined-cpi-c-2014-15-2021-22" target="_blank" class="source-link" style="font-size:11.5px;">Data.gov.in &nearr;</a>
+            </div>
+            <div class="cat-row" data-search="Rainfall Climate Weather">
+              <div class="cat-info">
+                <span class="cat-badge-sm" style="background:#E8FDF4; color:#1EA566;">4.8 MB</span>
+                <span style="font-size:13px; font-weight:600; color:var(--text-900)">District Rainfall</span>
+              </div>
+              <a href="https://www.data.gov.in/search?title=Rainfall&sortby=_score&type=resources" target="_blank" class="source-link" style="font-size:11.5px;">Data.gov.in &nearr;</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ROW 3 -->
+      <div class="cards-row-3">
+
+        <!-- Category Breakdown -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Active Categories</span>
+            <a href="reports.html" class="btn-outline btn-sm">Explore</a>
+          </div>
+          <div>
+            <div class="cat-row" data-search="India Crime Analysis Crime Public Data Law Enforcement">
+              <div class="cat-info">
+                <span class="cat-badge-sm" style="background:#FDE8ED; color:#A51E35;">Crime</span>
+                <span style="font-size:13px; font-weight:600; color:var(--text-900)">India Crime Analysis</span>
+              </div>
+              <span class="badge completed">Completed</span>
+            </div>
+            <div class="cat-row" data-search="CPI Inflation Analysis Economics">
+              <div class="cat-info">
+                <span class="cat-badge-sm" style="background:#E8F4FD; color:#1E6FA5;">Economics</span>
+                <span style="font-size:13px; font-weight:600; color:var(--text-900)">CPI Inflation Analysis</span>
+              </div>
+              <span class="badge completed">Completed</span>
+            </div>
+            <div class="cat-row" data-search="Rainfall Analysis in Delhi Climate Weather">
+              <div class="cat-info">
+                <span class="cat-badge-sm" style="background:#E8FDF4; color:#1EA566;">Climate & Weather</span>
+                <span style="font-size:13px; font-weight:600; color:var(--text-900)">Rainfall Analysis in Delhi</span>
+              </div>
+              <span class="badge completed">Completed</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donut -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:16px">Analysis Status</div>
+          <div class="donut-wrap">
+            <svg width="130" height="130" viewBox="0 0 130 130">
+              <circle cx="65" cy="65" r="50" fill="none" stroke="#ECEEED" stroke-width="14"/>
+              <circle cx="65" cy="65" r="50" fill="none" stroke="#0E3B2E" stroke-width="14" stroke-dasharray="314.16 0" stroke-dashoffset="0" stroke-linecap="round"/>
+            </svg>
+            <div class="donut-center">
+              <span class="donut-pct">100%</span>
+              <span class="donut-caption">Completed</span>
+            </div>
+          </div>
+          <div class="donut-legend">
+            <div class="donut-legend-item"><div class="legend-dot" style="background:var(--green-900)"></div>Completed (3)</div>
+            <div class="donut-legend-item"><div class="legend-dot" style="background:var(--green-500)"></div>In Progress (0)</div>
+            <div class="donut-legend-item"><div class="legend-dot" style="background:var(--border)"></div>Pending (0)</div>
+          </div>
+        </div>
+
+        <!-- Live card -->
+        <div class="card live-card">
+          <div class="live-badge"><div class="live-dot"></div>Live System</div>
+          <div class="live-title">System Ready</div>
+          <div class="live-file">3 Reports Synchronized</div>
+          <div class="live-prog-label"><span>Status</span><span>100%</span></div>
+          <div class="live-prog-bar"><div class="live-prog-fill"></div></div>
+          <div class="live-pct">100%</div>
+          <div class="live-controls admin-only">
+            <button class="live-btn pause" onclick="alert('System operational.')">Status</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-shell -->
+
+<script src="hub.js"></script>
+<script>
+/* ── DATA (REAL PUBLISHED REPORTS) ───────────────────────── */
+const REPORTS = [
+  { title:'India Crime Analysis (2001–2013)', status:'completed', date:'Jul 28, 2026', color:'#0E3B2E', url:'./crime_report.html' },
+  { title:'CPI Inflation Analysis',      status:'completed', date:'Nov 26, 2025', color:'#2E9370', url:'./cpi_report.html' },
+  { title:'Rainfall Analysis in Delhi',   status:'completed', date:'Dec 1, 2025',  color:'#1EA566', url:'./rainfall_report.html' }
+];
+
+/* ── GITHUB-STYLE HEATMAP ─────────────────────────────────── */
+const WEEKS  = 52;
+const DAYS   = 7;
+const GAP    = 2;   // px gap between cells
+const DAY_LABEL_W = 26; // px reserved for Mon/Wed/Fri labels
+const MONTHS_LIST = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const hmTooltip   = document.getElementById('hm-tooltip');
+
+function weightedRandom() {
+  const r = Math.random();
+  if (r < 0.06) return 0;
+  if (r < 0.16) return 1;
+  if (r < 0.36) return 2;
+  if (r < 0.64) return 3;
+  return 4;
+}
+
+function buildData() {
+  const today = new Date();
+  const start = new Date(today);
+  start.setDate(today.getDate() - WEEKS * DAYS + 1);
+  const grid = [];
+  for (let w = 0; w < WEEKS; w++) {
+    const col = [];
+    for (let d = 0; d < DAYS; d++) {
+      const dt = new Date(start);
+      dt.setDate(start.getDate() + w * DAYS + d);
+      const level = weightedRandom();
+      const count = level === 0 ? 0 : level * 11 + Math.floor(Math.random() * 15);
+      col.push({ date: dt, level, count });
+    }
+    grid.push(col);
+  }
+  return grid;
+}
+
+function generateHeatmap() {
+  const colsEl    = document.getElementById('hm-cols');
+  const monthsEl  = document.getElementById('hm-months');
+  const dayLabels = document.getElementById('hm-day-labels');
+  const summaryEl = document.getElementById('hm-summary');
+  const statsEl   = document.getElementById('hm-stats');
+  if (!colsEl) return;
+
+  // Measure the usable pixel width right now
+  const wrapEl    = document.getElementById('heatmap-wrap');
+  const totalPx   = (wrapEl ? wrapEl.offsetWidth : colsEl.parentElement.offsetWidth) - DAY_LABEL_W - 4;
+  const cellSize  = Math.max(7, Math.floor((totalPx - (WEEKS - 1) * GAP) / WEEKS));
+  const gridH     = cellSize * DAYS + GAP * (DAYS - 1);
+
+  // Size legend cells to match
+  [0,1,2,3,4].forEach(i => {
+    const el = document.getElementById('hm-lc' + i);
+    if (el) { el.style.width = cellSize + 'px'; el.style.height = cellSize + 'px'; }
+  });
+  const lc0 = document.getElementById('hm-lc0');
+  if (lc0) lc0.style.background = 'var(--border)';
+
+  const data = buildData();
+  let totalContribs = 0, longestStreak = 0, curStreak = 0, bestDay = 0;
+  data.forEach(col => col.forEach(cell => {
+    totalContribs += cell.count;
+    if (cell.count > bestDay) bestDay = cell.count;
+    if (cell.level > 0) { curStreak++; longestStreak = Math.max(longestStreak, curStreak); }
+    else curStreak = 0;
+  }));
+
+  // Day labels column
+  const DAY_NAMES = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
+  dayLabels.style.width  = DAY_LABEL_W + 'px';
+  dayLabels.style.height = gridH + 'px';
+  dayLabels.innerHTML = DAY_NAMES.map(n =>
+    `<div class="hm-day-lbl" style="height:${cellSize}px; margin-bottom:${GAP}px; font-size:9px;">${n}</div>`
+  ).join('');
+
+  // Month labels row (one slot per week column)
+  let prevM = -1;
+  monthsEl.style.paddingLeft = DAY_LABEL_W + 5 + 'px';
+  monthsEl.innerHTML = data.map(col => {
+    const m = col[0].date.getMonth();
+    const label = (m !== prevM) ? MONTHS_LIST[m] : '';
+    prevM = m;
+    return `<div class="hm-month-lbl" style="width:${cellSize}px; margin-right:${GAP}px;">${label}</div>`;
+  }).join('');
+
+  // Cell columns
+  colsEl.style.gap = GAP + 'px';
+  colsEl.innerHTML = data.map((col, wi) =>
+    `<div class="hm-col" style="gap:${GAP}px;">` +
+    col.map((cell, di) => {
+      const delay = (wi * DAYS + di) * 3;
+      const ds = cell.date.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+      return `<div class="hm-cell" data-level="${cell.level}" data-count="${cell.count}" data-date="${ds}" style="width:${cellSize}px;height:${cellSize}px;animation-delay:${delay}ms"></div>`;
+    }).join('') +
+    '</div>'
+  ).join('');
+
+  // Summary & stats
+  summaryEl.textContent = `${totalContribs.toLocaleString()} contributions in the last year`;
+  statsEl.innerHTML = [
+    `Longest streak: <strong>${longestStreak} days</strong>`,
+    `Peak day: <strong>${bestDay} events</strong>`,
+    `Total: <strong>${totalContribs.toLocaleString()}</strong>`
+  ].map(s => `<div class="hm-stat">${s}</div>`).join('');
+
+  // Tooltip events
+  colsEl.querySelectorAll('.hm-cell').forEach(cell => {
+    cell.addEventListener('mousemove', e => {
+      hmTooltip.textContent = `${+cell.dataset.count > 0 ? cell.dataset.count + ' contributions' : 'No contributions'} — ${cell.dataset.date}`;
+      hmTooltip.style.opacity = '1';
+      hmTooltip.style.left = (e.clientX + 14) + 'px';
+      hmTooltip.style.top  = (e.clientY - 34) + 'px';
+    });
+    cell.addEventListener('mouseleave', () => { hmTooltip.style.opacity = '0'; });
+  });
+}
+
+// Render on load, then re-render on resize (debounced)
+generateHeatmap();
+let _hmTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_hmTimer);
+  _hmTimer = setTimeout(generateHeatmap, 120);
+});
+
+function bClass(s){ return s==='in_progress'?'in-progress':s; }
+function bText(s) { return s==='in_progress'?'In Progress':s.charAt(0).toUpperCase()+s.slice(1); }
+
+
+/* ── RENDER REPORTS ─────────────────────────────────────── */
+
+document.getElementById('report-list').innerHTML =
+  REPORTS.map(r=>{
+    const tag   = r.url?`<a href="${r.url}" class="report-row" data-search="${r.title} ${r.status} ${r.date}">`:`<div class="report-row" data-search="${r.title} ${r.status} ${r.date}">`;
+    const close = r.url?'</a>':'</div>';
+    return `${tag}<div class="report-dot" style="background:${r.color}"></div><div class="report-info"><div class="report-title-text">${r.title}</div><div class="report-date">Updated ${r.date}</div></div><span class="badge ${bClass(r.status)}">${bText(r.status)}</span>${close}`;
+  }).join('');
+</script>
+</body>
+</html>
