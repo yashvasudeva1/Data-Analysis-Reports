@@ -86,6 +86,14 @@
     .chart-canvas-wrap { position: relative; height: 320px; width: 100%; }
     .chart-canvas-wrap.short { height: 240px; }
     .chart-canvas-wrap.tall { height: 380px; }
+    @media (max-width: 600px) {
+      .chart-canvas-wrap { height: 220px; }
+      .chart-canvas-wrap.short { height: 180px; }
+      .chart-canvas-wrap.tall { height: 260px; }
+      .chart-box { padding: 14px; }
+      .report-tabs { margin-bottom: 16px; }
+      .report-tab { padding: 8px 14px; font-size: 12px; }
+    }
 
     .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     @media (max-width: 900px) { .chart-grid-2 { grid-template-columns: 1fr; } }

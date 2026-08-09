@@ -83,6 +83,15 @@
       height: 520px; width: 100%; border-radius: 16px; border: 1px solid var(--border);
       background: #F8FAFC; z-index: 1;
     }
+    @media (max-width: 600px) {
+      #indiaMap { height: 340px; }
+      .chart-canvas-wrap { height: 220px; }
+      .chart-canvas-wrap.short { height: 180px; }
+      .chart-canvas-wrap.tall { height: 260px; }
+      .chart-box { padding: 14px; }
+      .report-tabs { margin-bottom: 16px; }
+      .report-tab { padding: 8px 14px; font-size: 12px; }
+    }
     .map-control-bar {
       display: flex; align-items: center; justify-content: space-between;
       gap: 16px; margin-bottom: 16px; flex-wrap: wrap;

@@ -33,6 +33,11 @@
     .chart-box-sub    { font-size: 12px; color: var(--text-400); margin-top: 2px; }
     .chart-canvas-wrap { position: relative; height: 280px; width: 100%; }
     .chart-canvas-wrap.tall { height: 340px; }
+    @media (max-width: 600px) {
+      .chart-canvas-wrap { height: 220px; }
+      .chart-canvas-wrap.tall { height: 260px; }
+      .chart-box { padding: 14px; }
+    }
 
     .insight-card {
       background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
@@ -56,7 +61,7 @@
     <div class="nav-section">
       <p class="nav-eyebrow">Menu</p>
       <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
-      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">4</span></a>
       <a href="datasets.html"  class="nav-item" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
       <a href="analytics.html" class="nav-item active" id="nav-analytics"><span class="nav-label">Analytics</span></a>
     </div>
@@ -105,23 +110,23 @@
       <div class="grid-4">
         <div class="card stat-card">
           <div class="stat-label">Published Reports</div>
-          <div class="stat-number">3</div>
+          <div class="stat-number">4</div>
           <span class="badge completed">100% Validated</span>
         </div>
         <div class="card stat-card">
           <div class="stat-label">ML Models Trained</div>
           <div class="stat-number">2 Models</div>
-          <span class="badge in-progress">Avg R² = 0.852 (CPI & Rainfall)</span>
+          <span class="badge in-progress">Avg R² = 0.852 (CPI &amp; Rainfall)</span>
         </div>
         <div class="card stat-card">
           <div class="stat-label">Data Points Analyzed</div>
-          <div class="stat-number">5.3M+</div>
+          <div class="stat-number">5.5M+</div>
           <span class="badge pending">Observed Records</span>
         </div>
         <div class="card stat-card">
           <div class="stat-label">Historical Horizon</div>
-          <div class="stat-number">13 Years</div>
-          <span class="badge neutral">2001 – 2025</span>
+          <div class="stat-number">25 Years</div>
+          <span class="badge neutral">2001 &ndash; 2026</span>
         </div>
       </div>
 
@@ -204,11 +209,20 @@
             </tr>
             <tr>
               <td style="font-weight:700">Rainfall Analysis in Delhi</td>
-              <td><span class="badge" style="background:#E8FDF4; color:#1EA566;">Climate & Weather</span></td>
+              <td><span class="badge" style="background:#E8FDF4; color:#1EA566;">Climate &amp; Weather</span></td>
               <td>XGBoost Regressor (tweedie)</td>
               <td>20,000+ Days (2018-2025)</td>
               <td style="font-weight:700; color:var(--green-700)">R² = 0.8200 | MAE = 1.83 mm</td>
               <td style="font-weight:700; color:var(--green-900);">7,842 mm Max Rainfall</td>
+              <td><span class="badge completed">Completed</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700">IPL Performance Analysis (2019–2026)</td>
+              <td><span class="badge" style="background:#E8F0FD; color:#1E4FA5; font-weight:700;">Sports</span></td>
+              <td>Multi-Season EDA &amp; Trajectory Analysis</td>
+              <td>25+ Datasets (102 Players)</td>
+              <td style="color:var(--text-400); font-style:italic;">N/A (Exploratory Study)</td>
+              <td style="font-weight:700; color:var(--green-900);">31.9% Max Franchise Dependence (Buttler)</td>
               <td><span class="badge completed">Completed</span></td>
             </tr>
           </tbody>
@@ -218,16 +232,23 @@
       <!-- KEY ANALYTICAL INSIGHTS -->
       <div class="analytics-grid-2">
         <div class="insight-card">
-          <div class="insight-card-title">Judicial & Social Dynamics</div>
+          <div class="insight-card-title">Judicial &amp; Social Dynamics</div>
           <div class="insight-card-desc">
             Public crime data reveals a 49.6% cumulative expansion in IPC crimes alongside an 85.1% trial backlog in courts, emphasizing systemic delays in justice delivery.
           </div>
         </div>
 
         <div class="insight-card">
-          <div class="insight-card-title">Seasonality & Economic Synchronization</div>
+          <div class="insight-card-title">Seasonality &amp; Economic Synchronization</div>
           <div class="insight-card-desc">
             Food inflation spikes in the CPI report closely track monsoon fluctuations, while spatial crime concentration highlights regional enforcement priorities.
+          </div>
+        </div>
+
+        <div class="insight-card">
+          <div class="insight-card-title">Sports Performance &amp; Franchise Risk</div>
+          <div class="insight-card-desc">
+            IPL analysis reveals severe franchise vulnerability when single-player run dependence exceeds 28% (e.g. RR 2019 at 31.9% and RCB 2023 at 31.4%), while trajectory modeling quantifies meteor arcs vs volume accumulators.
           </div>
         </div>
       </div>
@@ -257,7 +278,7 @@ const defaultOpts = {
   }
 };
 
-// 1. Model Comparison Chart
+// 1. Model Comparison Chart (Only trained ML models)
 new Chart(document.getElementById('chartModelComparison'), {
   type: 'bar',
   data: {
@@ -274,10 +295,10 @@ new Chart(document.getElementById('chartModelComparison'), {
 new Chart(document.getElementById('chartCategoryDist'), {
   type: 'doughnut',
   data: {
-    labels: ['Economics & CPI', 'Climate & Weather'],
+    labels: ['Crime (NCRB)', 'Economics (CPI)', 'Climate (Rainfall)', 'Sports (IPL)'],
     datasets: [{
-      data: [50, 50],
-      backgroundColor: [CHART_COLORS.blue, CHART_COLORS.secondary],
+      data: [25, 25, 25, 25],
+      backgroundColor: [CHART_COLORS.primary, CHART_COLORS.blue, CHART_COLORS.secondary, '#1E4FA5'],
       borderWidth: 2,
       borderColor: '#fff'
     }]

@@ -27,6 +27,7 @@
     .cat-badge.crime { background: #FDE8ED; color: #A51E35; }
     .cat-badge.economics { background: #E8F4FD; color: #1E6FA5; }
     .cat-badge.climate { background: #E8FDF4; color: #1EA566; }
+    .cat-badge.sports { background: #E8F0FD; color: #1E4FA5; }
 
     .source-link {
       font-size: 12.5px; font-weight: 600; color: #1E6FA5; text-decoration: none;
@@ -53,7 +54,7 @@
     <div class="nav-section">
       <p class="nav-eyebrow">Menu</p>
       <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
-      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">4</span></a>
       <a href="datasets.html"  class="nav-item active" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
       <a href="analytics.html" class="nav-item" id="nav-analytics"><span class="nav-label">Analytics</span></a>
     </div>
@@ -100,31 +101,30 @@
         <div class="stat-row">
           <div class="stat-card">
             <div class="stat-label">Active Datasets</div>
-            <div class="stat-num">3</div>
-            <div class="stat-sub">Fully ingested & synced</div>
+            <div class="stat-num">4</div>
+            <div class="stat-sub">Fully ingested &amp; synced</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Total Data Size</div>
-            <div class="stat-num">151.2 MB</div>
-            <div class="stat-sub">19+ CSV files & archives</div>
+            <div class="stat-num">157.4 MB</div>
+            <div class="stat-sub">25+ CSV files &amp; archives</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Data Portals</div>
-            <div class="stat-num">2</div>
-            <div class="stat-sub">Kaggle & Data.gov.in</div>
+            <div class="stat-num">3</div>
+            <div class="stat-sub">Kaggle, Data.gov.in &amp; iplt20.com</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Linked Reports</div>
-            <div class="stat-num">3</div>
-            <div class="stat-sub">Crime, CPI & Rainfall</div>
+            <div class="stat-num">4</div>
+            <div class="stat-sub">Crime, CPI, Rainfall &amp; IPL</div>
           </div>
         </div>
 
-        <!-- Upload Zone -->
-        <div class="upload-zone" onclick="alert('Upload functionality coming soon!')">
-          <p class="upload-title">Drop CSV or Excel files here</p>
-          <p class="upload-sub">or click to browse your local files.</p>
-          <button class="btn-primary">Select Files</button>
+        <!-- Dataset Repository Header -->
+        <div class="upload-zone" style="cursor:default;">
+          <p class="upload-title">Data Ingestion Repository</p>
+          <p class="upload-sub">All 4 active dataset sources are fully parsed, validated, and synchronized with report dashboards.</p>
         </div>
 
         <!-- Data Table Card -->
@@ -188,8 +188,8 @@ const DATASETS = [
   },
   {
     id: 'rainfall-india',
-    name: 'India Rainfall & Precipitation Data (District-wise)',
-    category: 'Climate & Weather',
+    name: 'India Rainfall &amp; Precipitation Data (District-wise)',
+    category: 'Climate &amp; Weather',
     catClass: 'climate',
     format: 'CSV',
     size: '4.8 MB',
@@ -199,6 +199,20 @@ const DATASETS = [
     sourceUrl: 'https://www.data.gov.in/search?title=Rainfall&sortby=_score&type=resources',
     reportTitle: 'Rainfall Analysis in Delhi',
     reportUrl: 'rainfall_report.html'
+  },
+  {
+    id: 'ipl-stats',
+    name: 'IPL Official Stats &amp; Career Records (2019&ndash;2026)',
+    category: 'Sports',
+    catClass: 'sports',
+    format: 'CSV (scraped)',
+    size: '6.2 MB',
+    date: 'Aug 9, 2026',
+    status: 'completed',
+    sourceLabel: 'iplt20.com Stats ↗',
+    sourceUrl: 'https://www.iplt20.com/stats',
+    reportTitle: 'IPL Performance Analysis (2019–2026)',
+    reportUrl: 'ipl_report.html'
   }
 ];
 

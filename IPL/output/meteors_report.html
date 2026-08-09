@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>IPL Meteors &amp; Ghosts</title>
+<style>
+  :root {
+    --bg: #0b0f14;
+    --panel: #141b24;
+    --text: #e7eef7;
+    --muted: #8b9bb0;
+    --accent: #ff6b35;
+    --accent2: #3dccc7;
+    --line: #243041;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: radial-gradient(1200px 600px at 10% -10%, #1a2330, var(--bg));
+    color: var(--text);
+    line-height: 1.55;
+  }
+  main { max-width: 980px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  h2 {
+    margin-top: 48px;
+    font-size: 1.35rem;
+    color: var(--accent2);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 8px;
+  }
+  .lede { color: var(--muted); font-size: 1.05rem; max-width: 62ch; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 3px 8px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin: 16px 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  ul { padding-left: 1.15rem; }
+  li { margin: 10px 0; color: #d5deea; }
+  footer {
+    margin-top: 56px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  code { background: #0e141c; padding: 1px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="tag">Uncommon IPL analytics</div>
+  <h1>Meteors &amp; Ghosts</h1>
+  <p class="lede">
+    Most IPL stats pages rank who scored the most. This one ranks who
+    <strong>exploded once and faded</strong>, who quietly piled runs without
+    ever looking elite, and which franchises leaned hardest on a single bat.
+  </p>
+  <p class="lede">
+    Sample seasons in this build: <strong>2019, 2023, 2024, 2025, 2026</strong>
+    (official aggregate feeds still published by iplt20.com).
+  </p>
+
+  <h2>1. Meteors - one season that doesn’t match the rest</h2>
+  <div class="card">
+    <p style="color:var(--muted);margin-top:0">
+      Peak season percentile vs the player’s other seasons in this sample.
+      High score = elite peak + ordinary baseline.
+    </p>
+    <table><thead><tr><th>player</th><th>best_season</th><th>best_value</th><th>best_rank</th><th>best_pct</th><th>other_mean_value</th><th>pct_gap</th><th>meteor_score</th><th>best_team</th></tr></thead><tbody><tr><td>Deepak Hooda</td><td>2019</td><td>451.0</td><td>10</td><td>92.80000000000001</td><td>86.66666666666667</td><td>55.090963629546316</td><td>75.83093363329586</td><td>Lucknow Super Giants</td></tr><tr><td>Sunil Narine</td><td>2024</td><td>488.0</td><td>9</td><td>93.33333333333333</td><td>94.5</td><td>53.575724116574975</td><td>75.44240918579207</td><td>Kolkata Knight Riders</td></tr><tr><td>Quinton De Kock</td><td>2019</td><td>508.0</td><td>3</td><td>98.4</td><td>201.0</td><td>39.43018372703413</td><td>71.86358267716537</td><td>Lucknow Super Giants</td></tr><tr><td>Devon Conway</td><td>2023</td><td>672.0</td><td>3</td><td>98.41269841269842</td><td>204.0</td><td>37.62214723159606</td><td>71.05695038120237</td><td>Chennai Super Kings</td></tr><tr><td>David Miller</td><td>2019</td><td>481.0</td><td>6</td><td>96.0</td><td>208.25</td><td>36.08310761527943</td><td>69.03739842687575</td><td>Gujarat Titans</td></tr><tr><td>Riyan Parag</td><td>2024</td><td>573.0</td><td>3</td><td>98.33333333333333</td><td>240.75</td><td>32.742737195164025</td><td>68.81756507115715</td><td>Rajasthan Royals</td></tr><tr><td>Liam Livingstone</td><td>2019</td><td>437.0</td><td>11</td><td>92.0</td><td>167.33333333333334</td><td>40.447902345540136</td><td>68.80155605549307</td><td>Punjab Kings</td></tr><tr><td>Hardik Pandya</td><td>2019</td><td>487.0</td><td>4</td><td>97.6</td><td>248.0</td><td>31.50229556193534</td><td>67.8560330028709</td><td>Gujarat Titans</td></tr><tr><td>Surya Kumar Yadav</td><td>2025</td><td>717.0</td><td>2</td><td>99.21259842519686</td><td>270.0</td><td>28.31707603713717</td><td>67.30961335057</td><td>Mumbai Indians</td></tr><tr><td>Glenn Maxwell</td><td>2023</td><td>400.0</td><td>17</td><td>87.3015873015873</td><td>133.66666666666666</td><td>41.45425571803524</td><td>66.67028808898888</td><td>Royal Challengers Bangalore</td></tr><tr><td>Rinku Singh</td><td>2023</td><td>474.0</td><td>9</td><td>93.65079365079364</td><td>210.75</td><td>32.919930251255906</td><td>66.32190512100166</td><td>Kolkata Knight Riders</td></tr><tr><td>Rahul Tripathi</td><td>2019</td><td>413.0</td><td>15</td><td>88.8</td><td>164.33333333333334</td><td>37.82720493271675</td><td>65.86224221972253</td><td>Sunrisers Hyderabad</td></tr></tbody></table>
+  </div>
+  <div class="card">
+    <strong>Short stories</strong>
+    <ul><li>In 2019, Deepak Hooda (Lucknow Super Giants) posted 451 - rank #10 that season (93th percentile). Across their other 3 season(s) in this sample they averaged 87. Peak-to-baseline gap: 55 percentile points. Career line in sample: 2019:451(#10) | 2023:84(#76) | 2024:145(#65) | 2025:31(#95).</li>
+<li>In 2024, Sunil Narine (Kolkata Knight Riders) posted 488 - rank #9 that season (93th percentile). Across their other 4 season(s) in this sample they averaged 94. Peak-to-baseline gap: 54 percentile points. Career line in sample: 2019:71(#79) | 2023:21(#95) | 2024:488(#9) | 2025:246(#43) | 2026:40(#96).</li>
+<li>In 2019, Quinton De Kock (Lucknow Super Giants) posted 508 - rank #3 that season (98th percentile). Across their other 2 season(s) in this sample they averaged 201. Peak-to-baseline gap: 39 percentile points. Career line in sample: 2019:508(#3) | 2024:250(#39) | 2025:152(#65).</li>
+<li>In 2023, Devon Conway (Chennai Super Kings) posted 672 - rank #3 that season (98th percentile). Across their other 2 season(s) in this sample they averaged 204. Peak-to-baseline gap: 38 percentile points. Career line in sample: 2019:252(#38) | 2023:672(#3) | 2025:156(#63).</li>
+<li>In 2019, David Miller (Gujarat Titans) posted 481 - rank #6 that season (96th percentile). Across their other 4 season(s) in this sample they averaged 208. Peak-to-baseline gap: 36 percentile points. Career line in sample: 2019:481(#6) | 2023:259(#41) | 2024:210(#51) | 2025:153(#64) | 2026:211(#51).</li></ul>
+  </div>
+
+  <h2>2. Volume ghosts - lots of runs, never the headline</h2>
+  <div class="card">
+    <p style="color:var(--muted);margin-top:0">
+      Highest career totals among players who never finished top-10 in a season.
+    </p>
+    <table><thead><tr><th>player</th><th>seasons_played</th><th>career_total</th><th>best_season</th><th>best_value</th><th>best_rank</th><th>season_values</th></tr></thead><tbody><tr><td>Nicholas Pooran</td><td>5</td><td>1921</td><td>2025</td><td>524.0</td><td>11</td><td>2019:306(#29) | 2023:358(#24) | 2024:499(#8) | 2025:524(#11) | 2026:234(#45)</td></tr><tr><td>Shivam Dube</td><td>5</td><td>1730</td><td>2023</td><td>418.0</td><td>13</td><td>2019:289(#32) | 2023:418(#13) | 2024:396(#19) | 2025:357(#23) | 2026:270(#40)</td></tr><tr><td>Rohit Sharma</td><td>5</td><td>1718</td><td>2025</td><td>418.0</td><td>16</td><td>2019:268(#35) | 2023:332(#28) | 2024:417(#17) | 2025:418(#16) | 2026:283(#37)</td></tr><tr><td>Rajat Patidar</td><td>4</td><td>1541</td><td>2026</td><td>501.0</td><td>13</td><td>2019:333(#25) | 2024:395(#20) | 2025:312(#29) | 2026:501(#13)</td></tr><tr><td>Aiden Markram</td><td>5</td><td>1525</td><td>2025</td><td>445.0</td><td>14</td><td>2019:381(#18) | 2023:248(#42) | 2024:220(#47) | 2025:445(#14) | 2026:231(#46)</td></tr><tr><td>Tilak Varma</td><td>4</td><td>1515</td><td>2024</td><td>416.0</td><td>18</td><td>2019:397(#17) | 2023:343(#27) | 2024:416(#18) | 2026:359(#24)</td></tr><tr><td>Ajinkya Rahane</td><td>5</td><td>1426</td><td>2025</td><td>390.0</td><td>19</td><td>2019:133(#65) | 2023:326(#29) | 2024:242(#40) | 2025:390(#19) | 2026:335(#27)</td></tr><tr><td>Devdutt Padikkal</td><td>5</td><td>1386</td><td>2026</td><td>464.0</td><td>17</td><td>2019:376(#19) | 2023:261(#40) | 2024:38(#88) | 2025:247(#42) | 2026:464(#17)</td></tr><tr><td>Rishabh Pant</td><td>4</td><td>1367</td><td>2024</td><td>446.0</td><td>12</td><td>2019:340(#23) | 2024:446(#12) | 2025:269(#37) | 2026:312(#31)</td></tr><tr><td>Marcus Stoinis</td><td>5</td><td>1328</td><td>2023</td><td>408.0</td><td>15</td><td>2019:156(#62) | 2023:408(#15) | 2024:388(#21) | 2025:160(#62) | 2026:216(#49)</td></tr><tr><td>Venkatesh Iyer</td><td>5</td><td>1307</td><td>2023</td><td>404.0</td><td>16</td><td>2019:182(#54) | 2023:404(#16) | 2024:370(#23) | 2025:142(#66) | 2026:209(#52)</td></tr><tr><td>Phil Salt</td><td>4</td><td>1258</td><td>2024</td><td>435.0</td><td>14</td><td>2023:218(#49) | 2024:435(#14) | 2025:403(#17) | 2026:202(#54)</td></tr></tbody></table>
+  </div>
+  <div class="card">
+    <strong>Short stories</strong>
+    <ul><li>Nicholas Pooran stacked 1921 across 5 seasons, yet never finished higher than #11 in any single year (best: 524 in 2025). High volume, low headlines.</li>
+<li>Shivam Dube stacked 1730 across 5 seasons, yet never finished higher than #13 in any single year (best: 418 in 2023). High volume, low headlines.</li>
+<li>Rohit Sharma stacked 1718 across 5 seasons, yet never finished higher than #16 in any single year (best: 418 in 2025). High volume, low headlines.</li>
+<li>Rajat Patidar stacked 1541 across 4 seasons, yet never finished higher than #13 in any single year (best: 501 in 2026). High volume, low headlines.</li>
+<li>Aiden Markram stacked 1525 across 5 seasons, yet never finished higher than #14 in any single year (best: 445 in 2025). High volume, low headlines.</li></ul>
+  </div>
+
+  <h2>3. Franchise dependence - one bat carrying the load</h2>
+  <div class="card">
+    <p style="color:var(--muted);margin-top:0">
+      Share of a team’s recorded runs (in this feed) from its top scorer that season.
+    </p>
+    <table><thead><tr><th>season</th><th>team</th><th>top_player</th><th>top_runs</th><th>team_runs</th><th>dependence_pct</th></tr></thead><tbody><tr><td>2019</td><td>Rajasthan Royals</td><td>Jos Buttler</td><td>863.0</td><td>2702</td><td>31.939304219096964</td></tr><tr><td>2023</td><td>Royal Challengers Bangalore</td><td>Faf Du Plessis</td><td>730.0</td><td>2328</td><td>31.3573883161512</td></tr><tr><td>2023</td><td>Gujarat Titans</td><td>Shubman Gill</td><td>890.0</td><td>2880</td><td>30.90277777777778</td></tr><tr><td>2024</td><td>Gujarat Titans</td><td>Sai Sudharsan</td><td>527.0</td><td>1881</td><td>28.017012227538544</td></tr><tr><td>2025</td><td>Gujarat Titans</td><td>Sai Sudharsan</td><td>759.0</td><td>2720</td><td>27.904411764705884</td></tr><tr><td>2025</td><td>Royal Challengers Bengaluru</td><td>Virat Kohli</td><td>657.0</td><td>2376</td><td>27.651515151515152</td></tr><tr><td>2023</td><td>Rajasthan Royals</td><td>Yashasvi Jaiswal</td><td>625.0</td><td>2277</td><td>27.448397013614404</td></tr><tr><td>2024</td><td>Royal Challengers Bengaluru</td><td>Virat Kohli</td><td>741.0</td><td>2741</td><td>27.033929222911347</td></tr><tr><td>2025</td><td>Mumbai Indians</td><td>Surya Kumar Yadav</td><td>717.0</td><td>2655</td><td>27.005649717514125</td></tr><tr><td>2023</td><td>Delhi Capitals</td><td>David Warner</td><td>516.0</td><td>1921</td><td>26.861009890681938</td></tr><tr><td>2026</td><td>Delhi Capitals</td><td>K L Rahul</td><td>593.0</td><td>2221</td><td>26.69968482665466</td></tr><tr><td>2026</td><td>Rajasthan Royals</td><td>Vaibhav Sooryavanshi</td><td>776.0</td><td>2938</td><td>26.412525527569777</td></tr></tbody></table>
+  </div>
+  <div class="card">
+    <strong>Short stories</strong>
+    <ul><li>2019 Rajasthan Royals: Jos Buttler scored 863 of the team's 2702 recorded runs in this feed (31.9%). One bat, heavy load.</li>
+<li>2023 Royal Challengers Bangalore: Faf Du Plessis scored 730 of the team's 2328 recorded runs in this feed (31.4%). One bat, heavy load.</li>
+<li>2023 Gujarat Titans: Shubman Gill scored 890 of the team's 2880 recorded runs in this feed (30.9%). One bat, heavy load.</li>
+<li>2024 Gujarat Titans: Sai Sudharsan scored 527 of the team's 1881 recorded runs in this feed (28.0%). One bat, heavy load.</li>
+<li>2025 Gujarat Titans: Sai Sudharsan scored 759 of the team's 2720 recorded runs in this feed (27.9%). One bat, heavy load.</li></ul>
+  </div>
+
+  <footer>
+    Built from public official stats feeds used by iplt20.com.
+    This is not ball-by-ball data - ranks are within the published aggregate tables
+    for the seasons above. Method: season percentile of runs, gap vs the same
+    player’s other seasons, plus franchise top-scorer share.
+    Generated by <code>meteors.py</code>.
+  </footer>
+</main>
+</body>
+</html>

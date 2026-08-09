@@ -1,4 +1,4 @@
-// hub.js - Shared Navigation & Utilities for Analysis Hub
+// hub.js - Shared Navigation, Mobile Drawer & Utilities for Analysis Hub
 
 // ── Default User Identity ────────────────────────────────────
 const USER_IDENTITY = {
@@ -24,6 +24,65 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const activeEl = document.getElementById(navMap[file]);
   if (activeEl) activeEl.classList.add('active');
+
+  // ── Mobile Menu Toggle & Navigation Drawer ────────────────
+  const topbar = document.querySelector('.topbar');
+  if (topbar && !document.querySelector('.mobile-menu-btn')) {
+    const menuBtn = document.createElement('button');
+    menuBtn.className = 'mobile-menu-btn';
+    menuBtn.setAttribute('aria-label', 'Open Menu');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    menuBtn.setAttribute('aria-controls', 'mobile-nav-drawer');
+    menuBtn.innerHTML = '☰';
+    topbar.insertBefore(menuBtn, topbar.firstChild);
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'mobile-nav-backdrop';
+    backdrop.innerHTML = `
+      <div class="mobile-nav-drawer" id="mobile-nav-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu">
+        <div class="mobile-drawer-header">
+          <div>
+            <div class="logo-name" style="font-size:16px">Analysis Hub</div>
+            <div class="logo-sub">Data Reports</div>
+          </div>
+          <button class="mobile-drawer-close">✕</button>
+        </div>
+        <div class="nav-section">
+          <p class="nav-eyebrow">Menu</p>
+          <a href="index.html" class="nav-item ${file === 'index.html' || file === '' ? 'active' : ''}"><span class="nav-label">Dashboard</span></a>
+          <a href="reports.html" class="nav-item ${file === 'reports.html' ? 'active' : ''}"><span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
+          <a href="datasets.html" class="nav-item ${file === 'datasets.html' ? 'active' : ''}"><span class="nav-label">Datasets</span></a>
+          <a href="analytics.html" class="nav-item ${file === 'analytics.html' ? 'active' : ''}"><span class="nav-label">Analytics</span></a>
+        </div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-section">
+          <p class="nav-eyebrow">General</p>
+          <a href="settings.html" class="nav-item ${file === 'settings.html' ? 'active' : ''}"><span class="nav-label">Settings</span></a>
+          <a href="help.html" class="nav-item ${file === 'help.html' ? 'active' : ''}"><span class="nav-label">Help</span></a>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(backdrop);
+
+    const closeBtn = backdrop.querySelector('.mobile-drawer-close');
+    closeBtn.setAttribute('aria-label', 'Close menu');
+    const toggleMenu = (open) => {
+      backdrop.classList.toggle('open', open);
+      document.body.classList.toggle('mobile-menu-open', open);
+      menuBtn.setAttribute('aria-expanded', String(open));
+      if (open) closeBtn.focus();
+      else menuBtn.focus();
+    };
+
+    menuBtn.addEventListener('click', () => toggleMenu(true));
+    closeBtn.addEventListener('click', () => toggleMenu(false));
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop) toggleMenu(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && backdrop.classList.contains('open')) toggleMenu(false);
+    });
+  }
 
   // ── Global search ──────────────────────────────────────────
   const searchEl = document.getElementById('search-input');

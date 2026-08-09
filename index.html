@@ -136,7 +136,7 @@
     <div class="nav-section">
       <p class="nav-eyebrow">Menu</p>
       <a href="index.html"     class="nav-item active" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
-      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">4</span></a>
       <a href="datasets.html"  class="nav-item" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
       <a href="analytics.html" class="nav-item" id="nav-analytics"><span class="nav-label">Analytics</span></a>
     </div>
@@ -193,28 +193,28 @@
       <div class="stat-row">
         <div class="card stat-card hero">
           <div class="stat-label">Total Reports</div>
-          <div class="stat-number">3</div>
+          <div class="stat-number">4</div>
           <div class="stat-pill">Active published reports</div>
         </div>
         <div class="card stat-card">
           <div class="stat-label">Completed Analyses</div>
-          <div class="stat-number">3</div>
+          <div class="stat-number">4</div>
           <div class="stat-pill">All reports completed</div>
         </div>
         <div class="card stat-card">
           <div class="stat-label">Active Datasets</div>
-          <div class="stat-number">3</div>
-          <div class="stat-pill">Crime, CPI & Rainfall</div>
+          <div class="stat-number">4</div>
+          <div class="stat-pill">Crime, CPI, Rainfall & IPL</div>
         </div>
         <div class="card stat-card">
           <div class="stat-label">Total Data Size</div>
-          <div class="stat-number">151.2 MB</div>
-          <div class="stat-pill">19+ CSV archives</div>
+          <div class="stat-number">157.4 MB</div>
+          <div class="stat-pill">25+ CSV archives</div>
         </div>
         <div class="card stat-card">
           <div class="stat-label">Data Portals</div>
-          <div class="stat-number">2</div>
-          <div class="stat-pill">Kaggle & Data.gov.in</div>
+          <div class="stat-number">3</div>
+          <div class="stat-pill">Kaggle, Data.gov.in & iplt20.com</div>
         </div>
       </div>
 
@@ -302,6 +302,13 @@
               </div>
               <a href="https://www.data.gov.in/search?title=Rainfall&sortby=_score&type=resources" target="_blank" class="source-link" style="font-size:11.5px;">Data.gov.in &nearr;</a>
             </div>
+            <div class="cat-row" data-search="IPL Cricket Sports">
+              <div class="cat-info">
+                <span class="cat-badge-sm" style="background:#E8F0FD; color:#1E4FA5;">6.2 MB</span>
+                <span style="font-size:13px; font-weight:600; color:var(--text-900)">IPL Stats (2019&ndash;2026)</span>
+              </div>
+              <a href="https://www.iplt20.com/stats" target="_blank" class="source-link" style="font-size:11.5px;">iplt20.com &nearr;</a>
+            </div>
           </div>
         </div>
 
@@ -338,6 +345,13 @@
               </div>
               <span class="badge completed">Completed</span>
             </div>
+            <div class="cat-row" data-search="IPL Performance Analysis Sports Cricket">
+              <div class="cat-info">
+                <span class="cat-badge-sm" style="background:#E8F0FD; color:#1E4FA5;">Sports</span>
+                <span style="font-size:13px; font-weight:600; color:var(--text-900)">IPL Performance Analysis</span>
+              </div>
+              <span class="badge completed">Completed</span>
+            </div>
           </div>
         </div>
 
@@ -355,7 +369,7 @@
             </div>
           </div>
           <div class="donut-legend">
-            <div class="donut-legend-item"><div class="legend-dot" style="background:var(--green-900)"></div>Completed (3)</div>
+            <div class="donut-legend-item"><div class="legend-dot" style="background:var(--green-900)"></div>Completed (4)</div>
             <div class="donut-legend-item"><div class="legend-dot" style="background:var(--green-500)"></div>In Progress (0)</div>
             <div class="donut-legend-item"><div class="legend-dot" style="background:var(--border)"></div>Pending (0)</div>
           </div>
@@ -365,7 +379,7 @@
         <div class="card live-card">
           <div class="live-badge"><div class="live-dot"></div>Live System</div>
           <div class="live-title">System Ready</div>
-          <div class="live-file">3 Reports Synchronized</div>
+          <div class="live-file">4 Reports Synchronized</div>
           <div class="live-prog-label"><span>Status</span><span>100%</span></div>
           <div class="live-prog-bar"><div class="live-prog-fill"></div></div>
           <div class="live-pct">100%</div>
@@ -385,7 +399,8 @@
 const REPORTS = [
   { title:'India Crime Analysis (2001–2013)', status:'completed', date:'Jul 28, 2026', color:'#0E3B2E', url:'./crime_report.html' },
   { title:'CPI Inflation Analysis',      status:'completed', date:'Nov 26, 2025', color:'#2E9370', url:'./cpi_report.html' },
-  { title:'Rainfall Analysis in Delhi',   status:'completed', date:'Dec 1, 2025',  color:'#1EA566', url:'./rainfall_report.html' }
+  { title:'Rainfall Analysis in Delhi',   status:'completed', date:'Dec 1, 2025',  color:'#1EA566', url:'./rainfall_report.html' },
+  { title:'IPL Performance Analysis (2019–2026)', status:'completed', date:'Aug 9, 2026', color:'#1E4FA5', url:'./ipl_report.html' }
 ];
 
 /* ── GITHUB-STYLE HEATMAP (@yashvasudeva1) ───────────────── */
@@ -396,30 +411,61 @@ const DAY_LABEL_W = 26; // px reserved for Mon/Wed/Fri labels
 const MONTHS_LIST = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const hmTooltip   = document.getElementById('hm-tooltip');
 
-// Real recent GitHub activity dates for yashvasudeva1 (key format: YYYY-MM-DD)
+// Real GitHub activity data for yashvasudeva1 (Total: 419 contributions in the last year)
 const GITHUB_EVENTS_MAP = {
-  '2026-07-28': { count: 18, repo: 'yashvasudeva1/Data-Analysis-Reports' },
-  '2026-07-26': { count: 12, repo: 'yashvasudeva1/ntl-detection' },
-  '2026-07-24': { count: 8,  repo: 'yashvasudeva1/unsupervised-learning' },
-  '2026-07-23': { count: 24, repo: 'yashvasudeva1/ntl-detection' },
-  '2026-07-20': { count: 16, repo: 'yashvasudeva1/ntl-detection' },
-  '2026-07-16': { count: 6,  repo: 'corsairdev/corsair & GetBindu' },
-  '2026-07-14': { count: 22, repo: 'yashvasudeva1/projects-finder' },
-  '2026-07-13': { count: 10, repo: 'yashvasudeva1/eda_automation_kit' },
-  '2026-07-12': { count: 14, repo: 'yashvasudeva1/convoy' },
+  '2025-10-07': { count: 4, level: 2 },
+  '2025-11-09': { count: 3, level: 1 },
+  '2025-12-25': { count: 24, level: 4 },
+  '2025-12-27': { count: 14, level: 3 },
+  '2026-01-01': { count: 28, level: 4 },
+  '2026-01-06': { count: 12, level: 3 },
+  '2026-01-07': { count: 4, level: 2 },
+  '2026-01-08': { count: 5, level: 2 },
+  '2026-01-09': { count: 12, level: 3 },
+  '2026-01-19': { count: 5, level: 2 },
+  '2026-01-20': { count: 4, level: 2 },
+  '2026-01-26': { count: 7, level: 2 },
+  '2026-01-28': { count: 9, level: 3 },
+  '2026-02-05': { count: 13, level: 3 },
+  '2026-02-11': { count: 10, level: 3 },
+  '2026-02-12': { count: 3, level: 1 },
+  '2026-02-27': { count: 4, level: 2 },
+  '2026-02-28': { count: 3, level: 1 },
+  '2026-03-04': { count: 11, level: 3 },
+  '2026-03-16': { count: 4, level: 2 },
+  '2026-03-23': { count: 8, level: 2 },
+  '2026-03-26': { count: 14, level: 3 },
+  '2026-03-31': { count: 14, level: 3 },
+  '2026-04-02': { count: 7, level: 2 },
+  '2026-04-03': { count: 4, level: 2 },
+  '2026-04-09': { count: 10, level: 3 },
+  '2026-04-11': { count: 4, level: 2 },
+  '2026-04-12': { count: 14, level: 3 },
+  '2026-04-13': { count: 8, level: 2 },
+  '2026-04-14': { count: 5, level: 2 },
+  '2026-04-18': { count: 4, level: 2 },
+  '2026-04-19': { count: 14, level: 3 },
+  '2026-04-20': { count: 14, level: 3 },
+  '2026-04-22': { count: 4, level: 2 },
+  '2026-04-23': { count: 4, level: 2 },
+  '2026-04-28': { count: 10, level: 3 },
+  '2026-05-04': { count: 3, level: 1 },
+  '2026-05-06': { count: 4, level: 2 },
+  '2026-06-08': { count: 3, level: 1 },
+  '2026-06-22': { count: 8, level: 2 },
+  '2026-06-24': { count: 5, level: 2 },
+  '2026-07-06': { count: 5, level: 2 },
+  '2026-07-08': { count: 6, level: 2 },
+  '2026-07-10': { count: 4, level: 2 },
+  '2026-07-12': { count: 16, level: 4 },
+  '2026-07-13': { count: 4, level: 2 },
+  '2026-07-14': { count: 9, level: 3 },
+  '2026-07-20': { count: 7, level: 2 },
+  '2026-07-23': { count: 8, level: 2 },
+  '2026-07-24': { count: 7, level: 2 },
+  '2026-07-26': { count: 4, level: 2 },
+  '2026-07-28': { count: 9, level: 3 }
 };
-
-function weightedRandom(dtKey) {
-  if (GITHUB_EVENTS_MAP[dtKey]) {
-    const cnt = GITHUB_EVENTS_MAP[dtKey].count;
-    return cnt > 20 ? 4 : cnt > 15 ? 3 : cnt > 8 ? 2 : 1;
-  }
-  const r = Math.random();
-  if (r < 0.65) return 0; // 65% empty days for realistic distribution
-  if (r < 0.85) return 1; // 20% light commits
-  if (r < 0.95) return 2; // 10% medium commits
-  return 3;               // 5% heavy commits
-}
 
 function buildData() {
   const today = new Date();
@@ -433,8 +479,8 @@ function buildData() {
       dt.setDate(start.getDate() + w * DAYS + d);
       const isoKey = dt.toISOString().split('T')[0];
       const realEvent = GITHUB_EVENTS_MAP[isoKey];
-      const level = weightedRandom(isoKey);
-      const count = realEvent ? realEvent.count : (level === 0 ? 0 : level * 2 + Math.floor(Math.random() * 3));
+      const level = realEvent ? realEvent.level : 0;
+      const count = realEvent ? realEvent.count : 0;
       const repo = realEvent ? realEvent.repo : '';
       col.push({ date: dt, level, count, repo, isoKey });
     }

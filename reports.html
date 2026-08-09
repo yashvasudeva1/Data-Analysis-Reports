@@ -40,6 +40,11 @@
     .reports-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
     @media (max-width: 1100px) { .reports-grid { grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 700px)  { .reports-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 600px)  {
+      .filter-bar { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px; }
+      .filter-tabs { width: 100%; overflow-x: auto; padding-bottom: 4px; }
+      .filter-search { width: 100%; }
+    }
 
     .report-card { display: flex; flex-direction: column; gap: 0; }
     .rc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -53,6 +58,7 @@
     .cat-pill.forecast  { background: #F0E8FD; color: #6A1EA5; }
     .cat-pill.climate   { background: #E8FDF4; color: #1EA566; }
     .cat-pill.data      { background: #E8FDF4; color: #1EA566; }
+    .cat-pill.sports    { background: #E8F0FD; color: #1E4FA5; }
 
     .rc-title   { font-size: 16px; font-weight: 700; color: var(--text-900); margin-bottom: 6px; }
     .rc-desc    { font-size: 13px; color: var(--text-500); line-height: 1.5; margin-bottom: 16px; flex: 1; }
@@ -78,7 +84,7 @@
     <div class="nav-section">
       <p class="nav-eyebrow">Menu</p>
       <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
-      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">4</span></a>
       <a href="datasets.html"  class="nav-item" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
       <a href="analytics.html" class="nav-item" id="nav-analytics"><span class="nav-label">Analytics</span></a>
       
@@ -94,7 +100,7 @@
       <p class="promo-label">Quick Action</p>
       <p class="promo-title">Publish your next report</p>
       <p class="promo-sub">Upload a dataset and auto-generate charts & KPIs instantly.</p>
-      <a href="#" class="promo-btn" onclick="alert('New report flow coming soon!')">New Report</a>
+      <a href="datasets.html" class="promo-btn">Browse Datasets</a>
     </div>
   </nav>
 
@@ -117,17 +123,14 @@
         <h1>Reports</h1>
         <p>All published data analysis reports. Click to open any report.</p>
       </div>
-      <div class="page-header-actions">
-        <a href="#" class="btn-primary" onclick="alert('New report flow coming soon!')">+ New Report</a>
-      </div>
     </div>
 
     <div class="content">
       <!-- Filter bar -->
       <div class="filter-bar">
         <div class="filter-tabs">
-          <button class="filter-tab active" data-filter="all"         data-target="reports-grid">All (3)</button>
-          <button class="filter-tab"        data-filter="completed"   data-target="reports-grid">Completed (3)</button>
+          <button class="filter-tab active" data-filter="all"         data-target="reports-grid">All (4)</button>
+          <button class="filter-tab"        data-filter="completed"   data-target="reports-grid">Completed (4)</button>
           <button class="filter-tab"        data-filter="in_progress" data-target="reports-grid">In Progress (0)</button>
           <button class="filter-tab"        data-filter="pending"     data-target="reports-grid">Pending (0)</button>
         </div>
@@ -167,6 +170,14 @@ const REPORTS = [
     kpis:[{label:'R² (Test)',value:'0.82'},{label:'MAE',value:'1.83 mm'},{label:'Years',value:'8'}],
     insights:['South Delhi leads in total rainfall (7,842 mm)','XGBoost Tweedie model achieves 0.82 Test R²'],
     url:'./rainfall_report.html',
+  },
+  {
+    id:'ipl-performance-analysis', title:'IPL Performance Analysis (2019–2026)', category:'sports',
+    desc:'Comprehensive multi-season analysis of batting, bowling, boundaries, player arcs, and franchise dependencies across the Indian Premier League.',
+    status:'completed', updated:'Aug 9, 2026',
+    kpis:[{label:'Top Scorer',value:'9,336'},{label:'Top Wickets',value:'226'},{label:'Seasons',value:'5'}],
+    insights:['Virat Kohli leads all-time with 9,336 runs and 9 centuries','Chris Gayle\'s 357 sixes record remains uncontested'],
+    url:'./ipl_report.html',
   }
 ];
 
@@ -195,10 +206,7 @@ function renderGrid(data) {
       <div class="rc-footer">
         <span class="rc-updated">Updated ${r.updated}</span>
         <div class="rc-actions">
-          ${r.url
-            ? `<a href="${r.url}" class="btn-primary btn-sm">Open Report</a>`
-            : `<button class="btn-outline btn-sm" onclick="alert('Report viewer coming soon!')">View Details</button>`
-          }
+          <a href="${r.url}" class="btn-primary btn-sm">Open Report</a>
         </div>
       </div>
     </div>`).join('');
