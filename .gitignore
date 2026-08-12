@@ -4,7 +4,60 @@
 .env.local
 .env.*.local
 
-# ── Python (CPI subdirectory) ───────────────────────
+# ════════════════════════════════════════════════════
+# DATA FILES  –  never push raw datasets to GitHub
+# ════════════════════════════════════════════════════
+
+# ── Generic data file extensions ────────────────────
+*.csv
+*.tsv
+*.xls
+*.xlsx
+*.xlsm
+*.parquet
+*.feather
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.db
+*.sqlite
+*.sqlite3
+*.json
+*.geojson
+
+# ── ML / AI model artifacts ─────────────────────────
+*.joblib
+*.onnx
+*.pt
+*.pth
+*.model
+*.bin
+*.safetensors
+
+# ── Jupyter notebooks (contain embedded data/output) ─
+*.ipynb
+
+# ── Generated plot / image outputs ──────────────────
+Rain\ In\ Delhi/Plots/
+IPL/output/*.png
+IPL/output/*.jpg
+IPL/output/*.svg
+
+# ── Dataset directories (explicit paths) ────────────
+Crime\ Analysis/archive/
+IPL/ipl_stats/
+IPL/output/*.csv
+Rain\ In\ Delhi/model/
+Rain\ In\ Delhi/notebook/
+
+# ── Misc text data dumps ─────────────────────────────
+*.txt
+narratives.txt
+
+# ════════════════════════════════════════════════════
+# PYTHON
+# ════════════════════════════════════════════════════
 __pycache__/
 *.py[cod]
 *$py.class
@@ -17,25 +70,29 @@ venv/
 dist/
 build/
 
-# ── Jupyter ─────────────────────────────────────────
+# ── Jupyter checkpoints ──────────────────────────────
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
-# ── IDE ─────────────────────────────────────────────
+# ════════════════════════════════════════════════════
+# IDE / EDITOR
+# ════════════════════════════════════════════════════
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# ── OS ──────────────────────────────────────────────
+# ════════════════════════════════════════════════════
+# OS
+# ════════════════════════════════════════════════════
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# ── Logs ────────────────────────────────────────────
+# ════════════════════════════════════════════════════
+# LOGS & NODE
+# ════════════════════════════════════════════════════
 *.log
 logs/
-
-# ── Node (if ever added) ────────────────────────────
 node_modules/
 npm-debug.log*
