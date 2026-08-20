@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -14,7 +14,7 @@
     .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 4px; }
     @media (max-width: 900px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } }
-    
+
     .stat-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--r-card); padding: 18px 20px; box-shadow: var(--shadow);
@@ -22,12 +22,6 @@
     .stat-label { font-size: 12px; font-weight: 600; color: var(--text-500); margin-bottom: 6px; }
     .stat-num { font-size: 26px; font-weight: 800; color: var(--text-900); font-variant-numeric: tabular-nums; }
     .stat-sub { font-size: 11.5px; color: var(--text-400); margin-top: 4px; }
-
-    .cat-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; display: inline-block; }
-    .cat-badge.crime { background: #FDE8ED; color: #A51E35; }
-    .cat-badge.economics { background: #E8F4FD; color: #1E6FA5; }
-    .cat-badge.climate { background: #E8FDF4; color: #1EA566; }
-    .cat-badge.sports { background: #E8F0FD; color: #1E4FA5; }
 
     .source-link {
       font-size: 12.5px; font-weight: 600; color: #1E6FA5; text-decoration: none;
@@ -54,19 +48,19 @@
     <div class="nav-section">
       <p class="nav-eyebrow">Menu</p>
       <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
-      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">4</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge"></span></a>
       <a href="datasets.html"  class="nav-item active" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
       <a href="analytics.html" class="nav-item" id="nav-analytics"><span class="nav-label">Analytics</span></a>
     </div>
     <div class="sidebar-spacer"></div>
-</nav>
+  </nav>
 
   <!-- MAIN -->
   <div class="main">
     <header class="topbar">
       <div class="search-wrap">
-        <input type="text" id="search-input" placeholder="Search datasets, sources, categories…" />
-        <span class="search-kbd">⌘F</span>
+        <input type="text" id="search-input" placeholder="Search datasets, sources, categories&hellip;" />
+        <span class="search-kbd">&#8984;F</span>
       </div>
       <div class="topbar-spacer"></div>
       <div class="user-chip">
@@ -84,38 +78,14 @@
 
     <div class="content">
       <div class="datasets-wrap">
-        
-        <!-- Summary Stat Cards -->
-        <div class="stat-row">
-          <div class="stat-card">
-            <div class="stat-label">Active Datasets</div>
-            <div class="stat-num">4</div>
-            <div class="stat-sub">Fully ingested &amp; synced</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Total Data Size</div>
-            <div class="stat-num">157.4 MB</div>
-            <div class="stat-sub">25+ CSV files &amp; archives</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Data Portals</div>
-            <div class="stat-num">3</div>
-            <div class="stat-sub">Kaggle, Data.gov.in &amp; iplt20.com</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Linked Reports</div>
-            <div class="stat-num">4</div>
-            <div class="stat-sub">Crime, CPI, Rainfall &amp; IPL</div>
-          </div>
-        </div>
 
-        <!-- Dataset Repository Header -->
-        <div class="upload-zone" style="cursor:default;">
-          <p class="upload-title">Data Ingestion Repository</p>
-          <p class="upload-sub">All 4 active dataset sources are fully parsed, validated, and synchronized with report dashboards.</p>
-        </div>
+        <!-- Summary Stat Cards — auto-computed -->
+        <div class="stat-row" id="ds-stat-row"></div>
 
-        <!-- Data Table Card -->
+        <!-- Repository banner -->
+        <div class="upload-zone" style="cursor:default;" id="ds-banner"></div>
+
+        <!-- Data Table -->
         <div class="card" style="padding: 0; overflow: hidden;">
           <div class="table-container">
             <table class="data-table">
@@ -143,67 +113,42 @@
   </div>
 </div>
 
+<script src="reports-data.js"></script>
 <script src="hub.js"></script>
 <script>
-const DATASETS = [
-  {
-    id: 'crime-in-india',
-    name: 'Crime in India (NCRB 2001–2014)',
-    category: 'Crime',
-    catClass: 'crime',
-    format: 'CSV / Archive',
-    size: '145.2 MB',
-    date: 'Jul 28, 2026',
-    status: 'completed',
-    sourceLabel: 'Kaggle Dataset ↗',
-    sourceUrl: 'https://www.kaggle.com/datasets/rajanand/crime-in-india',
-    reportTitle: 'India Crime Analysis (2001–2013)',
-    reportUrl: 'crime_report.html'
-  },
-  {
-    id: 'cpi-inflation',
-    name: 'Year-wise CPI Inflation Rate (Combined CPI-C)',
-    category: 'Economics',
-    catClass: 'economics',
-    format: 'CSV',
-    size: '1.2 MB',
-    date: 'Nov 26, 2025',
-    status: 'completed',
-    sourceLabel: 'Data.gov.in Resource ↗',
-    sourceUrl: 'https://www.data.gov.in/resource/year-wise-inflation-rate-based-consumer-price-index-combined-cpi-c-2014-15-2021-22',
-    reportTitle: 'CPI Inflation Analysis',
-    reportUrl: 'cpi_report.html'
-  },
-  {
-    id: 'rainfall-india',
-    name: 'India Rainfall &amp; Precipitation Data (District-wise)',
-    category: 'Climate &amp; Weather',
-    catClass: 'climate',
-    format: 'CSV',
-    size: '4.8 MB',
-    date: 'Dec 1, 2025',
-    status: 'completed',
-    sourceLabel: 'Data.gov.in Search ↗',
-    sourceUrl: 'https://www.data.gov.in/search?title=Rainfall&sortby=_score&type=resources',
-    reportTitle: 'Rainfall Analysis in Delhi',
-    reportUrl: 'rainfall_report.html'
-  },
-  {
-    id: 'ipl-stats',
-    name: 'IPL Official Stats &amp; Career Records (2019&ndash;2026)',
-    category: 'Sports',
-    catClass: 'sports',
-    format: 'CSV (scraped)',
-    size: '6.2 MB',
-    date: 'Aug 9, 2026',
-    status: 'completed',
-    sourceLabel: 'iplt20.com Stats ↗',
-    sourceUrl: 'https://www.iplt20.com/stats',
-    reportTitle: 'IPL Performance Analysis (2019–2026)',
-    reportUrl: 'ipl_report.html'
-  }
-];
+/* ── STAT CARDS ────────────────────────────────────────── */
+(function () {
+  const s = HUB_STATS;
+  document.getElementById('ds-stat-row').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Active Datasets</div>
+      <div class="stat-num">${s.total}</div>
+      <div class="stat-sub">Fully ingested &amp; synced</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Data Size</div>
+      <div class="stat-num">${s.totalSizeLabel}</div>
+      <div class="stat-sub">30+ CSV, TXT &amp; archives</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Data Portals</div>
+      <div class="stat-num">${s.portals.length}</div>
+      <div class="stat-sub">${s.portals.join(', ')}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Linked Reports</div>
+      <div class="stat-num">${s.total}</div>
+      <div class="stat-sub">${REPORTS.map(r => r.categoryLabel).join(', ')}</div>
+    </div>
+  `;
 
+  document.getElementById('ds-banner').innerHTML = `
+    <p class="upload-title">Data Ingestion Repository</p>
+    <p class="upload-sub">All ${s.total} active dataset sources are fully parsed, validated, and synchronized with report dashboards.</p>
+  `;
+})();
+
+/* ── DATASET TABLE ─────────────────────────────────────── */
 function renderDatasets(data) {
   const container = document.getElementById('dataset-list');
   if (!data.length) {
@@ -217,49 +162,58 @@ function renderDatasets(data) {
     return;
   }
 
-  container.innerHTML = data.map(d => `
-    <tr data-search="${d.name} ${d.category} ${d.format} ${d.sourceLabel} ${d.reportTitle}">
-      <td style="font-weight: 700; color: var(--text-900);">
-        ${d.name}
-        <div style="font-size: 11px; color: var(--text-400); font-weight: normal; margin-top: 2px;">Ingested: ${d.date}</div>
-      </td>
-      <td><span class="cat-badge ${d.catClass}">${d.category}</span></td>
-      <td><span class="badge" style="background:var(--bg);color:var(--text-500)">${d.format}</span></td>
-      <td style="color:var(--text-500); font-weight:600;">${d.size}</td>
-      <td>
-        <a href="${d.sourceUrl}" target="_blank" rel="noopener" class="source-link">
-          ${d.sourceLabel}
-        </a>
-      </td>
-      <td>
-        <a href="${d.reportUrl}" style="font-size:12.5px; font-weight:600; color:var(--green-900); text-decoration:none;">
-          ${d.reportTitle} →
-        </a>
-      </td>
-      <td><span class="badge ${d.status}">${d.status.charAt(0).toUpperCase() + d.status.slice(1)}</span></td>
-      <td>
-        <div style="display:flex; gap:6px;">
-          <a href="${d.reportUrl}" class="btn-outline btn-xs" style="text-decoration:none;">View Report</a>
-          <a href="${d.sourceUrl}" target="_blank" rel="noopener" class="btn-primary btn-xs" style="text-decoration:none;">Source Data</a>
-        </div>
-      </td>
-    </tr>
-  `).join('');
+  container.innerHTML = data.map(r => {
+    const d = r.dataset;
+    return `
+      <tr data-search="${d.name} ${r.categoryLabel} ${d.format} ${d.sourceLabel} ${r.title}">
+        <td style="font-weight: 700; color: var(--text-900);">
+          ${d.name}
+          <div style="font-size: 11px; color: var(--text-400); font-weight: normal; margin-top: 2px;">Ingested: ${r.updated}</div>
+        </td>
+        <td>
+          <span style="font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; display:inline-block;
+            background:${r.categoryColors.bg}; color:${r.categoryColors.text};">
+            ${r.categoryLabel}
+          </span>
+        </td>
+        <td><span class="badge" style="background:var(--bg);color:var(--text-500)">${d.format}</span></td>
+        <td style="color:var(--text-500); font-weight:600;">${d.size}</td>
+        <td>
+          <a href="${d.sourceUrl}" target="_blank" rel="noopener" class="source-link">
+            ${d.sourceLabel} &nearr;
+          </a>
+        </td>
+        <td>
+          <a href="${r.url}" style="font-size:12.5px; font-weight:600; color:var(--green-900); text-decoration:none;">
+            ${r.title} &rarr;
+          </a>
+        </td>
+        <td><span class="badge ${bClass(r.status)}">${bText(r.status)}</span></td>
+        <td>
+          <div style="display:flex; gap:6px;">
+            <a href="${r.url}" class="btn-outline btn-xs" style="text-decoration:none;">View Report</a>
+            <a href="${d.sourceUrl}" target="_blank" rel="noopener" class="btn-primary btn-xs" style="text-decoration:none;">Source Data</a>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
-renderDatasets(DATASETS);
+renderDatasets(REPORTS);
 
-// Search listener
+/* ── SEARCH ────────────────────────────────────────────── */
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
   searchInput.addEventListener('input', e => {
     const q = e.target.value.toLowerCase().trim();
-    const filtered = DATASETS.filter(d => 
-      d.name.toLowerCase().includes(q) ||
-      d.category.toLowerCase().includes(q) ||
-      d.format.toLowerCase().includes(q) ||
-      d.reportTitle.toLowerCase().includes(q) ||
-      d.sourceLabel.toLowerCase().includes(q)
+    const filtered = REPORTS.filter(r =>
+      r.title.toLowerCase().includes(q) ||
+      r.categoryLabel.toLowerCase().includes(q) ||
+      r.dataset.format.toLowerCase().includes(q) ||
+      r.dataset.name.toLowerCase().includes(q) ||
+      r.dataset.sourceLabel.toLowerCase().includes(q) ||
+      r.dataset.portal.toLowerCase().includes(q)
     );
     renderDatasets(filtered);
   });
@@ -267,4 +221,3 @@ if (searchInput) {
 </script>
 </body>
 </html>
-

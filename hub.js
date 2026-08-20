@@ -1,4 +1,5 @@
 // hub.js - Shared Navigation, Mobile Drawer & Utilities for Analysis Hub
+// Requires reports-data.js to be loaded first (provides REPORTS and HUB_STATS).
 
 // ── Default User Identity ────────────────────────────────────
 const USER_IDENTITY = {
@@ -8,6 +9,10 @@ const USER_IDENTITY = {
   role:   'Data Analyst',
   bio:    'Analyzing crime, economic, and climate datasets. Building interactive reports and KPIs.'
 };
+
+// ── Shared badge helpers ─────────────────────────────────────
+function bClass(s) { return s === 'in_progress' ? 'in-progress' : s; }
+function bText(s)  { return s === 'in_progress' ? 'In Progress' : s.charAt(0).toUpperCase() + s.slice(1); }
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -25,6 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const activeEl = document.getElementById(navMap[file]);
   if (activeEl) activeEl.classList.add('active');
 
+  // ── Update nav badge count from live data ─────────────────
+  const count = (typeof HUB_STATS !== 'undefined') ? HUB_STATS.total : '';
+  document.querySelectorAll('.nav-badge').forEach(el => {
+    if (count !== '') el.textContent = count;
+  });
+
   // ── Mobile Menu Toggle & Navigation Drawer ────────────────
   const topbar = document.querySelector('.topbar');
   if (topbar && !document.querySelector('.mobile-menu-btn')) {
@@ -33,8 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
     menuBtn.setAttribute('aria-label', 'Open Menu');
     menuBtn.setAttribute('aria-expanded', 'false');
     menuBtn.setAttribute('aria-controls', 'mobile-nav-drawer');
-    menuBtn.innerHTML = '☰';
+    menuBtn.innerHTML = '&#9776;';
     topbar.insertBefore(menuBtn, topbar.firstChild);
+
+    const reportCount = (typeof HUB_STATS !== 'undefined') ? HUB_STATS.total : '';
 
     const backdrop = document.createElement('div');
     backdrop.className = 'mobile-nav-backdrop';
@@ -45,12 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="logo-name" style="font-size:16px">Analysis Hub</div>
             <div class="logo-sub">Data Reports</div>
           </div>
-          <button class="mobile-drawer-close">✕</button>
+          <button class="mobile-drawer-close">&#10005;</button>
         </div>
         <div class="nav-section">
           <p class="nav-eyebrow">Menu</p>
-          <a href="index.html" class="nav-item ${file === 'index.html' || file === '' ? 'active' : ''}"><span class="nav-label">Dashboard</span></a>
-          <a href="reports.html" class="nav-item ${file === 'reports.html' ? 'active' : ''}"><span class="nav-label">Reports</span><span class="nav-badge">3</span></a>
+          <a href="index.html"    class="nav-item ${file === 'index.html' || file === '' ? 'active' : ''}"><span class="nav-label">Dashboard</span></a>
+          <a href="reports.html"  class="nav-item ${file === 'reports.html'  ? 'active' : ''}"><span class="nav-label">Reports</span>${reportCount !== '' ? `<span class="nav-badge">${reportCount}</span>` : ''}</a>
           <a href="datasets.html" class="nav-item ${file === 'datasets.html' ? 'active' : ''}"><span class="nav-label">Datasets</span></a>
           <a href="analytics.html" class="nav-item ${file === 'analytics.html' ? 'active' : ''}"><span class="nav-label">Analytics</span></a>
         </div>
@@ -58,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="nav-section">
           <p class="nav-eyebrow">General</p>
           <a href="settings.html" class="nav-item ${file === 'settings.html' ? 'active' : ''}"><span class="nav-label">Settings</span></a>
-          <a href="help.html" class="nav-item ${file === 'help.html' ? 'active' : ''}"><span class="nav-label">Help</span></a>
+          <a href="help.html"     class="nav-item ${file === 'help.html'     ? 'active' : ''}"><span class="nav-label">Help</span></a>
         </div>
       </div>
     `;
@@ -172,8 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const roleInput  = document.getElementById('setting-role');
   const bioInput   = document.getElementById('setting-bio');
   const emailInput = document.getElementById('setting-email');
-  if (nameInput)  nameInput.value          = USER_IDENTITY.name;
-  if (roleInput)  roleInput.value          = USER_IDENTITY.role;
-  if (bioInput)   bioInput.value           = USER_IDENTITY.bio;
-  if (emailInput) emailInput.value         = USER_IDENTITY.email;
+  if (nameInput)  nameInput.value  = USER_IDENTITY.name;
+  if (roleInput)  roleInput.value  = USER_IDENTITY.role;
+  if (bioInput)   bioInput.value   = USER_IDENTITY.bio;
+  if (emailInput) emailInput.value = USER_IDENTITY.email;
 });

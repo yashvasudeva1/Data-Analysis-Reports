@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NASA C-MAPSS RUL Prediction (FD001) - Analysis Hub</title>
+  <meta name="description" content="End-to-end predictive maintenance pipeline for NASA C-MAPSS turbofan engines. XGBoost regression with 282 temporal features, engine-level leakage-safe validation, asymmetric PHM scoring." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="hub.css" />
+  <style>
+    :root {
+      --nasa-purple: #6A1EA5;
+      --nasa-purple-bg: #F0E8FD;
+      --nasa-blue: #1E4FA5;
+      --nasa-blue-bg: #E8F0FD;
+    }
+    .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:24px; }
+    @media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:600px){.grid-4{grid-template-columns:1fr;}}
+    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:24px; }
+    @media(max-width:1000px){.grid-3{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:600px){.grid-3{grid-template-columns:1fr;}}
+    .report-tabs { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:24px; border-bottom:1px solid var(--border); }
+    .report-tab { padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; color:var(--text-500); background:transparent; border:none; cursor:pointer; white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; transition:background .15s,color .15s; }
+    .report-tab:hover { background:var(--mint-100); color:var(--green-700); }
+    .report-tab.active { background:var(--green-900); color:#fff; }
+    .tab-section { display:none; }
+    .tab-section.active { display:block; }
+    .stat-pill { display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:999px; background:var(--mint-100); color:var(--green-700); margin-top:10px; }
+    .stat-pill.neutral { background:var(--gray-bg); color:var(--gray-text); }
+    .stat-pill.orange  { background:#FFF0E0; color:#B35A00; }
+    .stat-pill.blue    { background:#E8F0FD; color:#1E4FA5; }
+    .stat-pill.purple  { background:#F0E8FD; color:#6A1EA5; }
+    .chart-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-card); box-shadow:var(--shadow); padding:22px; margin-bottom:24px; }
+    .chart-box-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:12px; }
+    .chart-box-title { font-size:15px; font-weight:700; color:var(--text-900); }
+    .chart-box-sub { font-size:12px; color:var(--text-400); margin-top:2px; }
+    .chart-canvas-wrap { position:relative; height:320px; width:100%; }
+    .chart-canvas-wrap.short { height:240px; }
+    .chart-canvas-wrap.tall  { height:380px; }
+    .chart-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media(max-width:900px){.chart-grid-2{grid-template-columns:1fr;}}
+    .caption-box { margin-top:14px; padding:12px 16px; background:var(--bg); border-radius:12px; font-size:12.5px; color:var(--text-500); line-height:1.5; }
+    .caption-box strong { color:var(--text-900); }
+    .exec-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+    @media(max-width:900px){.exec-grid{grid-template-columns:1fr;}}
+    .exec-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px 20px; display:flex; flex-direction:column; gap:6px; box-shadow:var(--shadow); }
+    .exec-card.warning  { border-left:4px solid #C05621; }
+    .exec-card.positive { border-left:4px solid var(--green-500); }
+    .exec-card.info     { border-left:4px solid #2B6CB0; }
+    .exec-card.purple   { border-left:4px solid var(--nasa-purple); }
+    .exec-title { font-size:13px; font-weight:700; color:var(--text-900); }
+    .exec-val   { font-size:22px; font-weight:800; color:var(--text-900); font-variant-numeric:tabular-nums; }
+    .exec-desc  { font-size:12.5px; color:var(--text-500); line-height:1.5; }
+    .table-container { overflow-x:auto; border-radius:14px; border:1px solid var(--border); }
+    .data-table { width:100%; border-collapse:collapse; font-size:13px; text-align:left; }
+    .data-table th { background:var(--bg); color:var(--text-500); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:12px 16px; border-bottom:1px solid var(--border); }
+    .data-table td { padding:12px 16px; border-bottom:1px solid var(--border); color:var(--text-900); }
+    .data-table tr:last-child td { border-bottom:none; }
+    .data-table tr:hover td { background:rgba(14,59,46,.02); }
+    .rank-badge { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; font-size:11px; font-weight:800; background:var(--bg); color:var(--text-500); }
+    .rank-badge.gold   { background:#FFF0C2; color:#A07800; }
+    .rank-badge.silver { background:#F0F0F0; color:#606060; }
+    .rank-badge.bronze { background:#FFE8D8; color:#8B3A00; }
+    .narrative-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+    @media(max-width:800px){.narrative-grid{grid-template-columns:1fr;}}
+    .narrative-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:20px; box-shadow:var(--shadow); }
+    .narrative-card .nar-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--green-500); margin-bottom:8px; }
+    .narrative-card .nar-title { font-size:14px; font-weight:800; color:var(--text-900); margin-bottom:6px; }
+    .narrative-card .nar-sub { font-size:12.5px; color:var(--text-500); line-height:1.55; }
+    .narrative-card.featured { border-left:4px solid var(--nasa-purple); }
+    .conclusion-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-card); box-shadow:var(--shadow); padding:28px; margin-bottom:24px; }
+    .conclusion-card { display:flex; gap:16px; padding:18px 0; border-bottom:1px solid var(--border); }
+    .conclusion-card:last-child { border-bottom:none; padding-bottom:0; }
+    .conclusion-badge { width:36px; height:36px; border-radius:50%; background:var(--nasa-purple); color:#fff; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .conclusion-content h4 { font-size:14px; font-weight:700; color:var(--text-900); margin-bottom:4px; }
+    .conclusion-content p  { font-size:13px; color:var(--text-500); line-height:1.55; }
+    .progress-wrap { margin-bottom:12px; }
+    .progress-label { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:12.5px; font-weight:600; }
+    .progress-label span:first-child { color:var(--text-900); }
+    .progress-label span:last-child  { color:var(--text-400); }
+    .progress-bar-bg { height:7px; background:var(--bg); border-radius:999px; }
+    .progress-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--nasa-purple),#9B59D4); }
+    .sensor-chip { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; }
+    .sensor-up   { background:#E8FDF4; color:#1EA566; }
+    .sensor-down { background:#FDE8ED; color:#A51E35; }
+    .sensor-zero { background:#F5F5F5; color:#888; }
+    .phm-formula { background:var(--bg); border:1px solid var(--border); border-radius:14px; padding:18px 20px; font-size:13px; color:var(--text-900); margin-bottom:24px; line-height:1.7; }
+    .phm-formula code { font-family:monospace; background:var(--surface); padding:2px 6px; border-radius:6px; font-size:12px; border:1px solid var(--border); }
+    .pipeline-step { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+    .pipeline-step:last-child { border-bottom:none; }
+    .pipeline-num { width:28px; height:28px; border-radius:50%; background:var(--nasa-purple); color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .pipeline-text { font-size:13px; font-weight:600; color:var(--text-900); }
+    .pipeline-sub  { font-size:11.5px; color:var(--text-500); }
+    @media(max-width:600px){
+      .chart-canvas-wrap{height:220px;}
+      .chart-canvas-wrap.short{height:180px;}
+      .chart-canvas-wrap.tall{height:270px;}
+      .chart-box{padding:14px;}
+      .report-tab{padding:8px 14px;font-size:12px;}
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-name">Analysis Hub</div><div class="logo-sub">Data Reports</div></div>
+    <div class="nav-section">
+      <p class="nav-eyebrow">Menu</p>
+      <a href="index.html"     class="nav-item"><span class="nav-label">Dashboard</span></a>
+      <a href="reports.html"   class="nav-item active"><span class="nav-label">Reports</span><span class="nav-badge">5</span></a>
+      <a href="datasets.html"  class="nav-item"><span class="nav-label">Datasets</span></a>
+      <a href="analytics.html" class="nav-item"><span class="nav-label">Analytics</span></a>
+    </div>
+    <div class="sidebar-spacer"></div>
+</nav>
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button class="mobile-menu-btn" id="mobileMenuBtn">&#9776;</button>
+      <div class="search-wrap">
+        <input type="text" id="search-input" placeholder="Search sensors, metrics, models..." />
+        <span class="search-kbd">&#8984;F</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="user-chip">
+        <div class="user-text"><span class="user-name">Yash Vasudeva</span><span class="user-email">yash@analysis.hub</span></div>
+        <div class="user-avatar">YV</div>
+      </div>
+    </header>
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-header-text">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
+          <span class="badge" style="background:#F0E8FD;color:#6A1EA5;font-weight:700;">Machine Learning</span>
+          <span class="badge completed">Completed</span>
+          <span style="font-size:12px;color:var(--text-400)">Dataset Source: <a href="https://data.nasa.gov/dataset/C-MAPSS-Aircraft-Engine-Simulator-Data/xaut-bemq" target="_blank" rel="noopener" style="color:var(--green-900);font-weight:700;text-decoration:underline;">NASA Data Portal &#8599;</a></span>
+        </div>
+        <h1>NASA C-MAPSS Turbofan RUL Prediction (FD001)</h1>
+        <p>End-to-end predictive maintenance pipeline for NASA C-MAPSS turbofan engines. XGBoost regression with 282 temporal features, engine-level leakage-safe validation, and asymmetric NASA PHM scoring.</p>
+      </div>
+      <div class="page-header-actions">
+        <a href="datasets.html" class="btn-outline">View Dataset</a>
+        <a href="reports.html"  class="btn-outline">&#8592; Back to Reports</a>
+        <button class="btn-primary" onclick="window.print()">Export Report</button>
+      </div>
+    </div>
+    <!-- CONTENT -->
+    <div class="content">
+      <!-- KPI ROW -->
+      <div class="grid-4">
+        <div class="card stat-card hero">
+          <div class="stat-label">XGBoost Test MAE</div>
+          <div class="stat-number">10.37</div>
+          <div class="stat-pill">cycles &mdash; test set (100 engines)</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">XGBoost Test RMSE</div>
+          <div class="stat-number">14.30</div>
+          <div class="stat-pill neutral">cycles &mdash; root mean squared error</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">NASA PHM Score</div>
+          <div class="stat-number">309.72</div>
+          <div class="stat-pill purple">asymmetric scoring &mdash; lower is better</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Engineered Features</div>
+          <div class="stat-number">282</div>
+          <div class="stat-pill blue">temporal rolling stats &amp; trends</div>
+        </div>
+      </div>
+
+      <!-- NAV TABS -->
+      <div class="report-tabs">
+        <button class="report-tab active" onclick="switchTab(this,'tab-overview')">Overview &amp; EDA</button>
+        <button class="report-tab" onclick="switchTab(this,'tab-sensors')">Sensor Analysis</button>
+        <button class="report-tab" onclick="switchTab(this,'tab-models')">Model Results</button>
+        <button class="report-tab" onclick="switchTab(this,'tab-pipeline')">Pipeline &amp; Architecture</button>
+        <button class="report-tab" onclick="switchTab(this,'tab-insights')">Key Insights</button>
+      </div>
+
+      <!-- TAB: OVERVIEW & EDA -->
+      <div id="tab-overview" class="tab-section active">
+        <div class="exec-grid">
+          <div class="exec-card positive">
+            <div class="exec-title">Training Data</div>
+            <div class="exec-val">20,631 rows</div>
+            <div class="exec-desc">100 engines, 26 columns. Cycle range 1&ndash;362. 0 missing cells, 0 duplicate rows &mdash; perfectly clean dataset.</div>
+          </div>
+          <div class="exec-card info">
+            <div class="exec-title">Test Data</div>
+            <div class="exec-val">13,096 rows</div>
+            <div class="exec-desc">100 test engines. Final cycle per engine used for RUL evaluation against provided ground-truth values.</div>
+          </div>
+          <div class="exec-card purple">
+            <div class="exec-title">RUL Target Cap</div>
+            <div class="exec-val">125 cycles</div>
+            <div class="exec-desc">Training RUL capped at 125 cycles (piece-wise linear). Mean RUL 107.81, median 103, range 0&ndash;361.</div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-header"><div><div class="chart-box-title">Dataset Overview &mdash; Key Statistics</div><div class="chart-box-sub">NASA C-MAPSS FD001 (single operating condition)</div></div></div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead><tr><th>Metric</th><th>Training Set</th><th>Test Set</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td>Total Rows</td><td style="font-weight:700">20,631</td><td style="font-weight:700">13,096</td><td>Row-level time-series entries</td></tr>
+                <tr><td>Engines</td><td style="font-weight:700">100</td><td style="font-weight:700">100</td><td>Each engine has unique degradation trajectory</td></tr>
+                <tr><td>Columns</td><td colspan="2" style="font-weight:700;text-align:center;">26</td><td>1 ID + 1 cycle + 3 settings + 21 sensors</td></tr>
+                <tr><td>Engine Lifetime (cycles)</td><td style="font-weight:700">Mean 206.31 | Med 199</td><td>&mdash;</td><td>Min 128, Max 362</td></tr>
+                <tr><td>RUL Distribution</td><td style="font-weight:700">Mean 107.81 | Med 103</td><td>&mdash;</td><td>Min 0, Max 361; capped at 125</td></tr>
+                <tr><td>Missing Values</td><td colspan="2" style="font-weight:700;color:var(--green-700);text-align:center;">0</td><td>Perfectly clean dataset</td></tr>
+                <tr><td>Duplicate Rows</td><td colspan="2" style="font-weight:700;color:var(--green-700);text-align:center;">0</td><td>No duplicates detected</td></tr>
+                <tr><td>Operating Conditions</td><td colspan="2" style="font-weight:700;text-align:center;">1 (Single)</td><td>FD001 simplest subset; setting_3 constant</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="caption-box"><strong>FD001 Characteristics:</strong> The FD001 subset operates under a single operating condition, making it the cleanest entry point into C-MAPSS. <code>setting_3</code> is constant across all rows; <code>setting_1</code> and <code>setting_2</code> show near-zero correlation with RUL and were excluded from primary features.</div>
+        </div>
+
+        <div class="chart-grid-2">
+          <div class="chart-box">
+            <div class="chart-box-header"><div><div class="chart-box-title">Engine Lifetime Distribution</div><div class="chart-box-sub">Total cycles per training engine</div></div></div>
+            <div class="chart-canvas-wrap short"><canvas id="lifetimeChart"></canvas></div>
+            <div class="caption-box"><strong>Engine lifetimes</strong> range from 128 to 362 cycles (mean 206.31, median 199). This variance motivates engine-level train/val splitting to prevent leakage.</div>
+          </div>
+          <div class="chart-box">
+            <div class="chart-box-header"><div><div class="chart-box-title">RUL Distribution by Risk Bin</div><div class="chart-box-sub">Sensor 11 mean value across degradation stages</div></div></div>
+            <div class="chart-canvas-wrap short"><canvas id="rulBinChart"></canvas></div>
+            <div class="caption-box"><strong>Sensor 11 monotone drift:</strong> Early (&gt;125 cycles) = 47.37 &rarr; Late (31&ndash;70) = 47.66 &rarr; Critical (0&ndash;30) = 47.96. Consistent degradation signal across all 100 engines.</div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-header"><div><div class="chart-box-title">Top RUL-Correlated Sensors (Absolute Correlation)</div><div class="chart-box-sub">Pearson and Spearman correlations with Remaining Useful Life</div></div></div>
+          <div class="chart-canvas-wrap tall"><canvas id="corrChart"></canvas></div>
+          <div class="caption-box"><strong>sensor_11</strong> is the strongest individual RUL predictor with |Pearson|=0.696 and |Spearman|=0.718. All top sensors show consistent Pearson/Spearman agreement, confirming monotone (not just linear) relationships.</div>
+        </div>
+      </div>
+
+      <!-- TAB: SENSOR ANALYSIS -->
+      <div id="tab-sensors" class="tab-section">
+        <div class="exec-grid">
+          <div class="exec-card positive">
+            <div class="exec-title">Strongest Predictor</div>
+            <div class="exec-val">sensor_11</div>
+            <div class="exec-desc">|Pearson|=0.696, |Spearman|=0.718. Negative correlation &mdash; rises as engine degrades. Consistent trend across all 100 training engines.</div>
+          </div>
+          <div class="exec-card warning">
+            <div class="exec-title">Zero-Variance Sensors</div>
+            <div class="exec-val">6 excluded</div>
+            <div class="exec-desc">sensor_1, sensor_5, sensor_10, sensor_16, sensor_18, sensor_19 carry zero predictive signal and were excluded from all feature engineering.</div>
+          </div>
+          <div class="exec-card info">
+            <div class="exec-title">Highest Outlier Rate</div>
+            <div class="exec-val">sensor_9: 8.17%</div>
+            <div class="exec-desc">sensor_9 (8.17%) and sensor_14 (7.48%) have highest outlier rates. High STD: sensor_9=22.08, sensor_14=19.08, sensor_4=9.00.</div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-header"><div><div class="chart-box-title">Sensor Correlation Breakdown &mdash; Top 10 Predictors</div><div class="chart-box-sub">Pearson vs Spearman absolute correlation with RUL; direction indicated by chip</div></div></div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead><tr><th>#</th><th>Sensor</th><th>Pearson Corr</th><th>Spearman Corr</th><th>Direction</th><th>Trend Consistency</th><th>Outlier Rate</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><span class="rank-badge gold">1</span></td>
+                  <td style="font-weight:700">sensor_11</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.696</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.718</td>
+                  <td><span class="sensor-chip sensor-up">↑ Rising</span></td>
+                  <td>All 100 engines</td>
+                  <td>&lt;1%</td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge silver">2</span></td>
+                  <td style="font-weight:700">sensor_4</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.679</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.702</td>
+                  <td><span class="sensor-chip sensor-up">↑ Rising</span></td>
+                  <td>All 100 engines</td>
+                  <td>STD=9.00</td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge bronze">3</span></td>
+                  <td style="font-weight:700">sensor_12</td>
+                  <td style="font-weight:700;color:var(--green-700)">+0.672</td>
+                  <td style="font-weight:700;color:var(--green-700)">+0.693</td>
+                  <td><span class="sensor-chip sensor-down">↓ Falling</span></td>
+                  <td>All 100 engines</td>
+                  <td>&lt;1%</td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge">4</span></td>
+                  <td style="font-weight:700">sensor_7</td>
+                  <td style="font-weight:700;color:var(--green-700)">+0.657</td>
+                  <td style="font-weight:700;color:var(--green-700)">+0.679</td>
+                  <td><span class="sensor-chip sensor-down">↓ Falling</span></td>
+                  <td>All 100 engines</td>
+                  <td>&lt;1%</td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge">5</span></td>
+                  <td style="font-weight:700">sensor_15</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.643</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.666</td>
+                  <td><span class="sensor-chip sensor-up">↑ Rising</span></td>
+                  <td>&mdash;</td>
+                  <td>&lt;1%</td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge">6</span></td>
+                  <td style="font-weight:700">sensor_21</td>
+                  <td style="font-weight:700;color:var(--green-700)">+0.636</td>
+                  <td style="font-weight:700;color:var(--green-700)">+0.657</td>
+                  <td><span class="sensor-chip sensor-down">↓ Falling</span></td>
+                  <td>All 100 engines</td>
+                  <td>&lt;1%</td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge">7</span></td>
+                  <td style="font-weight:700">sensor_20</td>
+                  <td style="font-weight:700;color:var(--green-700)">+0.629</td>
+                  <td style="font-weight:700;color:var(--green-700)">+0.653</td>
+                  <td><span class="sensor-chip sensor-down">↓ Falling</span></td>
+                  <td>All 100 engines</td>
+                  <td>&lt;1%</td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge">8</span></td>
+                  <td style="font-weight:700">sensor_17</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.606</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.629</td>
+                  <td><span class="sensor-chip sensor-up">↑ Rising</span></td>
+                  <td>All 100 engines</td>
+                  <td>&lt;1%</td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge">9</span></td>
+                  <td style="font-weight:700">sensor_2</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.606</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.629</td>
+                  <td><span class="sensor-chip sensor-up">↑ Rising</span></td>
+                  <td>All 100 engines</td>
+                  <td>&lt;1%</td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge">10</span></td>
+                  <td style="font-weight:700">sensor_3</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.585</td>
+                  <td style="font-weight:700;color:#A51E35">&minus;0.606</td>
+                  <td><span class="sensor-chip sensor-up">↑ Rising</span></td>
+                  <td>All 100 engines</td>
+                  <td>&lt;1%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="caption-box"><strong>Perfectly Consistent Trends:</strong> Sensors 4, 3, 17, 2, 11 all increase across engine lifecycle in every single training engine. Sensors 7, 12, 20, 21 all decrease consistently. This monotone behavior validates sensor quality and enables robust rolling feature engineering.</div>
+        </div>
+
+        <div class="chart-grid-2">
+          <div class="chart-box">
+            <div class="chart-box-header"><div><div class="chart-box-title">Excluded Zero-Variance Sensors</div><div class="chart-box-sub">Carry no RUL signal &mdash; excluded from pipeline</div></div></div>
+            <div style="padding:8px 0;">
+              <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;">
+                <span class="sensor-chip sensor-zero" style="font-size:13px;padding:6px 14px;">sensor_1</span>
+                <span class="sensor-chip sensor-zero" style="font-size:13px;padding:6px 14px;">sensor_5</span>
+                <span class="sensor-chip sensor-zero" style="font-size:13px;padding:6px 14px;">sensor_10</span>
+                <span class="sensor-chip sensor-zero" style="font-size:13px;padding:6px 14px;">sensor_16</span>
+                <span class="sensor-chip sensor-zero" style="font-size:13px;padding:6px 14px;">sensor_18</span>
+                <span class="sensor-chip sensor-zero" style="font-size:13px;padding:6px 14px;">sensor_19</span>
+              </div>
+              <div class="caption-box" style="margin-top:12px;"><strong>Zero variance</strong> sensors output a constant value across all engines and all cycles. Including them would add noise without signal. Dropped before feature engineering stage.</div>
+            </div>
+          </div>
+          <div class="chart-box">
+            <div class="chart-box-header"><div><div class="chart-box-title">Outlier Rate by Sensor</div><div class="chart-box-sub">Top 4 sensors by outlier percentage</div></div></div>
+            <div class="chart-canvas-wrap short"><canvas id="outlierChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: MODEL RESULTS -->
+      <div id="tab-models" class="tab-section">
+        <div class="exec-grid">
+          <div class="exec-card positive">
+            <div class="exec-title">XGBoost Validation MAE</div>
+            <div class="exec-val">7.308 cy</div>
+            <div class="exec-desc">vs RF Validation MAE of 7.558 cycles. XGBoost wins by 3.3% on MAE metric. Engine-level GroupShuffleSplit validation prevents row-level leakage.</div>
+          </div>
+          <div class="exec-card info">
+            <div class="exec-title">XGBoost Validation RMSE</div>
+            <div class="exec-val">10.608 cy</div>
+            <div class="exec-desc">vs RF Validation RMSE of 11.147 cycles. XGBoost improves RMSE by 4.8% over the Random Forest baseline.</div>
+          </div>
+          <div class="exec-card purple">
+            <div class="exec-title">NASA PHM Score (val)</div>
+            <div class="exec-val">7,125.02</div>
+            <div class="exec-desc">XGBoost val PHM score vs RF val 8,100.94. XGBoost beats RF by 12.1% on asymmetric PHM scoring. Test PHM = 309.72.</div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-header"><div><div class="chart-box-title">RF vs XGBoost &mdash; All Metrics Comparison</div><div class="chart-box-sub">Validation-set performance across MAE, RMSE, and normalized PHM score</div></div></div>
+          <div class="chart-canvas-wrap"><canvas id="modelCompChart"></canvas></div>
+          <div class="caption-box"><strong>XGBoost outperforms</strong> the Random Forest baseline on every metric: MAE &minus;3.3%, RMSE &minus;4.8%, NASA PHM Score &minus;12.1%. The asymmetric PHM scoring penalty (10× for late vs 13× for early) particularly rewards the model&apos;s conservative (early-leaning) prediction style.</div>
+        </div>
+
+        <div class="chart-grid-2">
+          <div class="chart-box">
+            <div class="chart-box-header"><div><div class="chart-box-title">Test-Set Prediction Accuracy Bins</div><div class="chart-box-sub">% of test engines predicted within N cycles of true RUL</div></div></div>
+            <div class="chart-canvas-wrap short"><canvas id="accuracyBinChart"></canvas></div>
+            <div class="caption-box"><strong>~50%</strong> of engines predicted within 10 cycles. <strong>~80%</strong> within 25 cycles. Largest error: Engine 45 (true RUL=114, predicted=60.7, error=&minus;53.3 cycles).</div>
+          </div>
+          <div class="chart-box">
+            <div class="chart-box-header"><div><div class="chart-box-title">Model Benchmark Table</div><div class="chart-box-sub">RF baseline vs XGBoost final model &mdash; val and test metrics</div></div></div>
+            <div class="table-container" style="margin-top:8px;">
+              <table class="data-table">
+                <thead><tr><th>Model</th><th>Val MAE</th><th>Val RMSE</th><th>Val PHM</th><th>Test MAE</th><th>Test RMSE</th><th>Test PHM</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight:700">Random Forest</td>
+                    <td>7.558</td>
+                    <td>11.147</td>
+                    <td>8,100.94</td>
+                    <td style="color:var(--text-400);font-style:italic;">&mdash;</td>
+                    <td style="color:var(--text-400);font-style:italic;">&mdash;</td>
+                    <td style="color:var(--text-400);font-style:italic;">&mdash;</td>
+                  </tr>
+                  <tr style="background:rgba(106,30,165,0.04);">
+                    <td style="font-weight:800;color:var(--nasa-purple)">XGBoost &#9733;</td>
+                    <td style="font-weight:700;color:var(--green-700)">7.308</td>
+                    <td style="font-weight:700;color:var(--green-700)">10.608</td>
+                    <td style="font-weight:700;color:var(--green-700)">7,125.02</td>
+                    <td style="font-weight:700;color:var(--green-700)">10.37</td>
+                    <td style="font-weight:700;color:var(--green-700)">14.30</td>
+                    <td style="font-weight:700;color:var(--green-700)">309.72</td>
+                  </tr>
+                  <tr style="background:var(--bg);">
+                    <td style="font-weight:700;font-size:12px;color:var(--text-400)">XGBoost improvement</td>
+                    <td style="font-size:12px;color:var(--green-700);font-weight:700;">&minus;3.3%</td>
+                    <td style="font-size:12px;color:var(--green-700);font-weight:700;">&minus;4.8%</td>
+                    <td style="font-size:12px;color:var(--green-700);font-weight:700;">&minus;12.1%</td>
+                    <td colspan="3" style="font-size:12px;color:var(--text-400);font-style:italic;">test-set only for XGBoost</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-header"><div><div class="chart-box-title">NASA PHM Asymmetric Scoring Formula</div><div class="chart-box-sub">Late predictions penalized more aggressively than early ones</div></div></div>
+          <div class="phm-formula">
+            <strong>PHM Score (per engine):</strong><br/>
+            &bull; If <code>e &lt; 0</code> (early prediction): <code>exp(&minus;e / 13) &minus; 1</code><br/>
+            &bull; If <code>e &ge; 0</code> (late prediction): <code>exp(e / 10) &minus; 1</code><br/><br/>
+            where <code>e = predicted_RUL &minus; true_RUL</code><br/><br/>
+            <strong>Total PHM Score</strong> = sum across all engines. <em>Lower is better.</em><br/><br/>
+            <strong>Key asymmetry:</strong> Late predictions (denominator=10) are penalized ~30% more steeply than early predictions (denominator=13). A model that consistently predicts conservatively (early) benefits from this asymmetry &mdash; which is exactly what XGBoost does on this dataset.
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: PIPELINE & ARCHITECTURE -->
+      <div id="tab-pipeline" class="tab-section">
+        <div class="exec-grid">
+          <div class="exec-card positive">
+            <div class="exec-title">282 Engineered Features</div>
+            <div class="exec-val">282 features</div>
+            <div class="exec-desc">Built from 21 raw sensors via rolling mean, rolling std, rolling min/max, exponential moving average, and linear trend slopes per engine window.</div>
+          </div>
+          <div class="exec-card info">
+            <div class="exec-title">Leakage-Safe Validation</div>
+            <div class="exec-val">GroupShuffleSplit</div>
+            <div class="exec-desc">Engine-level GroupShuffleSplit ensures no engine appears in both train and validation folds. Prevents optimistic bias from row-level random splits.</div>
+          </div>
+          <div class="exec-card purple">
+            <div class="exec-title">Inference Stack</div>
+            <div class="exec-val">FastAPI + Streamlit</div>
+            <div class="exec-desc">Production-ready inference pipeline with FastAPI REST endpoint and Streamlit interactive UI for real-time RUL prediction from new engine sensor readings.</div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-header"><div><div class="chart-box-title">End-to-End Pipeline Architecture</div><div class="chart-box-sub">From raw NASA C-MAPSS TXT files to deployed inference</div></div></div>
+          <div style="padding:8px 0;">
+            <div class="pipeline-step">
+              <div class="pipeline-num">1</div>
+              <div><div class="pipeline-text">NASA C-MAPSS TXT Data Loader</div><div class="pipeline-sub">Reads FD001 train/test/RUL TXT files; attaches column schema (engine_id, cycle, 3 settings, 21 sensors)</div></div>
+            </div>
+            <div class="pipeline-step">
+              <div class="pipeline-num">2</div>
+              <div><div class="pipeline-text">Schema Validation</div><div class="pipeline-sub">Checks for missing values, constant columns, dtype conformity; logs zero-variance sensor exclusions</div></div>
+            </div>
+            <div class="pipeline-step">
+              <div class="pipeline-num">3</div>
+              <div><div class="pipeline-text">RUL Target Construction</div><div class="pipeline-sub">Piece-wise linear RUL: capped at 125 cycles for training; test RUL from provided ground-truth file</div></div>
+            </div>
+            <div class="pipeline-step">
+              <div class="pipeline-num">4</div>
+              <div><div class="pipeline-text">Temporal Feature Engineering (282 features)</div><div class="pipeline-sub">Per-engine rolling window stats (mean, std, min, max, EMA) + linear trend slope across windows of size 5, 10, 20 cycles</div></div>
+            </div>
+            <div class="pipeline-step">
+              <div class="pipeline-num">5</div>
+              <div><div class="pipeline-text">Engine-Level Train/Val Split</div><div class="pipeline-sub">GroupShuffleSplit by engine_id; 80% engines train / 20% val. Test: final cycle per engine only</div></div>
+            </div>
+            <div class="pipeline-step">
+              <div class="pipeline-num">6</div>
+              <div><div class="pipeline-text">Random Forest Baseline</div><div class="pipeline-sub">100-tree Random Forest regressor as benchmark; Val MAE=7.558, Val RMSE=11.147, Val PHM=8,100.94</div></div>
+            </div>
+            <div class="pipeline-step">
+              <div class="pipeline-num">7</div>
+              <div><div class="pipeline-text">XGBoost Regressor (Final Model)</div><div class="pipeline-sub">XGBoost with hyperparameter tuning; Test MAE=10.37, Test RMSE=14.30, Test PHM=309.72</div></div>
+            </div>
+            <div class="pipeline-step">
+              <div class="pipeline-num">8</div>
+              <div><div class="pipeline-text">Evaluation &mdash; MLflow Tracking + Model Artifact</div><div class="pipeline-sub">MAE, RMSE, NASA PHM Score logged; model saved as .pkl and .json; confusion-style error distribution plotted</div></div>
+            </div>
+            <div class="pipeline-step">
+              <div class="pipeline-num">9</div>
+              <div><div class="pipeline-text">FastAPI REST Endpoint + Streamlit UI</div><div class="pipeline-sub">Production inference: POST sensor readings → receive predicted RUL. Streamlit dashboard for interactive exploration</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-header"><div><div class="chart-box-title">Model Heteroscedasticity Analysis</div><div class="chart-box-sub">Error characteristics across RUL ranges</div></div></div>
+          <div class="narrative-grid" style="margin-bottom:0;">
+            <div class="narrative-card featured">
+              <div class="nar-label">Structural Effect</div>
+              <div class="nar-title">High RUL = Larger Errors</div>
+              <div class="nar-sub">Engines with true RUL &gt; 100 cycles show larger absolute errors. This is a structural consequence of the 125-cycle training cap &mdash; the model has less signal for engines far from failure.</div>
+            </div>
+            <div class="narrative-card">
+              <div class="nar-label">Conservative Bias</div>
+              <div class="nar-title">Early Predictions Favored</div>
+              <div class="nar-sub">Model consistently under-predicts RUL (predicts failure sooner than true). Under the asymmetric PHM scoring, this is actually favorable &mdash; early predictions incur lower penalty than late ones.</div>
+            </div>
+            <div class="narrative-card">
+              <div class="nar-label">Worst Case</div>
+              <div class="nar-title">Engine 45: &minus;53.3 Cycles</div>
+              <div class="nar-sub">True RUL=114, Predicted=60.7. Error of &minus;53.3 cycles represents the most conservative prediction. Likely caused by the 125-cycle training cap creating uncertainty at high RUL values.</div>
+            </div>
+            <div class="narrative-card">
+              <div class="nar-label">Central Performance</div>
+              <div class="nar-title">~50% within 10 cycles</div>
+              <div class="nar-sub">Approximately 50% of the 100 test engines are predicted within 10 cycles of true RUL. ~80% are predicted within 25 cycles. Strong median-engine accuracy.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: KEY INSIGHTS -->
+      <div id="tab-insights" class="tab-section">
+        <div class="conclusion-box">
+          <div class="conclusion-card">
+            <div class="conclusion-badge">1</div>
+            <div class="conclusion-content">
+              <h4>sensor_11 is the Dominant RUL Predictor</h4>
+              <p>With |Pearson|=0.696 and |Spearman|=0.718, sensor_11 is the strongest individual predictor of Remaining Useful Life. Its value increases monotonically across the lifecycle of every single training engine &mdash; a perfectly reliable degradation signal that forms the backbone of the feature set.</p>
+            </div>
+          </div>
+          <div class="conclusion-card">
+            <div class="conclusion-badge">2</div>
+            <div class="conclusion-content">
+              <h4>6 Constant Sensors Carry Zero Information</h4>
+              <p>sensor_1, sensor_5, sensor_10, sensor_16, sensor_18, sensor_19 output constant values across all engines and all cycles in the FD001 dataset. Including them would add dimensionality without predictive value. They are excluded before all feature engineering steps.</p>
+            </div>
+          </div>
+          <div class="conclusion-card">
+            <div class="conclusion-badge">3</div>
+            <div class="conclusion-content">
+              <h4>XGBoost Achieves Test MAE of 10.37 Cycles</h4>
+              <p>The final XGBoost model predicts turbofan RUL with a test MAE of 10.37 cycles and RMSE of 14.30 cycles on the 100-engine test set. Approximately 50% of engines are predicted within 10 cycles of true RUL, and ~80% within 25 cycles. This represents accurate and operationally useful predictions for maintenance scheduling.</p>
+            </div>
+          </div>
+          <div class="conclusion-card">
+            <div class="conclusion-badge">4</div>
+            <div class="conclusion-content">
+              <h4>NASA PHM Score of 309.72 &mdash; Conservative Model Favored by Asymmetric Scoring</h4>
+              <p>The NASA PHM score of 309.72 on the test set reflects a competitive result. The model&apos;s tendency to predict RUL conservatively (early) is actually favorable under the PHM scoring function, which penalizes late predictions ~30% more steeply than early ones (denominator 10 vs 13).</p>
+            </div>
+          </div>
+          <div class="conclusion-card">
+            <div class="conclusion-badge">5</div>
+            <div class="conclusion-content">
+              <h4>282 Features from 21 Raw Sensors via Temporal Engineering</h4>
+              <p>The feature engineering stage transforms 21 raw sensors into 282 features using rolling windows of size 5, 10, and 20 cycles: rolling mean, rolling std, rolling min, rolling max, exponential moving average, and linear trend slope. This rich temporal representation captures degradation rate, not just instantaneous sensor values.</p>
+            </div>
+          </div>
+          <div class="conclusion-card">
+            <div class="conclusion-badge">6</div>
+            <div class="conclusion-content">
+              <h4>Engine-Level GroupShuffleSplit Prevents Data Leakage</h4>
+              <p>Row-level random splitting would allow data from the same engine to appear in both train and validation sets, creating severe optimistic bias. The engine-level GroupShuffleSplit ensures completely disjoint engine sets between train and validation, producing a realistic estimate of out-of-sample performance on unseen engines.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-header"><div><div class="chart-box-title">Sensor Correlation Progress Bars</div><div class="chart-box-sub">Absolute Pearson correlation strength &mdash; top 10 sensors</div></div></div>
+          <div>
+            <div class="progress-wrap"><div class="progress-label"><span>sensor_11</span><span>|r|=0.696</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:69.6%"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>sensor_4</span><span>|r|=0.679</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:67.9%"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>sensor_12</span><span>|r|=0.672</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:67.2%"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>sensor_7</span><span>|r|=0.657</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:65.7%"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>sensor_15</span><span>|r|=0.643</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:64.3%"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>sensor_21</span><span>|r|=0.636</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:63.6%"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>sensor_20</span><span>|r|=0.629</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:62.9%"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>sensor_17</span><span>|r|=0.606</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:60.6%"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>sensor_2</span><span>|r|=0.606</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:60.6%"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>sensor_3</span><span>|r|=0.585</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:58.5%"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-shell -->
+
+<script src="hub.js"></script>
+<script>
+/* ── TAB SWITCHER ─────────────────────────────────────── */
+function switchTab(btn, targetId) {
+  document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(targetId).classList.add('active');
+}
+
+/* ── CHART DEFAULTS ───────────────────────────────────── */
+const FONT = { family: 'Plus Jakarta Sans', weight: 600 };
+const GRID_COLOR = '#ECEEED';
+const BASE_OPTS = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { position: 'top', labels: { font: FONT } } },
+  scales: {
+    x: { grid: { color: GRID_COLOR }, ticks: { font: FONT } },
+    y: { grid: { color: GRID_COLOR }, ticks: { font: FONT } }
+  }
+};
+
+/* ── 1. ENGINE LIFETIME DISTRIBUTION ─────────────────── */
+new Chart(document.getElementById('lifetimeChart'), {
+  type: 'bar',
+  data: {
+    labels: ['< 150', '150–175', '175–200', '200–225', '225–250', '250–300', '> 300'],
+    datasets: [{
+      label: 'Number of Engines',
+      data: [4, 15, 22, 26, 16, 12, 5],
+      backgroundColor: '#6A1EA5',
+      borderRadius: 6
+    }]
+  },
+  options: { ...BASE_OPTS, plugins: { legend: { display: false } } }
+});
+
+/* ── 2. RUL BIN CHART (sensor_11 degradation) ────────── */
+new Chart(document.getElementById('rulBinChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Early\n(>125 cy)', 'Medium\n(71–125 cy)', 'Late\n(31–70 cy)', 'Critical\n(0–30 cy)'],
+    datasets: [{
+      label: 'sensor_11 Mean Value',
+      data: [47.37, 47.51, 47.66, 47.96],
+      backgroundColor: ['#9B59D4', '#7B3AB5', '#6A1EA5', '#4A1080'],
+      borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: GRID_COLOR }, ticks: { font: FONT } },
+      y: { grid: { color: GRID_COLOR }, ticks: { font: FONT }, min: 47.0, max: 48.2 }
+    }
+  }
+});
+
+/* ── 3. CORRELATION CHART ─────────────────────────────── */
+new Chart(document.getElementById('corrChart'), {
+  type: 'bar',
+  data: {
+    labels: ['sensor_11', 'sensor_4', 'sensor_12', 'sensor_7', 'sensor_15', 'sensor_21', 'sensor_20', 'sensor_17', 'sensor_2', 'sensor_3'],
+    datasets: [
+      {
+        label: '|Pearson|',
+        data: [0.696, 0.679, 0.672, 0.657, 0.643, 0.636, 0.629, 0.606, 0.606, 0.585],
+        backgroundColor: '#6A1EA5',
+        borderRadius: 6
+      },
+      {
+        label: '|Spearman|',
+        data: [0.718, 0.702, 0.693, 0.679, 0.666, 0.657, 0.653, 0.629, 0.629, 0.606],
+        backgroundColor: '#9B59D4',
+        borderRadius: 6
+      }
+    ]
+  },
+  options: {
+    ...BASE_OPTS,
+    scales: {
+      x: { grid: { color: GRID_COLOR }, ticks: { font: FONT } },
+      y: { grid: { color: GRID_COLOR }, ticks: { font: FONT }, min: 0.5, max: 0.75, title: { display: true, text: 'Absolute Correlation', font: FONT } }
+    }
+  }
+});
+
+/* ── 4. OUTLIER RATE CHART ────────────────────────────── */
+new Chart(document.getElementById('outlierChart'), {
+  type: 'bar',
+  data: {
+    labels: ['sensor_9', 'sensor_14', 'sensor_6', 'sensor_8'],
+    datasets: [{
+      label: 'Outlier Rate (%)',
+      data: [8.17, 7.48, 1.97, 1.55],
+      backgroundColor: ['#A51E35', '#C05621', '#B35A00', '#1E6FA5'],
+      borderRadius: 6
+    }]
+  },
+  options: {
+    ...BASE_OPTS,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: GRID_COLOR }, ticks: { font: FONT } },
+      y: { grid: { color: GRID_COLOR }, ticks: { font: FONT }, title: { display: true, text: 'Outlier Rate (%)', font: FONT } }
+    }
+  }
+});
+
+/* ── 5. MODEL COMPARISON CHART ────────────────────────── */
+new Chart(document.getElementById('modelCompChart'), {
+  type: 'bar',
+  data: {
+    labels: ['MAE (cycles)', 'RMSE (cycles)', 'PHM Score (÷1000)'],
+    datasets: [
+      {
+        label: 'Random Forest (Baseline)',
+        data: [7.558, 11.147, 8.101],
+        backgroundColor: '#888',
+        borderRadius: 6
+      },
+      {
+        label: 'XGBoost (Final)',
+        data: [7.308, 10.608, 7.125],
+        backgroundColor: '#6A1EA5',
+        borderRadius: 6
+      }
+    ]
+  },
+  options: BASE_OPTS
+});
+
+/* ── 6. ACCURACY BIN CHART ────────────────────────────── */
+new Chart(document.getElementById('accuracyBinChart'), {
+  type: 'bar',
+  data: {
+    labels: ['±5 cy', '±10 cy', '±15 cy', '±20 cy', '±25 cy', '±30 cy'],
+    datasets: [{
+      label: '% Test Engines',
+      data: [28, 50, 63, 73, 80, 86],
+      backgroundColor: '#6A1EA5',
+      borderRadius: 6
+    }]
+  },
+  options: {
+    ...BASE_OPTS,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: GRID_COLOR }, ticks: { font: FONT } },
+      y: { grid: { color: GRID_COLOR }, ticks: { font: FONT }, max: 100, title: { display: true, text: '% of Engines', font: FONT } }
+    }
+  }
+});
+</script>
+</body>
+</html>

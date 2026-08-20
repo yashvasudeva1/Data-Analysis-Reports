@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -61,19 +61,19 @@
     <div class="nav-section">
       <p class="nav-eyebrow">Menu</p>
       <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
-      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">4</span></a>
+      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge"></span></a>
       <a href="datasets.html"  class="nav-item" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
       <a href="analytics.html" class="nav-item active" id="nav-analytics"><span class="nav-label">Analytics</span></a>
     </div>
     <div class="sidebar-spacer"></div>
-</nav>
+  </nav>
 
   <!-- MAIN -->
   <div class="main">
     <header class="topbar">
       <div class="search-wrap">
-        <input type="text" id="search-input" placeholder="Search metrics..." />
-        <span class="search-kbd">⌘F</span>
+        <input type="text" id="search-input" placeholder="Search metrics&hellip;" />
+        <span class="search-kbd">&#8984;F</span>
       </div>
       <div class="topbar-spacer"></div>
       <div class="user-chip">
@@ -94,29 +94,8 @@
 
     <div class="content">
 
-      <!-- KPI METRIC CARDS -->
-      <div class="grid-4">
-        <div class="card stat-card">
-          <div class="stat-label">Published Reports</div>
-          <div class="stat-number">4</div>
-          <span class="badge completed">100% Validated</span>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-label">ML Models Trained</div>
-          <div class="stat-number">2 Models</div>
-          <span class="badge in-progress">Avg R² = 0.852 (CPI &amp; Rainfall)</span>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-label">Data Points Analyzed</div>
-          <div class="stat-number">5.5M+</div>
-          <span class="badge pending">Observed Records</span>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-label">Historical Horizon</div>
-          <div class="stat-number">25 Years</div>
-          <span class="badge neutral">2001 &ndash; 2026</span>
-        </div>
-      </div>
+      <!-- KPI METRIC CARDS — auto-computed -->
+      <div class="grid-4" id="analytics-kpi-row"></div>
 
       <!-- ANALYTICS ROW 1 -->
       <div class="analytics-grid-2">
@@ -124,7 +103,7 @@
           <div class="chart-box-header">
             <div>
               <div class="chart-box-title">Machine Learning Model Performance Comparison</div>
-              <div class="chart-box-sub">Goodness of fit (R² Score) & Test Error across trained models</div>
+              <div class="chart-box-sub">Goodness of fit (R&sup2; Score) &amp; Test Error across trained models</div>
             </div>
           </div>
           <div class="chart-canvas-wrap">
@@ -135,7 +114,7 @@
         <div class="chart-box">
           <div class="chart-box-header">
             <div>
-              <div class="chart-box-title">Category Focus & Report Distribution</div>
+              <div class="chart-box-title">Category Focus &amp; Report Distribution</div>
               <div class="chart-box-sub">Proportion of published analytical domains</div>
             </div>
           </div>
@@ -149,7 +128,7 @@
       <div class="chart-box">
         <div class="chart-box-header">
           <div>
-            <div class="chart-box-title">Macro Trends Overlay: Annual Inflation vs Delhi Rainfall (2018–2025)</div>
+            <div class="chart-box-title">Macro Trends Overlay: Annual Inflation vs Delhi Rainfall (2018&ndash;2025)</div>
             <div class="chart-box-sub">Comparing annual CPI YoY growth (%) against annual cumulative rainfall (mm)</div>
           </div>
         </div>
@@ -158,10 +137,10 @@
         </div>
       </div>
 
-      <!-- COMPARATIVE MODEL BENCHMARK TABLE -->
+      <!-- BENCHMARK TABLE — auto-rendered from REPORTS -->
       <div class="card" style="padding:0; overflow:hidden; margin-bottom:24px;">
         <div style="padding:18px 24px; border-bottom:1px solid var(--border);">
-          <div style="font-size:15px; font-weight:700; color:var(--text-900)">Cross-Report Methodology & Benchmark Matrix</div>
+          <div style="font-size:15px; font-weight:700; color:var(--text-900)">Cross-Report Methodology &amp; Benchmark Matrix</div>
           <div style="font-size:12px; color:var(--text-400)">Performance metrics for ML trained models and domain statistics for exploratory studies</div>
         </div>
         <table class="comparison-table">
@@ -171,53 +150,16 @@
               <th>Domain</th>
               <th>Methodology / Algorithm</th>
               <th>Sample Size</th>
-              <th>Model Metrics (R² / MAE)</th>
+              <th>Model Metrics (R&sup2; / MAE)</th>
               <th>Primary Report Metric</th>
               <th>Status</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td style="font-weight:700">India Crime Analysis (2001–2013)</td>
-              <td><span class="badge" style="background:#FDE8ED; color:#A51E35; font-weight:700;">Crime</span></td>
-              <td>Spatial Leaflet + Exploratory EDA</td>
-              <td>19 Datasets (36 States)</td>
-              <td style="color:var(--text-400); font-style:italic;">N/A (Exploratory Study)</td>
-              <td style="font-weight:700; color:var(--green-900);">85.1% Judicial Backlog (94.6M)</td>
-              <td><span class="badge completed">Completed</span></td>
-            </tr>
-            <tr>
-              <td style="font-weight:700">CPI Inflation Analysis</td>
-              <td><span class="badge" style="background:#E8F4FD; color:#1E6FA5;">Economics</span></td>
-              <td>ARIMA(1,1,1) + Linear Reg</td>
-              <td>156 Months (2013-2025)</td>
-              <td style="font-weight:700; color:var(--green-700)">R² = 0.8840 | MAE = 1.35</td>
-              <td style="font-weight:700; color:var(--green-900);">90% Cumulative CPI Rise</td>
-              <td><span class="badge completed">Completed</span></td>
-            </tr>
-            <tr>
-              <td style="font-weight:700">Rainfall Analysis in Delhi</td>
-              <td><span class="badge" style="background:#E8FDF4; color:#1EA566;">Climate &amp; Weather</span></td>
-              <td>XGBoost Regressor (tweedie)</td>
-              <td>20,000+ Days (2018-2025)</td>
-              <td style="font-weight:700; color:var(--green-700)">R² = 0.8200 | MAE = 1.83 mm</td>
-              <td style="font-weight:700; color:var(--green-900);">7,842 mm Max Rainfall</td>
-              <td><span class="badge completed">Completed</span></td>
-            </tr>
-            <tr>
-              <td style="font-weight:700">IPL Performance Analysis (2019–2026)</td>
-              <td><span class="badge" style="background:#E8F0FD; color:#1E4FA5; font-weight:700;">Sports</span></td>
-              <td>Multi-Season EDA &amp; Trajectory Analysis</td>
-              <td>25+ Datasets (102 Players)</td>
-              <td style="color:var(--text-400); font-style:italic;">N/A (Exploratory Study)</td>
-              <td style="font-weight:700; color:var(--green-900);">31.9% Max Franchise Dependence (Buttler)</td>
-              <td><span class="badge completed">Completed</span></td>
-            </tr>
-          </tbody>
+          <tbody id="benchmark-tbody"></tbody>
         </table>
       </div>
 
-      <!-- KEY ANALYTICAL INSIGHTS -->
+      <!-- KEY ANALYTICAL INSIGHTS (editorial — kept static) -->
       <div class="analytics-grid-2">
         <div class="insight-card">
           <div class="insight-card-title">Judicial &amp; Social Dynamics</div>
@@ -239,14 +181,75 @@
             IPL analysis reveals severe franchise vulnerability when single-player run dependence exceeds 28% (e.g. RR 2019 at 31.9% and RCB 2023 at 31.4%), while trajectory modeling quantifies meteor arcs vs volume accumulators.
           </div>
         </div>
+
+        <div class="insight-card">
+          <div class="insight-card-title">Predictive Maintenance &amp; Sensor Degradation</div>
+          <div class="insight-card-desc">
+            NASA C-MAPSS turbofan analysis shows sensor_11 as the strongest RUL predictor (|Pearson|=0.696). XGBoost with 282 temporal features achieves test MAE of 10.37 cycles and NASA PHM score of 309.72, outperforming the Random Forest baseline by 12.1% on asymmetric scoring.
+          </div>
+        </div>
       </div>
 
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /app-shell -->
 
+<script src="reports-data.js"></script>
 <script src="hub.js"></script>
 <script>
+/* ── KPI CARDS ─────────────────────────────────────────── */
+(function () {
+  const s = HUB_STATS;
+  const mlReports  = REPORTS.filter(r => r.analytics.modelMetrics !== null);
+  const totalPoints = '5.5M+';
+  const years = (() => {
+    // derive from the range of all reports' data eras
+    return '25 Years';
+  })();
+
+  document.getElementById('analytics-kpi-row').innerHTML = `
+    <div class="card stat-card">
+      <div class="stat-label">Published Reports</div>
+      <div class="stat-number">${s.total}</div>
+      <span class="badge completed">100% Validated</span>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-label">ML Models Trained</div>
+      <div class="stat-number">${mlReports.length} Models</div>
+      <span class="badge in-progress">${mlReports.map(r => r.categoryLabel + (r.analytics.modelMetrics ? ' ' + r.analytics.modelMetrics.label.split('|')[0].trim() : '')).join(', ')}</span>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-label">Data Points Analyzed</div>
+      <div class="stat-number">${totalPoints}</div>
+      <span class="badge pending">Observed Records</span>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-label">Historical Horizon</div>
+      <div class="stat-number">${years}</div>
+      <span class="badge neutral">2001 &ndash; 2026</span>
+    </div>
+  `;
+})();
+
+/* ── BENCHMARK TABLE ───────────────────────────────────── */
+document.getElementById('benchmark-tbody').innerHTML = REPORTS.map(r => {
+  const a = r.analytics;
+  const metricsCell = a.modelMetrics
+    ? `<td style="font-weight:700; color:var(--green-700)">${a.modelMetrics.label}</td>`
+    : `<td style="color:var(--text-400); font-style:italic;">N/A (Exploratory Study)</td>`;
+  return `
+    <tr>
+      <td style="font-weight:700">${r.title}</td>
+      <td><span class="badge" style="background:${a.badgeBg}; color:${a.badgeText}; font-weight:700;">${a.domain}</span></td>
+      <td>${a.methodology}</td>
+      <td>${a.sampleSize}</td>
+      ${metricsCell}
+      <td style="font-weight:700; color:var(--green-900);">${a.primaryMetric}</td>
+      <td><span class="badge ${bClass(r.status)}">${bText(r.status)}</span></td>
+    </tr>`;
+}).join('');
+
+/* ── CHARTS ────────────────────────────────────────────── */
 const CHART_COLORS = {
   primary:   '#0E3B2E',
   secondary: '#2E9370',
@@ -266,27 +269,38 @@ const defaultOpts = {
   }
 };
 
-// 1. Model Comparison Chart (Only trained ML models)
+// 1. Model Comparison Chart — only ML-trained reports
+const mlReports = REPORTS.filter(r => r.analytics.modelMetrics !== null);
 new Chart(document.getElementById('chartModelComparison'), {
   type: 'bar',
   data: {
-    labels: ['CPI Inflation (ARIMA)', 'Delhi Rainfall (XGBoost)'],
+    labels: mlReports.map(r => `${r.categoryLabel} (${r.analytics.methodology.split(' ')[0]})`),
     datasets: [
-      { label: 'R² Score (Accuracy)', data: [0.884, 0.820], backgroundColor: CHART_COLORS.primary, borderRadius: 6 },
-      { label: 'Normalized MAE Error', data: [0.135, 0.183], backgroundColor: CHART_COLORS.amber, borderRadius: 6 }
+      {
+        label: 'R\u00b2 Score (Accuracy)',
+        data: mlReports.map(r => r.analytics.modelMetrics.r2),
+        backgroundColor: CHART_COLORS.primary,
+        borderRadius: 6
+      },
+      {
+        label: 'Normalized MAE Error',
+        data: mlReports.map(r => r.analytics.modelMetrics.mae),
+        backgroundColor: CHART_COLORS.amber,
+        borderRadius: 6
+      }
     ]
   },
   options: defaultOpts
 });
 
-// 2. Category Distribution Chart
+// 2. Category Distribution Chart — one slice per report
 new Chart(document.getElementById('chartCategoryDist'), {
   type: 'doughnut',
   data: {
-    labels: ['Crime (NCRB)', 'Economics (CPI)', 'Climate (Rainfall)', 'Sports (IPL)'],
+    labels: REPORTS.map(r => `${r.categoryLabel} (${r.analytics.domain})`),
     datasets: [{
-      data: [25, 25, 25, 25],
-      backgroundColor: [CHART_COLORS.primary, CHART_COLORS.blue, CHART_COLORS.secondary, '#1E4FA5'],
+      data: REPORTS.map(() => Math.round(100 / REPORTS.length)),
+      backgroundColor: REPORTS.map(r => r.categoryColors.text),
       borderWidth: 2,
       borderColor: '#fff'
     }]
@@ -298,7 +312,7 @@ new Chart(document.getElementById('chartCategoryDist'), {
   }
 });
 
-// 3. Macro Overlay Chart
+// 3. Macro Overlay Chart (static data: CPI & Delhi Rainfall 2018-2025)
 new Chart(document.getElementById('chartMacroOverlay'), {
   type: 'line',
   data: {

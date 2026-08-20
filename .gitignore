@@ -96,3 +96,8 @@ desktop.ini
 logs/
 node_modules/
 npm-debug.log*
+
+# ── Unused / Duplicate HTML Reports ────────────────
+Crime Analysis/crime_report.html
+IPL/output/meteors_report.html
+report-cpi.html

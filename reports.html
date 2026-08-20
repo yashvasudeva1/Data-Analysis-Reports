@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -51,15 +51,6 @@
     .cat-pill {
       font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
     }
-    .cat-pill.crime     { background: #FDE8ED; color: #A51E35; }
-    .cat-pill.economics { background: #E8F4FD; color: #1E6FA5; }
-    .cat-pill.markets   { background: #FFF0E0; color: #B35A00; }
-    .cat-pill.health    { background: #FDE8ED; color: #A51E35; }
-    .cat-pill.forecast  { background: #F0E8FD; color: #6A1EA5; }
-    .cat-pill.climate   { background: #E8FDF4; color: #1EA566; }
-    .cat-pill.data      { background: #E8FDF4; color: #1EA566; }
-    .cat-pill.sports    { background: #E8F0FD; color: #1E4FA5; }
-
     .rc-title   { font-size: 16px; font-weight: 700; color: var(--text-900); margin-bottom: 6px; }
     .rc-desc    { font-size: 13px; color: var(--text-500); line-height: 1.5; margin-bottom: 16px; flex: 1; }
     .rc-kpis    { display: flex; gap: 16px; margin-bottom: 16px; padding: 12px; background: var(--bg); border-radius: 12px; }
@@ -84,20 +75,19 @@
     <div class="nav-section">
       <p class="nav-eyebrow">Menu</p>
       <a href="index.html"     class="nav-item" id="nav-dashboard"><span class="nav-label">Dashboard</span></a>
-      <a href="reports.html"   class="nav-item" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge">4</span></a>
+      <a href="reports.html"   class="nav-item active" id="nav-reports">  <span class="nav-label">Reports</span><span class="nav-badge"></span></a>
       <a href="datasets.html"  class="nav-item" id="nav-datasets"> <span class="nav-label">Datasets</span></a>
       <a href="analytics.html" class="nav-item" id="nav-analytics"><span class="nav-label">Analytics</span></a>
-      
     </div>
     <div class="sidebar-spacer"></div>
-</nav>
+  </nav>
 
   <!-- MAIN -->
   <div class="main">
     <header class="topbar">
       <div class="search-wrap">
-        <input type="text" id="search-input" placeholder="Search reports, datasets, tags…" />
-        <span class="search-kbd">⌘F</span>
+        <input type="text" id="search-input" placeholder="Search reports, datasets, tags&hellip;" />
+        <span class="search-kbd">&#8984;F</span>
       </div>
       <div class="topbar-spacer"></div>
       <div class="user-chip">
@@ -114,16 +104,11 @@
     </div>
 
     <div class="content">
-      <!-- Filter bar -->
+      <!-- Filter bar — counts injected by JS -->
       <div class="filter-bar">
-        <div class="filter-tabs">
-          <button class="filter-tab active" data-filter="all"         data-target="reports-grid">All (4)</button>
-          <button class="filter-tab"        data-filter="completed"   data-target="reports-grid">Completed (4)</button>
-          <button class="filter-tab"        data-filter="in_progress" data-target="reports-grid">In Progress (0)</button>
-          <button class="filter-tab"        data-filter="pending"     data-target="reports-grid">Pending (0)</button>
-        </div>
+        <div class="filter-tabs" id="filter-tabs"></div>
         <div class="filter-spacer"></div>
-        <input class="filter-search" id="report-search" placeholder="Filter by title…" />
+        <input class="filter-search" id="report-search" placeholder="Filter by title&hellip;" />
       </div>
 
       <!-- Reports grid -->
@@ -132,64 +117,42 @@
   </div>
 </div>
 
+<script src="reports-data.js"></script>
 <script src="hub.js"></script>
 <script>
-const REPORTS = [
-  {
-    id:'crime-analysis-india', title:'India Crime Analysis (2001–2013)', category:'crime',
-    desc:'Comprehensive analysis of NCRB crime datasets across 36 states/UTs covering 5.3M+ IPC crimes, crimes against women, auto theft & custodial deaths.',
-    status:'completed', updated:'Jul 28, 2026',
-    kpis:[{label:'IPC Crimes',value:'5.3M'},{label:'Datasets',value:'19'},{label:'Years',value:'13'}],
-    insights:['Total IPC crimes grew 49.6% from 2001 to 2013','UP, AP & West Bengal report highest crimes against women'],
-    url:'./crime_report.html',
-  },
-  {
-    id:'cpi-inflation-2025', title:'CPI Inflation Analysis', category:'economics',
-    desc:'Time-series analysis of India\'s Consumer Price Index from 2013 to 2025, with sector-level decomposition and ML forecasting.',
-    status:'completed', updated:'Nov 26, 2025',
-    kpis:[{label:'R² Score',value:'0.88'},{label:'MAE',value:'1.35'},{label:'Sectors',value:'11'}],
-    insights:['General CPI rose ~90% cumulatively, 2013–2025','Vegetables/spices show >35% coefficient of variation'],
-    url:'./cpi_report.html',
-  },
-  {
-    id:'rainfall-delhi-2025', title:'Rainfall Analysis in Delhi', category:'climate',
-    desc:'8-year spatial-temporal study of precipitation across 9 Delhi districts, monsoon anomaly heatmaps, and XGBoost Tweedie regression model.',
-    status:'completed', updated:'Dec 1, 2025',
-    kpis:[{label:'R² (Test)',value:'0.82'},{label:'MAE',value:'1.83 mm'},{label:'Years',value:'8'}],
-    insights:['South Delhi leads in total rainfall (7,842 mm)','XGBoost Tweedie model achieves 0.82 Test R²'],
-    url:'./rainfall_report.html',
-  },
-  {
-    id:'ipl-performance-analysis', title:'IPL Performance Analysis (2019–2026)', category:'sports',
-    desc:'Comprehensive multi-season analysis of batting, bowling, boundaries, player arcs, and franchise dependencies across the Indian Premier League.',
-    status:'completed', updated:'Aug 9, 2026',
-    kpis:[{label:'Top Scorer',value:'9,336'},{label:'Top Wickets',value:'226'},{label:'Seasons',value:'5'}],
-    insights:['Virat Kohli leads all-time with 9,336 runs and 9 centuries','Chris Gayle\'s 357 sixes record remains uncontested'],
-    url:'./ipl_report.html',
-  }
-];
+/* ── BUILD FILTER TABS from live data ──────────────────── */
+(function () {
+  const s = HUB_STATS;
+  const tabs = [
+    { label: `All (${s.total})`,             filter: 'all'         },
+    { label: `Completed (${s.completed})`,   filter: 'completed'   },
+    { label: `In Progress (${s.inProgress})`,filter: 'in_progress' },
+    { label: `Pending (${s.pending})`,       filter: 'pending'     }
+  ];
+  document.getElementById('filter-tabs').innerHTML = tabs.map((t, i) =>
+    `<button class="filter-tab${i === 0 ? ' active' : ''}" data-filter="${t.filter}" data-target="reports-grid">${t.label}</button>`
+  ).join('');
+})();
 
-function bClass(s){ return s==='in_progress'?'in-progress':s; }
-function bText(s) { return s==='in_progress'?'In Progress':s.charAt(0).toUpperCase()+s.slice(1); }
-
+/* ── RENDER REPORTS GRID ───────────────────────────────── */
 function renderGrid(data) {
   const grid = document.getElementById('reports-grid');
   if (!data.length) {
     grid.innerHTML = '<p class="no-results">No reports match your filter.</p>'; return;
   }
   grid.innerHTML = data.map(r => `
-    <div class="card report-card" data-status="${r.status}" data-search="${r.title} ${r.category}">
+    <div class="card report-card" data-status="${r.status}" data-search="${r.title} ${r.category} ${r.categoryLabel}">
       <div class="rc-header">
-        <span class="cat-pill ${r.category}">${r.category.charAt(0).toUpperCase()+r.category.slice(1)}</span>
+        <span class="cat-pill" style="background:${r.categoryColors.bg}; color:${r.categoryColors.text};">${r.categoryLabel}</span>
         <span class="badge ${bClass(r.status)}">${bText(r.status)}</span>
       </div>
       <div class="rc-title">${r.title}</div>
       <div class="rc-desc">${r.desc}</div>
       <div class="rc-kpis">
-        ${r.kpis.map(k=>`<div class="kpi"><span class="kpi-num">${k.value}</span><span class="kpi-label">${k.label}</span></div>`).join('')}
+        ${r.kpis.map(k => `<div class="kpi"><span class="kpi-num">${k.value}</span><span class="kpi-label">${k.label}</span></div>`).join('')}
       </div>
       <div class="rc-insights">
-        ${r.insights.map(i=>`<div class="rc-insight-item">${i}</div>`).join('')}
+        ${r.insights.map(i => `<div class="rc-insight-item">${i}</div>`).join('')}
       </div>
       <div class="rc-footer">
         <span class="rc-updated">Updated ${r.updated}</span>
@@ -202,11 +165,11 @@ function renderGrid(data) {
 
 renderGrid(REPORTS);
 
-// Local search for report titles
+/* ── LOCAL SEARCH ──────────────────────────────────────── */
 document.getElementById('report-search').addEventListener('input', e => {
   const q = e.target.value.toLowerCase();
   document.querySelectorAll('#reports-grid .report-card').forEach(c => {
-    c.style.display = c.dataset.search.toLowerCase().includes(q) || q==='' ? '' : 'none';
+    c.style.display = c.dataset.search.toLowerCase().includes(q) || q === '' ? '' : 'none';
   });
 });
 </script>
