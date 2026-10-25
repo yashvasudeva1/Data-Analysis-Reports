@@ -40,10 +40,19 @@
     .reports-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
     @media (max-width: 1100px) { .reports-grid { grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 700px)  { .reports-grid { grid-template-columns: 1fr; } }
+    .filter-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .sort-select {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 999px; padding: 7px 14px; font-size: 13px;
+      color: var(--text-900); font-family: 'Plus Jakarta Sans', sans-serif; outline: none;
+      cursor: pointer; transition: border-color .15s;
+    }
+    .sort-select:focus { border-color: var(--green-500); }
     @media (max-width: 600px)  {
       .filter-bar { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px; }
       .filter-tabs { width: 100%; overflow-x: auto; padding-bottom: 4px; }
-      .filter-search { width: 100%; }
+      .filter-controls { width: 100%; flex-direction: column; gap: 8px; }
+      .filter-search, .sort-select { width: 100%; }
     }
 
     .report-card { display: flex; flex-direction: column; gap: 0; }
@@ -108,7 +117,14 @@
       <div class="filter-bar">
         <div class="filter-tabs" id="filter-tabs"></div>
         <div class="filter-spacer"></div>
-        <input class="filter-search" id="report-search" placeholder="Filter by title&hellip;" />
+        <div class="filter-controls">
+          <select class="sort-select" id="report-sort" aria-label="Sort reports">
+            <option value="latest" selected>Latest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title">Title (A&ndash;Z)</option>
+          </select>
+          <input class="filter-search" id="report-search" placeholder="Filter by title&hellip;" />
+        </div>
       </div>
 
       <!-- Reports grid -->
@@ -163,15 +179,40 @@ function renderGrid(data) {
     </div>`).join('');
 }
 
-renderGrid(REPORTS);
+function getSortedReports() {
+  const sortMode = document.getElementById('report-sort')?.value || 'latest';
+  const list = [...REPORTS];
+  if (sortMode === 'latest') {
+    list.sort((a, b) => new Date(b.updated || 0) - new Date(a.updated || 0));
+  } else if (sortMode === 'oldest') {
+    list.sort((a, b) => new Date(a.updated || 0) - new Date(b.updated || 0));
+  } else if (sortMode === 'title') {
+    list.sort((a, b) => a.title.localeCompare(b.title));
+  }
+  return list;
+}
 
-/* ── LOCAL SEARCH ──────────────────────────────────────── */
-document.getElementById('report-search').addEventListener('input', e => {
-  const q = e.target.value.toLowerCase();
+function applyFiltersAndSort() {
+  const sorted = getSortedReports();
+  renderGrid(sorted);
+
+  const activeTab = document.querySelector('.filter-tab.active');
+  const filter = activeTab ? activeTab.dataset.filter : 'all';
+  const q = (document.getElementById('report-search')?.value || '').toLowerCase().trim();
+
   document.querySelectorAll('#reports-grid .report-card').forEach(c => {
-    c.style.display = c.dataset.search.toLowerCase().includes(q) || q === '' ? '' : 'none';
+    const statusMatch = filter === 'all' || c.dataset.status === filter;
+    const searchMatch = q === '' || c.dataset.search.toLowerCase().includes(q);
+    c.style.display = statusMatch && searchMatch ? '' : 'none';
   });
-});
+}
+
+// Initial render (latest first)
+applyFiltersAndSort();
+
+/* ── LOCAL SEARCH & SORT ───────────────────────────────── */
+document.getElementById('report-sort')?.addEventListener('change', applyFiltersAndSort);
+document.getElementById('report-search')?.addEventListener('input', applyFiltersAndSort);
 </script>
 </body>
 </html>

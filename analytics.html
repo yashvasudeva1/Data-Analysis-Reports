@@ -188,6 +188,13 @@
             NASA C-MAPSS turbofan analysis shows sensor_11 as the strongest RUL predictor (|Pearson|=0.696). XGBoost with 282 temporal features achieves test MAE of 10.37 cycles and NASA PHM score of 309.72, outperforming the Random Forest baseline by 12.1% on asymmetric scoring.
           </div>
         </div>
+
+        <div class="insight-card">
+          <div class="insight-card-title">E-Commerce Pricing &amp; Spec Elasticity</div>
+          <div class="insight-card-desc">
+            Flipkart mobile analytics reveals RAM and Apple brand equity as primary price anchors (+₹4,100 per normalized unit). 5G penetration reaches 68.4% (+₹7,650 premium), while battery capacity shows an inverse price correlation (r = -0.233) as budget phones pack 6,000–10,001 mAh cells to compete.
+          </div>
+        </div>
       </div>
 
     </div><!-- /content -->
@@ -201,7 +208,7 @@
 (function () {
   const s = HUB_STATS;
   const mlReports  = REPORTS.filter(r => r.analytics.modelMetrics !== null);
-  const totalPoints = '5.5M+';
+  const totalPoints = '6.6M+';
   const years = (() => {
     // derive from the range of all reports' data eras
     return '25 Years';

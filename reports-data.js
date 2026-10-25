@@ -5,120 +5,81 @@
 
 const REPORTS = [
   {
-    id: 'crime-analysis-india',
-    title: 'India Crime Analysis (2001\u20132013)',
-    category: 'crime',
-    categoryLabel: 'Crime',
-    categoryColors: { bg: '#FDE8ED', text: '#A51E35' },
-    desc: 'Comprehensive analysis of NCRB crime datasets across 36 states/UTs covering 5.3M+ IPC crimes, crimes against women, auto theft & custodial deaths.',
+    id: 'flipkart-mobile-market-2026',
+    title: 'Flipkart Mobile Market & Pricing Analytics',
+    category: 'ecommerce',
+    categoryLabel: 'E-Commerce',
+    categoryColors: { bg: '#FFF8E1', text: '#B78103' },
+    desc: 'Econometric Ridge regression, hardware specification modeling, and consumer sentiment analysis across 98 smartphones and 1.13M+ customer ratings on Flipkart.',
     status: 'completed',
-    updated: 'Jul 28, 2026',
-    color: '#0E3B2E',
-    url: './crime_report.html',
+    updated: 'Oct 26, 2026',
+    color: '#F7941D',
+    url: './flipkart_report.html',
     kpis: [
-      { label: 'IPC Crimes', value: '5.3M' },
-      { label: 'Datasets',   value: '19'   },
-      { label: 'Years',      value: '13'   }
+      { label: 'Ridge R\u00b2', value: '0.81' },
+      { label: 'MAE',      value: '\u20b91,784' },
+      { label: 'Ratings',  value: '1.13M' }
     ],
     insights: [
-      'Total IPC crimes grew 49.6% from 2001 to 2013',
-      'UP, AP & West Bengal report highest crimes against women'
+      'RAM capacity & Apple brand equity drive 68% of retail price variance',
+      '68.4% of catalog is 5G-ready, commanding a \u20b97,650 price premium over 4G'
     ],
     dataset: {
-      name:        'Crime in India (NCRB 2001\u20132014)',
-      format:      'CSV / Archive',
-      size:        '145.2 MB',
-      sizeMB:      145.2,
-      sourceLabel: 'Kaggle Dataset',
-      sourceUrl:   'https://www.kaggle.com/datasets/rajanand/crime-in-india',
-      portal:      'Kaggle'
+      name:        'Flipkart Mobile Devices & Technical Specifications',
+      format:      'CSV / JSONL',
+      size:        '460.7 KB',
+      sizeMB:      0.46,
+      sourceLabel: 'Flipkart Marketplace',
+      sourceUrl:   'https://www.flipkart.com/mobiles',
+      portal:      'Flipkart'
     },
     analytics: {
-      domain:        'Crime',
-      badgeBg:       '#FDE8ED',
-      badgeText:     '#A51E35',
-      methodology:   'Spatial Leaflet + Exploratory EDA',
-      sampleSize:    '19 Datasets (36 States)',
-      modelMetrics:  null,
-      primaryMetric: '85.1% Judicial Backlog (94.6M)'
+      domain:        'E-Commerce',
+      badgeBg:       '#FFF8E1',
+      badgeText:     '#B78103',
+      methodology:   'Ridge L2-Regression + Exploratory EDA',
+      sampleSize:    '98 Devices (1.13M Ratings)',
+      modelMetrics:  { r2: 0.806, mae: 0.082, label: 'R\u00b2 = 0.8057 | MAE = \u20b91,784' },
+      primaryMetric: '68.4% 5G Penetration (1.13M Ratings)'
     }
   },
   {
-    id: 'cpi-inflation-2025',
-    title: 'CPI Inflation Analysis',
-    category: 'economics',
-    categoryLabel: 'Economics',
-    categoryColors: { bg: '#E8F4FD', text: '#1E6FA5' },
-    desc: "Time-series analysis of India's Consumer Price Index from 2013 to 2025, with sector-level decomposition and ML forecasting.",
+    id: 'nasa-cmapss-rul',
+    title: 'NASA C-MAPSS RUL Prediction (FD001)',
+    category: 'ml',
+    categoryLabel: 'ML',
+    categoryColors: { bg: '#F0E8FD', text: '#6A1EA5' },
+    desc: 'End-to-end predictive maintenance pipeline for NASA C-MAPSS turbofan engines. XGBoost regression with 282 temporal features, engine-level leakage-safe validation, asymmetric PHM scoring, and FastAPI + Streamlit inference.',
     status: 'completed',
-    updated: 'Nov 26, 2025',
-    color: '#2E9370',
-    url: './cpi_report.html',
+    updated: 'Aug 20, 2026',
+    color: '#6A1EA5',
+    url: './nasa_rul_report.html',
     kpis: [
-      { label: 'R\u00b2 Score', value: '0.88'  },
-      { label: 'MAE',      value: '1.35'  },
-      { label: 'Sectors',  value: '11'    }
+      { label: 'Test MAE',  value: '10.37 cy' },
+      { label: 'PHM Score', value: '309.72'   },
+      { label: 'Features',  value: '282'      }
     ],
     insights: [
-      'General CPI rose ~90% cumulatively, 2013\u20132025',
-      'Vegetables/spices show >35% coefficient of variation'
+      'sensor_11 is the strongest RUL predictor (|Pearson|=0.696)',
+      'XGBoost outperforms RF baseline across all 3 metrics'
     ],
     dataset: {
-      name:        'Year-wise CPI Inflation Rate (Combined CPI-C)',
-      format:      'CSV',
-      size:        '1.2 MB',
-      sizeMB:      1.2,
-      sourceLabel: 'Data.gov.in Resource',
-      sourceUrl:   'https://www.data.gov.in/resource/year-wise-inflation-rate-based-consumer-price-index-combined-cpi-c-2014-15-2021-22',
-      portal:      'Data.gov.in'
+      name:        'NASA C-MAPSS Aircraft Engine Simulator Data (FD001\u2013FD004)',
+      format:      'TXT / CSV',
+      size:        '2.1 MB',
+      sizeMB:      2.1,
+      sourceLabel: 'NASA Data Portal',
+      sourceUrl:   'https://data.nasa.gov/dataset/C-MAPSS-Aircraft-Engine-Simulator-Data/xaut-bemq',
+      portal:      'NASA Data'
     },
     analytics: {
-      domain:        'Economics',
-      badgeBg:       '#E8F4FD',
-      badgeText:     '#1E6FA5',
-      methodology:   'ARIMA(1,1,1) + Linear Reg',
-      sampleSize:    '156 Months (2013-2025)',
-      modelMetrics:  { r2: 0.884, mae: 0.135, label: 'R\u00b2 = 0.8840 | MAE = 1.35' },
-      primaryMetric: '90% Cumulative CPI Rise'
-    }
-  },
-  {
-    id: 'rainfall-delhi-2025',
-    title: 'Rainfall Analysis in Delhi',
-    category: 'climate',
-    categoryLabel: 'Climate & Weather',
-    categoryColors: { bg: '#E8FDF4', text: '#1EA566' },
-    desc: '8-year spatial-temporal study of precipitation across 9 Delhi districts, monsoon anomaly heatmaps, and XGBoost Tweedie regression model.',
-    status: 'completed',
-    updated: 'Dec 1, 2025',
-    color: '#1EA566',
-    url: './rainfall_report.html',
-    kpis: [
-      { label: 'R\u00b2 (Test)', value: '0.82'    },
-      { label: 'MAE',       value: '1.83 mm' },
-      { label: 'Years',     value: '8'       }
-    ],
-    insights: [
-      'South Delhi leads in total rainfall (7,842 mm)',
-      'XGBoost Tweedie model achieves 0.82 Test R\u00b2'
-    ],
-    dataset: {
-      name:        'India Rainfall & Precipitation Data (District-wise)',
-      format:      'CSV',
-      size:        '4.8 MB',
-      sizeMB:      4.8,
-      sourceLabel: 'Data.gov.in Search',
-      sourceUrl:   'https://www.data.gov.in/search?title=Rainfall&sortby=_score&type=resources',
-      portal:      'Data.gov.in'
-    },
-    analytics: {
-      domain:        'Climate & Weather',
-      badgeBg:       '#E8FDF4',
-      badgeText:     '#1EA566',
-      methodology:   'XGBoost Regressor (tweedie)',
-      sampleSize:    '20,000+ Days (2018-2025)',
-      modelMetrics:  { r2: 0.820, mae: 0.183, label: 'R\u00b2 = 0.8200 | MAE = 1.83 mm' },
-      primaryMetric: '7,842 mm Max Rainfall'
+      domain:        'Machine Learning',
+      badgeBg:       '#F0E8FD',
+      badgeText:     '#6A1EA5',
+      methodology:   'XGBoost Regressor + Random Forest Baseline',
+      sampleSize:    '33,727 Rows (200 Engines)',
+      modelMetrics:  { r2: 0, mae: 0.104, label: 'MAE = 10.37 cy | PHM = 309.72' },
+      primaryMetric: '282 Temporal Features'
     }
   },
   {
@@ -161,46 +122,126 @@ const REPORTS = [
     }
   },
   {
-    id: 'nasa-cmapss-rul',
-    title: 'NASA C-MAPSS RUL Prediction (FD001)',
-    category: 'ml',
-    categoryLabel: 'ML',
-    categoryColors: { bg: '#F0E8FD', text: '#6A1EA5' },
-    desc: 'End-to-end predictive maintenance pipeline for NASA C-MAPSS turbofan engines. XGBoost regression with 282 temporal features, engine-level leakage-safe validation, asymmetric PHM scoring, and FastAPI + Streamlit inference.',
+    id: 'crime-analysis-india',
+    title: 'India Crime Analysis (2001\u20132013)',
+    category: 'crime',
+    categoryLabel: 'Crime',
+    categoryColors: { bg: '#FDE8ED', text: '#A51E35' },
+    desc: 'Comprehensive analysis of NCRB crime datasets across 36 states/UTs covering 5.3M+ IPC crimes, crimes against women, auto theft & custodial deaths.',
     status: 'completed',
-    updated: 'Aug 20, 2026',
-    color: '#6A1EA5',
-    url: './nasa_rul_report.html',
+    updated: 'Jul 28, 2026',
+    color: '#0E3B2E',
+    url: './crime_report.html',
     kpis: [
-      { label: 'Test MAE',  value: '10.37 cy' },
-      { label: 'PHM Score', value: '309.72'   },
-      { label: 'Features',  value: '282'      }
+      { label: 'IPC Crimes', value: '5.3M' },
+      { label: 'Datasets',   value: '19'   },
+      { label: 'Years',      value: '13'   }
     ],
     insights: [
-      'sensor_11 is the strongest RUL predictor (|Pearson|=0.696)',
-      'XGBoost outperforms RF baseline across all 3 metrics'
+      'Total IPC crimes grew 49.6% from 2001 to 2013',
+      'UP, AP & West Bengal report highest crimes against women'
     ],
     dataset: {
-      name:        'NASA C-MAPSS Aircraft Engine Simulator Data (FD001\u2013FD004)',
-      format:      'TXT / CSV',
-      size:        '2.1 MB',
-      sizeMB:      2.1,
-      sourceLabel: 'NASA Data Portal',
-      sourceUrl:   'https://data.nasa.gov/dataset/C-MAPSS-Aircraft-Engine-Simulator-Data/xaut-bemq',
-      portal:      'NASA Data'
+      name:        'Crime in India (NCRB 2001\u20132014)',
+      format:      'CSV / Archive',
+      size:        '145.2 MB',
+      sizeMB:      145.2,
+      sourceLabel: 'Kaggle Dataset',
+      sourceUrl:   'https://www.kaggle.com/datasets/rajanand/crime-in-india',
+      portal:      'Kaggle'
     },
     analytics: {
-      domain:        'Machine Learning',
-      badgeBg:       '#F0E8FD',
-      badgeText:     '#6A1EA5',
-      methodology:   'XGBoost Regressor + Random Forest Baseline',
-      sampleSize:    '33,727 Rows (200 Engines)',
-      modelMetrics:  { r2: 0, mae: 0.104, label: 'MAE = 10.37 cy | PHM = 309.72' },
-      primaryMetric: '282 Temporal Features'
+      domain:        'Crime',
+      badgeBg:       '#FDE8ED',
+      badgeText:     '#A51E35',
+      methodology:   'Spatial Leaflet + Exploratory EDA',
+      sampleSize:    '19 Datasets (36 States)',
+      modelMetrics:  null,
+      primaryMetric: '85.1% Judicial Backlog (94.6M)'
+    }
+  },
+  {
+    id: 'rainfall-delhi-2025',
+    title: 'Rainfall Analysis in Delhi',
+    category: 'climate',
+    categoryLabel: 'Climate & Weather',
+    categoryColors: { bg: '#E8FDF4', text: '#1EA566' },
+    desc: '8-year spatial-temporal study of precipitation across 9 Delhi districts, monsoon anomaly heatmaps, and XGBoost Tweedie regression model.',
+    status: 'completed',
+    updated: 'Dec 1, 2025',
+    color: '#1EA566',
+    url: './rainfall_report.html',
+    kpis: [
+      { label: 'R\u00b2 (Test)', value: '0.82'    },
+      { label: 'MAE',       value: '1.83 mm' },
+      { label: 'Years',     value: '8'       }
+    ],
+    insights: [
+      'South Delhi leads in total rainfall (7,842 mm)',
+      'XGBoost Tweedie model achieves 0.82 Test R\u00b2'
+    ],
+    dataset: {
+      name:        'India Rainfall & Precipitation Data (District-wise)',
+      format:      'CSV',
+      size:        '4.8 MB',
+      sizeMB:      4.8,
+      sourceLabel: 'Data.gov.in Search',
+      sourceUrl:   'https://www.data.gov.in/search?title=Rainfall&sortby=_score&type=resources',
+      portal:      'Data.gov.in'
+    },
+    analytics: {
+      domain:        'Climate & Weather',
+      badgeBg:       '#E8FDF4',
+      badgeText:     '#1EA566',
+      methodology:   'XGBoost Regressor (tweedie)',
+      sampleSize:    '20,000+ Days (2018-2025)',
+      modelMetrics:  { r2: 0.820, mae: 0.183, label: 'R\u00b2 = 0.8200 | MAE = 1.83 mm' },
+      primaryMetric: '7,842 mm Max Rainfall'
+    }
+  },
+  {
+    id: 'cpi-inflation-2025',
+    title: 'CPI Inflation Analysis',
+    category: 'economics',
+    categoryLabel: 'Economics',
+    categoryColors: { bg: '#E8F4FD', text: '#1E6FA5' },
+    desc: "Time-series analysis of India's Consumer Price Index from 2013 to 2025, with sector-level decomposition and ML forecasting.",
+    status: 'completed',
+    updated: 'Nov 26, 2025',
+    color: '#2E9370',
+    url: './cpi_report.html',
+    kpis: [
+      { label: 'R\u00b2 Score', value: '0.88'  },
+      { label: 'MAE',      value: '1.35'  },
+      { label: 'Sectors',  value: '11'    }
+    ],
+    insights: [
+      'General CPI rose ~90% cumulatively, 2013\u20132025',
+      'Vegetables/spices show >35% coefficient of variation'
+    ],
+    dataset: {
+      name:        'Year-wise CPI Inflation Rate (Combined CPI-C)',
+      format:      'CSV',
+      size:        '1.2 MB',
+      sizeMB:      1.2,
+      sourceLabel: 'Data.gov.in Resource',
+      sourceUrl:   'https://www.data.gov.in/resource/year-wise-inflation-rate-based-consumer-price-index-combined-cpi-c-2014-15-2021-22',
+      portal:      'Data.gov.in'
+    },
+    analytics: {
+      domain:        'Economics',
+      badgeBg:       '#E8F4FD',
+      badgeText:     '#1E6FA5',
+      methodology:   'ARIMA(1,1,1) + Linear Reg',
+      sampleSize:    '156 Months (2013-2025)',
+      modelMetrics:  { r2: 0.884, mae: 0.135, label: 'R\u00b2 = 0.8840 | MAE = 1.35' },
+      primaryMetric: '90% Cumulative CPI Rise'
     }
   }
 ];
 
+// Ensure reports are always sorted latest first by updated date
+REPORTS.sort((a, b) => new Date(b.updated || 0) - new Date(a.updated || 0));
 // Computed aggregates — consumed by all pages
 const HUB_STATS = (() => {
   const total       = REPORTS.length;

@@ -3,15 +3,16 @@
 A centralized, beautifully designed web dashboard for publishing, tracking, and comparing end-to-end data analysis reports. Built with HTML, CSS, and JavaScript.
 
 ## 🌟 Executive Overview & Data Volume
-This project encompasses massive, real-world data analyses across diverse domains including macroeconomics, meteorology, sports, judicial/law enforcement, and aerospace predictive maintenance. 
+This project encompasses massive, real-world data analyses across diverse domains including macroeconomics, meteorology, sports, judicial/law enforcement, aerospace predictive maintenance, and e-commerce retail analytics. 
 
 **Data Volume Processed & Cleaned:**
-In total, **over 350,000+ lines of raw dataset records** have been cleaned, engineered, and analyzed across 240+ raw dataset files. These foundational rows aggregate and encapsulate macro-scale phenomena:
+In total, **over 350,000+ lines of raw dataset records** have been cleaned, engineered, and analyzed across 240+ raw dataset files, complemented by **1.13M+ consumer ratings and reviews**:
 * **>50 Million IPC crimes** and judicial records across India (2001–2013).
 * **~20,400+ daily weather observations** across Delhi (2018–2025).
 * **33,727 aerospace turbofan engine cycles** from NASA simulators.
 * **156 continuous months** of macroeconomic inflation data.
 * **27,800+ IPL player-match records** across 10 franchises.
+* **1,133,234 consumer ratings and 94,432 reviews** across 98 smartphones from 13 brands on Flipkart.
 
 ---
 
@@ -79,6 +80,20 @@ In total, **over 350,000+ lines of raw dataset records** have been cleaned, engi
 * **Feature Engineering:** 21 raw sensors expanded into **282 temporal features** using rolling means, rolling standard deviations, EWMA, and linear trend slopes.
 * **Feature Importance:** Sensor 11 was the strongest predictor (|Pearson| = 0.696, |Spearman| = 0.718), rising consistently as engines degrade.
 * **Data Quality:** 0 missing cells, 0 duplicates. 6 zero-variance sensors (sensor_1, sensor_5, sensor_10, etc.) were excluded. Sensor 9 had the highest outlier rate (8.17%, STD=22.08).
+
+## 📱 6. Flipkart Mobile Market & Pricing Analytics (2026)
+* **Domain:** E-Commerce & Retail Economics
+* **Dataset:** 98 smartphones across 13 brands (Samsung, Ai+, vivo, Motorola, realme, Redmi, HMD, BOLTT, OnePlus, Poco, Infinix, Apple, Nothing), capturing 1,133,234 consumer ratings and 94,432 customer reviews, with extracted hardware specifications (RAM, ROM, battery, cameras, 5G, screen size).
+* **Model / Methodology:** Ridge L2-Regularized Regression + Exploratory Econometric Analysis
+
+**Key Metrics & Findings:**
+* **Model Accuracy:** 5-Fold Test CV **$R^2$ = 0.806** (Test MAE = ₹3,031); Full dataset **$R^2$ = 0.965** with MAE = ₹1,784 across 19 engineered features.
+* **5G Market Penetration:** 68.4% of catalog models (67/98) are 5G-ready, commanding an average price premium of **₹7,655 (+46.2%)** over 4G units.
+* **Specification Valuation Weights:** RAM capacity is the single strongest hardware valuation driver (+₹4,100 per normalized unit, $r = +0.775$ with price), followed by Apple brand equity (+₹4,844), Front camera (+₹2,577), and OnePlus/vivo identity (+₹2,200).
+* **The "Battery Monster" Inverse Elasticity:** Battery capacity shows a negative correlation with price ($r = -0.233$). Budget devices aggressively pack 6,000–10,001 mAh battery cells (realme P4 Power 5G) to win endurance benchmarks, while flagships prioritize thin ergonomics (3,600–4,000 mAh).
+* **Consumer Satisfaction Divergence:** Customer rating correlates positively with retail price ($r = +0.637$); flagships average 4.58/5.0 vs budget devices at 4.17/5.0.
+* **Anomaly Detection:** Catalog standardizes a uniform 10% discount across all products, whereas ground-truth MRP comparisons show real discounts averaging 34.6%, reaching 94.5% due to extreme seller MRP inflation (e.g. HMD Vibe2 5G listed at ₹214,999 MRP vs ₹12,999 price).
+* **Market Arbitrage:** Identified high-value "undervalued" models like *Ai+ Nova 2 Power 5G* (8GB/128GB/7000mAh at ₹17,999, trading 30% below spec-implied valuation).
 
 ---
 

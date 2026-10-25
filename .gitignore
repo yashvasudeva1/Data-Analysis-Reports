@@ -24,6 +24,7 @@
 *.sqlite
 *.sqlite3
 *.json
+*.jsonl
 *.geojson
 
 # ── ML / AI model artifacts ─────────────────────────
@@ -45,6 +46,7 @@ IPL/output/*.jpg
 IPL/output/*.svg
 
 # ── Dataset directories (explicit paths) ────────────
+flipkart_data/
 Crime\ Analysis/archive/
 IPL/ipl_stats/
 IPL/output/*.csv
