@@ -1,8 +1,8 @@
-# 📊 Data Analysis Reports - Analysis Hub
+# Data Analysis Reports - Analysis Hub
 
 A centralized, beautifully designed web dashboard for publishing, tracking, and comparing end-to-end data analysis reports. Built with HTML, CSS, and JavaScript.
 
-## 🌟 Executive Overview & Data Volume
+## Executive Overview & Data Volume
 This project encompasses massive, real-world data analyses across diverse domains including macroeconomics, meteorology, sports, judicial/law enforcement, aerospace predictive maintenance, and e-commerce retail analytics. 
 
 **Data Volume Processed & Cleaned:**
@@ -13,10 +13,11 @@ In total, **over 350,000+ lines of raw dataset records** have been cleaned, engi
 * **156 continuous months** of macroeconomic inflation data.
 * **27,800+ IPL player-match records** across 10 franchises.
 * **1,133,234 consumer ratings and 94,432 reviews** across 98 smartphones from 13 brands on Flipkart.
+* **150,000+ state-day power observations** across 34 Indian States/UTs over 11+ years (3,955 days), complemented by 238,000+ Ember monthly generation rows and real-time NPP merit order dispatch.
 
 ---
 
-## 📈 1. CPI Inflation Analysis (2013–2025)
+## 1. CPI Inflation Analysis (2013–2025)
 * **Domain:** Macroeconomics
 * **Dataset:** 156 months, 11 sectors (General Index, Food & Bev, Housing, Health, etc.)
 * **Model / Methodology:** ARIMA(1,1,1) + Linear Regression
@@ -29,7 +30,7 @@ In total, **over 350,000+ lines of raw dataset records** have been cleaned, engi
 * **COVID-19 Impact:** Pre-2020 General Index average was 124.5; Post-2020 surged to 177.2. Peak YoY spike reached 11.2% in 2020.
 * **Forecast:** General CPI is projected to maintain a steady 5.1% annualized trend, reaching an index of ~206.4 by Q4 2026.
 
-## 🌧️ 2. Rainfall Analysis in Delhi (2018–2025)
+## 2. Rainfall Analysis in Delhi (2018–2025)
 * **Domain:** Climate & Meteorology
 * **Dataset:** ~20,400+ daily district observations across 9 districts over 8 years.
 * **Model / Methodology:** Two-Stage Hurdle Model (XGBoost Classifier + XGBoost Tweedie Regressor, $p=1.5$)
@@ -42,7 +43,7 @@ In total, **over 350,000+ lines of raw dataset records** have been cleaned, engi
 * **Highest Rainfall District:** South Delhi (7,842 mm total), followed by East Delhi (7,520 mm).
 * **Extreme Spikes:** Max 24h downpour of 93.2 mm occurred on Sept 23, 2022. The peak wettest year was 2021 (1,248 mm total).
 
-## ⚖️ 3. India Crime Analysis (2001–2013)
+## 3. India Crime Analysis (2001–2013)
 * **Domain:** Law Enforcement & Judicial
 * **Dataset:** 271,321 CSV rows across 19 NCRB categories (Tracking 50 Million+ IPC crimes and 111.1 Million persons under trial in 2013).
 * **Methodology:** Spatial Leaflet + Exploratory EDA
@@ -56,7 +57,7 @@ In total, **over 350,000+ lines of raw dataset records** have been cleaned, engi
 * **Auto Theft Recovery:** Andhra Pradesh had a 73.5% recovery rate, whereas Delhi had a 12.8% recovery rate (30,062 stolen vs 3,848 recovered).
 * **Women's Safety:** Uttar Pradesh recorded 62,462 crimes against women. 57% of rape victims nationally were aged 18–30, and 16% were minors (14–18).
 
-## 🏏 4. IPL Performance Analysis (2019–2026)
+## 4. IPL Performance Analysis (2019–2026)
 * **Domain:** Sports Analytics
 * **Dataset:** 27,805 statistical player/match rows across 102 players, 10 franchises, and 5 tracked seasons + All-time records.
 * **Methodology:** Multi-Season EDA & Trajectory Analysis
@@ -69,7 +70,7 @@ In total, **over 350,000+ lines of raw dataset records** have been cleaned, engi
 * **Highest Franchise Dependence:** Jos Buttler (2019 RR) accounted for 31.9% of his team's tracked runs (863 runs) — a 99th percentile peak.
 * **Extreme Variance:** Sunil Narine (2024 KKR) jumped 54 percentiles from his baseline to score 488 runs as an opener at the 93rd percentile.
 
-## ✈️ 5. NASA C-MAPSS Turbofan Engine RUL Prediction (FD001)
+## 5. NASA C-MAPSS Turbofan Engine RUL Prediction (FD001)
 * **Domain:** Predictive Maintenance & Aerospace
 * **Dataset:** 33,727 operational cycle rows (20,631 train, 13,096 test) across 200 turbofan engines.
 * **Model / Methodology:** XGBoost Regressor vs Random Forest Baseline
@@ -81,7 +82,7 @@ In total, **over 350,000+ lines of raw dataset records** have been cleaned, engi
 * **Feature Importance:** Sensor 11 was the strongest predictor (|Pearson| = 0.696, |Spearman| = 0.718), rising consistently as engines degrade.
 * **Data Quality:** 0 missing cells, 0 duplicates. 6 zero-variance sensors (sensor_1, sensor_5, sensor_10, etc.) were excluded. Sensor 9 had the highest outlier rate (8.17%, STD=22.08).
 
-## 📱 6. Flipkart Mobile Market & Pricing Analytics (2026)
+## 6. Flipkart Mobile Market & Pricing Analytics (2026)
 * **Domain:** E-Commerce & Retail Economics
 * **Dataset:** 98 smartphones across 13 brands (Samsung, Ai+, vivo, Motorola, realme, Redmi, HMD, BOLTT, OnePlus, Poco, Infinix, Apple, Nothing), capturing 1,133,234 consumer ratings and 94,432 customer reviews, with extracted hardware specifications (RAM, ROM, battery, cameras, 5G, screen size).
 * **Model / Methodology:** Ridge L2-Regularized Regression + Exploratory Econometric Analysis
@@ -97,24 +98,41 @@ In total, **over 350,000+ lines of raw dataset records** have been cleaned, engi
 
 ---
 
-## 🚀 Getting Started
+## 7. India Electricity Grid & Clean Energy Transition (2013–2026)
+* **Domain:** Energy Systems & Electrical Grid Analytics
+* **Dataset:** 3,955 daily observations (2013–2024) across 34 States/UTs from Grid-India / Zenodo (>150,000 state-day records of Energy Met [MU] and Peak Demand Met [MW]), 238,000 monthly generation rows from Ember (2019–2025), and intraday hourly merit order dispatch from the National Power Portal (NPP Merit, Nov 2026).
+* **Model / Methodology:** Ridge L2-Regularized Auto-Regressive Distributed Lag (ARDL) Regressor vs Multi-Model Benchmark Suite (Harmonic Fourier Seasonal Model, Autoregressive Baseline, and Hybrid Stacking Ensemble).
 
-### 🌐 Live Demo
+**Key Metrics & Findings:**
+* **Champion Model Accuracy:** Ridge L2 ARDL achieved **Train $R^2$ = 0.9741**, **Test $R^2$ = 0.8412** with an exceptionally tight **Generalization Gap of 0.1329** on an out-of-time 16-month future test set (2023–2024 heatwave era).
+* **Forecasting Precision:** Test **MAE = 3,909.4 MW** (Mean Absolute Percentage Error **MAPE = 1.83%** on a ~210,000 MW grid) and Test **RMSE = 5,038.2 MW**. Outperformed the persistence baseline (Test $R^2 = 0.7796$, MAE = 4,613.8 MW) by +6.16 percentage points in explanatory variance.
+* **Failure of Pure Seasonality:** The harmonic calendar regression model collapsed on unseen test data ($R^2 = -0.8377$, MAE = 15,431.3 MW, Generalization Gap = 1.6539), proving that calendar cycles alone cannot anticipate climate-driven heatwave demand surges without dynamic multi-lag momentum features.
+* **All-Time National Peak Load:** Peak electricity demand met surged from **131,131 MW (131.1 GW)** in 2013 to a record **249,623 MW (249.6 GW)** — a **+90.4% national grid expansion**. Daily energy met peaked at **5,224.3 MU (5.22 TWh/day)**.
+* **Solar Generation Explosion:** Annual solar output in India grew from **46,268 GWh in 2019** to **149,238 GWh in 2025** — a staggering **+222.5% increase (3.2x)**.
+* **Clean Power Transition:** Clean power generation share (Solar, Wind, Hydro, Nuclear, Bioenergy) expanded from 23.91% (2019) to **28.48% (2025)**, with total renewables contributing 25.51%.
+* **State Demand Hegemony:** Consumption is heavily concentrated in Western and Southern corridors: Maharashtra (199,747 MU, Peak 28,969 MW, 4.93% CAGR), Uttar Pradesh (145,393 MU, Peak 28,553 MW, 5.97% CAGR), and Gujarat (145,038 MU, Peak 24,544 MW, 5.51% CAGR) together account for >32% of total national energy demand.
+* **Merit Order & The Indian Duck Curve:** NPP merit data reveals deep midday solar generation displacing thermal baseload, followed by severe 28,000 MW evening ramp requirements between 17:00 and 21:00, underscoring the urgent necessity of 47 GW of Battery Energy Storage Systems (BESS) and Pumped Hydro Storage (PSP) by 2031-32.
+
+---
+
+## Getting Started
+
+### Live Demo
 Open `index.html` in your browser, or serve locally:
 ```bash
-# Using Python
+#Using Python
 python -m http.server 8080
 
-# Using Node.js (npx)
+#Using Node.js (npx)
 npx serve .
 ```
 Then visit **http://localhost:8080**
 
-### 🔑 Authentication
+### Authentication
 - **Admin access**: Use the credentials configured in your `.env` file (excluded from version control).
 - **Guest access**: Click *Browse as Guest* for read-only mode (no login required).
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **UI:** HTML5 + Vanilla CSS + Vanilla JavaScript (No bundler required)
 - **Charts:** Chart.js (CDN)
 - **Typography:** Plus Jakarta Sans

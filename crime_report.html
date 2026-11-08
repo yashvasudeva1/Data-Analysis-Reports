@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -697,7 +697,7 @@ function initMap() {
     scrollWheelZoom: false
   });
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?api_key=cb1_54jd_1_ca7733cf480752d7d8158eca', {
     attribution: '&copy; CartoDB & NCRB',
     subdomains: 'abcd',
     maxZoom: 8
@@ -772,6 +772,7 @@ function updateMapMetric(metric) {
 
 window.addEventListener('DOMContentLoaded', () => {
   initMap();
+  window.addEventListener('resize', () => { if (map) map.invalidateSize(); });
 });
 
 // ===================== CHART COLORS & OPTIONS =====================

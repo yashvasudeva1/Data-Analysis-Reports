@@ -190,6 +190,13 @@
         </div>
 
         <div class="insight-card">
+          <div class="insight-card-title">National Power Grid &amp; Clean Transition</div>
+          <div class="insight-card-desc">
+            India grid analytics across 34 states/UTs highlights an all-time peak demand of 249.6 GW (+90.4% since 2013). Ridge ARDL time-series regression achieves 0.8412 Test R&sup2; (1.83% MAPE) with a minimal 0.133 generalization gap, while solar generation grew 222% (149.2 TWh in 2025) lifting clean power share to 28.5%.
+          </div>
+        </div>
+
+        <div class="insight-card">
           <div class="insight-card-title">E-Commerce Pricing &amp; Spec Elasticity</div>
           <div class="insight-card-desc">
             Flipkart mobile analytics reveals RAM and Apple brand equity as primary price anchors (+₹4,100 per normalized unit). 5G penetration reaches 68.4% (+₹7,650 premium), while battery capacity shows an inverse price correlation (r = -0.233) as budget phones pack 6,000–10,001 mAh cells to compete.
@@ -208,7 +215,7 @@
 (function () {
   const s = HUB_STATS;
   const mlReports  = REPORTS.filter(r => r.analytics.modelMetrics !== null);
-  const totalPoints = '6.6M+';
+  const totalPoints = '7.1M+';
   const years = (() => {
     // derive from the range of all reports' data eras
     return '25 Years';

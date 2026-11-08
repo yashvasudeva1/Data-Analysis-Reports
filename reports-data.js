@@ -5,6 +5,45 @@
 
 const REPORTS = [
   {
+    id: 'india-electricity-grid-analytics',
+    title: 'India Electricity Grid & Clean Energy Transition',
+    category: 'energy',
+    categoryLabel: 'Energy & Grid',
+    categoryColors: { bg: '#FEF3C7', text: '#92400E' },
+    desc: '11-year national grid study across 34 states/UTs (150k+ state-days), 249.6 GW peak demand modeling, Ridge L2 autoregressive forecasting (0.84 Test R²), and Ember clean power surge.',
+    status: 'completed',
+    updated: 'Nov 8, 2026',
+    color: '#D97706',
+    url: './electricity_report.html',
+    kpis: [
+      { label: 'Test R²',   value: '0.84' },
+      { label: 'Test MAE',  value: '3,909 MW' },
+      { label: 'Peak Load', value: '249.6 GW' }
+    ],
+    insights: [
+      'Ridge ARDL model achieves 0.8412 Test R² with tight 0.133 gap on 16-month future heatwave test set',
+      'National solar output expanded 222% (46.3 TWh to 149.2 TWh), lifting clean power share to 28.5%'
+    ],
+    dataset: {
+      name:        'India National & State Grid Electricity Dataset (2013–2026)',
+      format:      'CSV / Parquet',
+      size:        '98.5 MB',
+      sizeMB:      98.5,
+      sourceLabel: 'Grid-India & Ember',
+      sourceUrl:   'https://zenodo.org',
+      portal:      'Grid-India'
+    },
+    analytics: {
+      domain:        'Energy & Grid',
+      badgeBg:       '#FEF3C7',
+      badgeText:     '#92400E',
+      methodology:   'Ridge L2-ARDL Time-Series Regressor',
+      sampleSize:    '3,955 Days (34 States)',
+      modelMetrics:  { r2: 0.841, mae: 0.018, label: 'R² = 0.8412 | MAE = 3,909 MW' },
+      primaryMetric: '249.6 GW Peak Demand (0.841 Test R²)'
+    }
+  },
+  {
     id: 'flipkart-mobile-market-2026',
     title: 'Flipkart Mobile Market & Pricing Analytics',
     category: 'ecommerce',

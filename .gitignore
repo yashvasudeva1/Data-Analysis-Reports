@@ -46,6 +46,7 @@ IPL/output/*.jpg
 IPL/output/*.svg
 
 # ── Dataset directories (explicit paths) ────────────
+electricity/
 flipkart_data/
 Crime\ Analysis/archive/
 IPL/ipl_stats/
